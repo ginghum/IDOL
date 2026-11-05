@@ -282,7 +282,26 @@ function matchHTML(){
 function dialog(title,body,large=false,close=true){return '<div class="overlay"><section class="dialog '+(large?'large':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="dialog-head"><div><div class="eyebrow">IDOL / LIVE DUEL</div><h2>'+title+'</h2></div>'+(close?btn('×','close','','', 'aria-label="閉じる"'):'')+'</div>'+body+'</section></div>';}
 function choiceFan(f,action,on=false){return '<button class="choice-card '+(on?'on':'')+'" data-action="'+action+'" data-id="'+f.uid+'"><h3>'+FAN[f.type].name+'　'+FAN[f.type].points+'pt</h3>'+art('fan-'+f.type)+'<small>'+FAN[f.type].text+'</small></button>';}
 function memChoice(c,action,on){return '<button class="choice-card '+(on?'on':'')+'" data-action="'+action+'" data-id="'+c.uid+'" style="border-top:3px solid '+CHAR[c.owner].color+'"><small>'+CHAR[c.owner].short+' / '+c.n+'人用</small><h3>'+IDOL.song(c).name+'</h3></button>';}
+// Retain dialog scroll/focus only while editing the same selection session.
+let renderedModal = null;
 function renderModal(){
+ const root=$('#modal'), previous=root.querySelector('.dialog');
+ const preserve=!!modal&&modal===renderedModal&&!!previous;
+ const top=previous?.scrollTop||0, left=previous?.scrollLeft||0;
+ const focused=preserve&&previous.contains(document.activeElement)?document.activeElement:null;
+ const action=focused?.dataset.action, id=focused?.dataset.id, field=focused?.dataset.field, value=focused?.getAttribute('value');
+ renderModalContent();
+ renderedModal=modal;
+ if(preserve){
+  const dialog=root.querySelector('.dialog');
+  if(dialog){
+   const target=[...dialog.querySelectorAll('button,input')].find(el=>action?el.dataset.action===action&&el.dataset.id===id:field&&el.dataset.field===field&&el.getAttribute('value')===value);
+   target?.focus({preventScroll:true});
+   dialog.scrollTop=top;dialog.scrollLeft=left;
+  }
+ }
+}
+function renderModalContent(){
  const root=$('#modal');
  if(state&&screen==='match'&&state.pending?.p===0&&!modal){const z=state.pending;let body='';
  if(z.kind==='shio')body='<p>応援チップの獲得を置き換えられます。</p><div class="mode-grid">'+btn('応援チップ＋1','choose','primary',false,'data-id="chip"')+btn('ボルテージ＋10％','choose','primary',false,'data-id="vol"')+'</div>';
