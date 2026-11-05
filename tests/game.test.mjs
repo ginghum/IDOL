@@ -6,7 +6,7 @@ const result = new Function(engine + ';' + "\nconst G=IDOL, ids=Object.keys(G.CH
 console.log('Passed:', result);
 
 const nodes = new Map();
-const documentStub = { querySelector(k) { if(!nodes.has(k)) nodes.set(k,{innerHTML:''}); return nodes.get(k); }, addEventListener() {} };
+const documentStub = { querySelector(k) { if(!nodes.has(k)) nodes.set(k,{innerHTML:'',querySelector:()=>null}); return nodes.get(k); }, addEventListener() {} };
 const storageStub = {getItem:()=>null,setItem:()=>{}};
 const ui = new Function('document','localStorage','setTimeout','clearTimeout', script + `
 let views = 0;
@@ -24,3 +24,17 @@ for (const id of IDS) {
 return views;
 `)(documentStub, storageStub, ()=>0, ()=>{});
 console.log('UI render smoke checks:',ui);
+
+// Regression: re-rendering one selection session preserves scroll and focus.
+const wrapper = script.slice(script.indexOf('let renderedModal = null;'),script.indexOf('function renderModalContent(){'));
+const modalCheck = new Function(wrapper + `
+const a={kind:'event'}, b={kind:'song'};
+let modal=a, current={scrollTop:380,scrollLeft:0,contains:()=>true,querySelectorAll:()=>[]};
+const document={activeElement:null};
+const root={querySelector:()=>current};const $=()=>root;
+function renderModalContent(){current={scrollTop:0,scrollLeft:0,querySelectorAll:()=>[],contains:()=>false};}
+renderedModal=a;renderModal();if(current.scrollTop!==380)throw Error('Selection lost scroll');
+modal=b;renderModal();if(current.scrollTop!==0)throw Error('New dialog retained old scroll');
+return true;
+`)();
+console.log('Dialog scroll regression:',modalCheck);
