@@ -38,3 +38,5 @@ modal=b;renderModal();if(current.scrollTop!==0)throw Error('New dialog retained 
 return true;
 `)();
 console.log('Dialog scroll regression:',modalCheck);
+
+import "./events.test.mjs";
