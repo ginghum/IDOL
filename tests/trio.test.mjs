@@ -10,7 +10,7 @@ function play(s,owner,n,mode='fan'){const c=give(s,owner,n),p=s.players[s.active
 function mem(s,owner,n){const p=s.players[0];for(let j=0;j<n;j++){const c=give(s,owner,(j%3)+1);p.hand=p.hand.filter(x=>x.uid!==c.uid);p.memory.push(c);}}
 function event(s,id){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.players[0],id)});}
 {
- for(const [id,hand,vol] of [['haru',5,30],['hakka',4,30],['homura',4,20]]){const s=make(id),p=s.players[0];assert.equal(p.hand.length,hand);assert.equal(p.vol,vol);assert.equal(p.deck.length+hand,27);assert.equal(p.chips,id==='homura'?1:0);assert.equal(s.row.length+s.audience.length,52);assert(!s.audience.some(f=>f.type==='dream'));}
+ for(const [id,hand,vol] of [['haru',5,30],['hakka',4,30],['homura',4,20]]){const s=make(id),p=s.players[0];assert.equal(p.hand.length,hand);assert.equal(p.vol,vol);assert.equal(p.deck.length+hand,27);assert.equal(p.chips,id==='homura'?1:0);assert.equal(s.row.length+s.audience.length,53);assert(!s.audience.some(f=>f.type==='dream'));}
  const s=make(),p=s.players[0],c=p.deck.shift();p.discard.push(c);G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end'});assert.equal(s.pending.kind,'recover');const view=G.publicView(s,0);assert(view.pending.options.includes(c.uid));G.dispatch(s,{type:'choose',value:c.uid});assert(p.hand.includes(c));assert.equal(p.discard.length,0);
 }
 {
@@ -50,11 +50,11 @@ function event(s,id){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.players[0]
  const s=G.create(['hana','shio','kayo'],'shio',['haru','hakka','homura'],'hakka',0,3),p=s.players[0];p.vol=0;play(s,'hana',1,'vol');assert.equal(s.pending.kind,'shio');assert.equal(p.vol,0,'VOL base waits for extra ability choice');G.dispatch(s,{type:'choose',value:'chip'});assert.equal(p.vol,10);
  const t=make(),q=t.players[0];q.vol=100;q.eventBuff=1;row(t,['trouble','cheer','light']);const c=give(t,'haru',2);G.dispatch(t,{type:'play',card:c.uid,mode:'fan',actors:G.actors(q,c)});assert.equal(t.pending.kind,'trouble');assert.equal(t.row.length,0,'No refill before acquired effects resolve');settle(t);assert.equal(t.row.length,3);assert.equal(q.chips,1,'Returning an acquired card does not cancel its trigger');
 }
-// New characters participate in full CPU matches; conserve 27 songs and the original 52 spectators.
+// New characters participate in full CPU matches; conserve 27 songs and the original 53 spectators.
 const ids=Object.keys(G.CHAR);
 for(let seed=1;seed<=180;seed++){
  const a=['haru','hakka','homura'],b=[ids[seed%9],ids[(seed+3)%9],ids[(seed+6)%9]],s=G.create(a,a[seed%3],b,b[(seed+1)%3],seed%2,seed);
- let n=0;while(s.winner===null&&n++<2000){try{G.dispatch(s,G.ai(s));}catch(e){throw Error('seed '+seed+' step '+n+': '+e.message,{cause:e});}const fs=[...s.row,...s.audience,...s.players.flatMap(p=>p.fans)];assert.equal(fs.filter(f=>f.type!=='dream').length,52);assert.equal(new Set(fs.map(f=>f.uid)).size,fs.length);for(const p of s.players){assert.equal(p.hand.length+p.deck.length+p.memory.length+p.discard.length,27);assert(p.vol>=0&&p.vol<=200&&p.chips>=0);}}
+ let n=0;while(s.winner===null&&n++<2000){try{G.dispatch(s,G.ai(s));}catch(e){throw Error('seed '+seed+' step '+n+': '+e.message,{cause:e});}const fs=[...s.row,...s.audience,...s.players.flatMap(p=>p.fans)];assert.equal(fs.filter(f=>f.type!=='dream'&&f.type!=='influencer').length,53);assert.equal(new Set(fs.map(f=>f.uid)).size,fs.length);for(const p of s.players){assert.equal(p.hand.length+p.deck.length+p.memory.length+p.discard.length,27);assert(p.vol>=0&&p.vol<=200&&p.chips>=0);}}
  assert.notEqual(s.winner,null,'CPU match terminates seed '+seed);
 }
 // Render payment, recovery, items, scores, ordering and all new art without DOM dependencies.

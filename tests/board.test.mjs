@@ -46,5 +46,5 @@ delete document.body;
 screen='setup';modal=null;render();assert.match($('#app').innerHTML,/casting-grid/);assert.equal(($('#app').innerHTML.match(/class="casting-card /g)||[]).length,9);
 `) (document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 const map=JSON.parse(html.match(/const ARTWORK = (\{[\s\S]*?\n\});/)[1]);
-assert.equal(Object.keys(map).length,56);for(const path of Object.values(map))assert(existsSync(new URL('../'+path,import.meta.url)),path);
-console.log('Board UI: member/audience layout, hidden CPU events, inline selection, turn guard and 56 assets verified');
+assert.equal(Object.keys(map).length,61);for(const path of Object.values(map))assert(existsSync(new URL('../'+path,import.meta.url)),path);
+console.log('Board UI: member/audience layout, hidden CPU events, inline selection, turn guard and 61 assets verified');

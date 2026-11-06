@@ -24,7 +24,7 @@ function use(s,id,opts={}){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.play
 }
 for(let seed=1;seed<=120;seed++){
  const s=G.create(['kayo','rai','hana'],'hana',['machi','natsume','shio'],'machi',seed%2,seed,['wit','trouble','switch'],['redo','wit','trouble']);
- let n=0;while(s.winner===null&&n++<1500){G.dispatch(s,G.ai(s));ok(s.audience.length+s.row.length+s.players.reduce((n,p)=>n+p.fans.length,0)===52,'52 audience preserved');for(const p of s.players)ok(p.hand.length+p.deck.length+p.memory.length+p.discard.length===27,'27 songs preserved');}
+ let n=0;while(s.winner===null&&n++<1500){G.dispatch(s,G.ai(s));ok([...s.audience,...s.row,...s.players.flatMap(p=>p.fans)].filter(f=>f.type!=='influencer'&&f.type!=='dream').length===53,'53 initial audience cards preserved');for(const p of s.players)ok(p.hand.length+p.deck.length+p.memory.length+p.discard.length===27,'27 songs preserved');}
  ok(s.winner!==null,'common event CPU match finishes');
 }
 console.log('Common events:',checks,'checks, 120 matches');

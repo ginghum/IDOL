@@ -27,6 +27,8 @@ cheer:{name:'応援するファン',points:1,count:14,text:'応援チップ＋1'
 trouble:{name:'厄介なファン',points:1,count:12,text:'自身以外の同時獲得観客から最高得点の1枚を観客デッキの下へ戻す。',icon:'！'},
 heavy:{name:'愛が重いファン',points:2,count:8,text:'ボルテージ－10％',icon:'♥'},
 core:{name:'コアファン',points:3,count:4,text:'効果なし',icon:'★'},
+reporter:{name:'記者',points:1,count:1,text:'獲得時、ゲーム外からインフルエンサー1枚を観客山札に加え、シャッフルする。',icon:'▣'},
+influencer:{name:'インフルエンサー',points:5,count:0,text:'効果なし。初期観客山札には含まれない。',icon:'☆'},
 dream:{name:'ゆめかわファン',points:0,count:0,text:'獲得側のメンバーに春がいるなら1ポイント。初期山札には含まれない。',icon:'☁'}
 };
 function song(c){return {name:CHAR[c.owner].songs[c.n-1],owner:c.owner,n:c.n,vol:c.n*10+(c.owner==='shio'?10:0),fan:c.owner==='natsume'&&c.n===3?4:c.n,need:[60,80,100][c.n-1]};}
@@ -87,6 +89,7 @@ function process(s){
  }
  if(e.kind==='fanEffect'){
  const f=e.f;if(f.muted)continue;
+ if(f.type==='reporter'){const added={uid:uid(s),type:'influencer',lock:null};if(s.deckMuteTurn===s.turn)added.muted=true;s.audience.push(added);shuffle(s,s.audience);log(s,'記者：インフルエンサー1枚を観客山札に加えてシャッフル');}
  if(f.type==='cheer')s.queue.unshift({kind:'chip',p:e.p});
  if(f.type==='heavy'){voltage(p,-10);log(s,'愛が重いファン：vol－10％');}
  if(f.type==='trouble'){
