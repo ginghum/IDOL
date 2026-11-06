@@ -20,6 +20,12 @@ assert.equal($('#modal').innerHTML,'','Song selection stays on board');assert.ma
 const disabled=songDock();assert.match(disabled,/data-action="play-vol" disabled/);
 selection.actors=IDOL.actors(p,c)||[];
 if(selection.actors.length)assert(!songDock().includes('data-action="play-vol" disabled'));
+
+const readyBefore=[...p.ready];p.ready=[false,true,true];assert.match(tableSong({uid:'check1',owner:'kayo',n:1}),/unplayable/,'Required idol exhausted');assert.match(tableSong({uid:'check2',owner:'machi',n:3}),/unplayable/,'Not enough ready idols');assert(!tableSong({uid:'check3',owner:'machi',n:1}).includes('unplayable'),'VOL stays usable below FAN threshold');p.ready=readyBefore;
+assert.match(songDock(),/dock-cover/,'Selected song has large artwork');
+const rect=(left)=>({left,top:100,width:100,height:140}),oldFans=[{id:'a',rect:rect(10)},{id:'b',rect:rect(120)},{id:'c',rect:rect(230)}],newFans=[{id:'b',rect:rect(10)},{id:'c',rect:rect(120)},{id:'d',rect:rect(230)}];
+const plan=audienceMotionPlan(oldFans,newFans,{left:350,top:150,width:30,height:40});assert.deepEqual(plan.filter(x=>x.kind==='slide').map(x=>[x.id,x.x]),[['b',110],['c',110]]);const refill=plan.find(x=>x.kind==='refill');assert(refill.x>0,'New audience enters from deck on right');assert(refill.delay>=Math.max(...plan.filter(x=>x.kind==='slide').map(x=>x.delay+x.duration)),'Refill follows compaction');assert.deepEqual(audienceMotionPlan(oldFans,oldFans,null),[],'Unchanged row does not replay movement');
+
 p.memory.push(...p.deck.splice(0,3));modal={kind:'event',id:'redo'};selection={memory:p.memory.map(c=>c.uid),discard:[],targets:[]};state.active=1;renderModal();assert.match($('#modal').innerHTML,/data-action="event-confirm" disabled/,'Cannot use own event on CPU turn');
 modal=null;recordMove({type:'end'},JSON.parse(JSON.stringify(state)));render();assert.match($('#app').innerHTML,/ターン交代/);assert.equal(lastMove,null);render();assert(!$('#app').innerHTML.includes('move-announcement'),'Selection renders must not repeat the last announcement');
 modal={kind:'opening'};renderModal();assert.match($('#modal').innerHTML,/data-action="live-begin"/);assert($('#modal').innerHTML.includes(CHAR[state.players[0].leader].skillName),'Opening shows your leader skill');
