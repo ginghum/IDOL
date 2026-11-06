@@ -43,4 +43,7 @@ await vm.runInContext('roomSync(net)',c);assert.equal(c.net.rev,4);assert.equal(
 c.location.search='';saved.set('idol-room-session-v1',JSON.stringify({code:'9999',token:'other-seat'}));
 c.fetch=async()=>({ok:true,json:async()=>response});vm.runInContext('roomResume()',c);await new Promise(r=>setImmediate(r));
 assert.equal(c.net.token,token);assert.equal(c.net.code,'0123');
+c.location.search='?room=0123';const pending=JSON.parse(session.get('idol-room-session-v1'));pending.joining=true;session.set('idol-room-session-v1',JSON.stringify(pending));
+c.fetch=async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>response};};
+vm.runInContext('roomResume()',c);await new Promise(r=>setImmediate(r));assert.equal(c.net.token,token);assert(requests.at(-1).url.endsWith('/0123/join'),'A lost join reply resumes with the same ticket even from an invitation URL');
 console.log('Room client: invitation reload, per-tab seat persistence, selection stability, durable retry and conflict recovery passed');
