@@ -9,6 +9,11 @@ let board=$('#app').innerHTML;
 assert.equal((board.match(/class="member-card /g)||[]).length,6);
 assert.equal((board.match(/class="audience-card /g)||[]).length,3);
 assert.equal((board.match(/class="event-pocket /g)||[]).length,6);
+assert.match(board,/aria-label="手札を右へ送る"/);assert.match(board,/aria-label="手札を左へ送る"/);
+const track=$('.hand-track'),frame=$('.hand-window');Object.assign(track,{scrollWidth:900,clientWidth:360,scrollLeft:0});frame.dataset={};updateHandScroll();assert.equal(frame.dataset.scrollable,'true');assert.equal($('.hand-arrow.prev').disabled,true);assert.equal($('.hand-arrow.next').disabled,false);
+track.scrollLeft=540;updateHandScroll();assert.equal($('.hand-arrow.next').disabled,true);assert.equal($('.hand-arrow.prev').disabled,false);
+track.scrollWidth=360;updateHandScroll();assert.equal(frame.dataset.scrollable,'false');
+
 const cpuEvents=tableEvents(state.players[1],1);assert(!cpuEvents.includes('assets/art/event-'),'Opponent event images must remain hidden');
 const p=state.players[0],c=p.hand.find(c=>c.owner==='kayo')||p.hand[0];modal={kind:'song',id:c.uid};selection={actors:[],boost:false,pick:false};render();
 assert.equal($('#modal').innerHTML,'','Song selection stays on board');assert.match($('#app').innerHTML,/song-dock/);
