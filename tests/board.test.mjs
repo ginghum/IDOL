@@ -15,6 +15,7 @@ track.scrollLeft=540;updateHandScroll();assert.equal($('.hand-arrow.next').disab
 track.scrollWidth=360;updateHandScroll();assert.equal(frame.dataset.scrollable,'false');
 
 const cpuEvents=tableEvents(state.players[1],1);assert(!cpuEvents.includes('assets/art/event-'),'Opponent event images must remain hidden');
+const requestAnimationFrame=callback=>callback();
 const p=state.players[0],c=p.hand.find(c=>c.owner==='kayo')||p.hand[0];modal={kind:'song',id:c.uid};selection={actors:[],boost:false,pick:false};render();
 assert.equal($('#modal').innerHTML,'','Song selection stays on board');assert.match($('#app').innerHTML,/song-dock/);
 const disabled=songDock();assert.match(disabled,/data-action="play-vol" disabled/);
@@ -30,6 +31,18 @@ p.memory.push(...p.deck.splice(0,3));modal={kind:'event',id:'redo'};selection={m
 modal=null;recordMove({type:'end'},JSON.parse(JSON.stringify(state)));render();assert.match($('#app').innerHTML,/ターン交代/);assert.equal(lastMove,null);render();assert(!$('#app').innerHTML.includes('move-announcement'),'Selection renders must not repeat the last announcement');
 modal={kind:'opening'};renderModal();assert.match($('#modal').innerHTML,/data-action="live-begin"/);assert($('#modal').innerHTML.includes(CHAR[state.players[0].leader].skillName),'Opening shows your leader skill');
 modal={kind:'member-info',p:0,j:0};renderModal();assert.match($('#modal').innerHTML,/member-detail-portrait/);
+// Existing hand items must not replay the draw animation on unrelated state updates.
+modal=null;state.players[0].items=[{uid:'meat-existing',item:'meat'}];state.players[0].fanChips=2;
+document.body={};const animated=[],displayed=[...state.players[0].hand,...IDOL.items(state.players[0]),{uid:'fan-chips'}].map(c=>({dataset:{id:c.uid},animate(){animated.push(c.uid);}}));
+document.querySelectorAll=selector=>selector==='.hand-track > .playing-card'?displayed:selector==='.playing-card'?[...displayed,{dataset:{id:'dialog-item'},animate(){animated.push('dialog-item');}}]:[];
+$('.audience-deck > span').getBoundingClientRect=()=>null;
+const beforeOpponent=captureMotion({});
+
+animateMotion(beforeOpponent);assert.deepEqual(animated,[],'Opponent updates must not animate existing meat or fan chips');
+displayed.push({dataset:{id:'meat-new'},animate(){animated.push('meat-new');}});animateMotion(beforeOpponent);assert.deepEqual(animated,['meat-new'],'Only a newly acquired item animates');
+animated.length=0;const beforeDraw=captureMotion({});state.players[0].items.push({uid:'meat-new',item:'meat'});
+const beforeNextDraw=captureMotion({});displayed.push({dataset:{id:'song-new'},animate(){animated.push('song-new');}});animateMotion(beforeNextDraw);assert.deepEqual(animated,['song-new'],'New songs retain their draw animation');
+delete document.body;
 screen='setup';modal=null;render();assert.match($('#app').innerHTML,/casting-grid/);assert.equal(($('#app').innerHTML.match(/class="casting-card /g)||[]).length,9);
 `) (document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 const map=JSON.parse(html.match(/const ARTWORK = (\{[\s\S]*?\n\});/)[1]);
