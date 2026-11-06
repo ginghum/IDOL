@@ -1,0 +1,22 @@
+import {readFileSync,existsSync} from 'node:fs';
+import assert from 'node:assert/strict';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const code=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const nodes=new Map();const document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
+new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
+state=IDOL.create(['kayo','machi','natsume'],'kayo',['rai','shio','hana'],'rai',0,43,['redo','wit','hana']);screen='match';render();
+let board=$('#app').innerHTML;
+assert.equal((board.match(/class="member-card /g)||[]).length,6);
+assert.equal((board.match(/class="audience-card /g)||[]).length,3);
+assert.equal((board.match(/class="event-pocket /g)||[]).length,6);
+const cpuEvents=tableEvents(state.players[1],1);assert(!cpuEvents.includes('assets/art/event-'),'Opponent event images must remain hidden');
+const p=state.players[0],c=p.hand.find(c=>c.owner==='kayo')||p.hand[0];modal={kind:'song',id:c.uid};selection={actors:[],boost:false,pick:false};render();
+assert.equal($('#modal').innerHTML,'','Song selection stays on board');assert.match($('#app').innerHTML,/song-dock/);
+const disabled=songDock();assert.match(disabled,/data-action="play-vol" disabled/);
+selection.actors=IDOL.actors(p,c)||[];
+if(selection.actors.length)assert(!songDock().includes('data-action="play-vol" disabled'));
+p.memory.push(...p.deck.splice(0,3));modal={kind:'event',id:'redo'};selection={memory:p.memory.map(c=>c.uid),discard:[],targets:[]};state.active=1;renderModal();assert.match($('#modal').innerHTML,/data-action="event-confirm" disabled/,'Cannot use own event on CPU turn');
+`) (document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
+const map=JSON.parse(html.match(/const ARTWORK = (\{[\s\S]*?\n\});/)[1]);
+assert.equal(Object.keys(map).length,39);for(const path of Object.values(map))assert(existsSync(new URL('../'+path,import.meta.url)),path);
+console.log('Board UI: member/audience layout, hidden CPU events, inline selection, turn guard and 39 assets verified');
