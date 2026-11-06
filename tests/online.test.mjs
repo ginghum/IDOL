@@ -6,7 +6,7 @@ const G=new Function(code.split('const $=s=>')[0]+';return IDOL;')();
 assert.throws(()=>G.create(['__proto__','kayo','machi'],'kayo',['rai','shio','hana'],'rai',0,1));assert.throws(()=>G.create(['kayo','machi','natsume'],'kayo',['rai','shio','hana'],'rai',0,1,['__proto__','wit','redo']));
 const make=()=>G.create(['kayo','machi','natsume'],'kayo',['rai','shio','hana'],'rai',0,333,['rai','wit','redo'],['kayo','switch','wit']);
 {
- const s=make(),p=s.players[0],before=p.hand.length;p.buff=3;p.eventBuff=2;p.temp=7;G.timeout(s);assert.equal(s.turn,2);assert.equal(s.active,1);assert.equal(p.hand.length,before);assert.equal(p.buff,0);assert.equal(p.eventBuff,0);assert.equal(p.temp,0);assert(s.log.some(t=>t.includes('60秒')));
+ const s=make(),p=s.players[0],before=p.hand.length;p.buff=3;p.eventBuff=2;p.temp=7;G.timeout(s);assert.equal(s.turn,2);assert.equal(s.active,1);assert.equal(p.hand.length,before);assert.equal(p.buff,0);assert.equal(p.eventBuff,0);assert.equal(p.temp,0);assert(s.log.some(t=>t.includes('99秒')));
 }
 {
  const s=make();s.players[0].leader='shio';s.queue=[{kind:'chip',p:0},{kind:'chip',p:0}];s.pending={kind:'shio',p:0,options:['chip','vol'],text:'選択'};G.timeout(s);assert.equal(s.turn,2);assert.equal(s.players[0].chips,3);assert.equal(s.pending,null);
@@ -29,10 +29,10 @@ new Function('document','localStorage','setTimeout','clearTimeout','assert',code
 const realNow=Date.now;Date.now=()=>1000;
 try{
 state=IDOL.create(['kayo','machi','natsume'],'kayo',['rai','shio','hana'],'rai',0,9);screen='match';modal=null;
-net={role:'host',connected:true,phase:'playing',waiting:false,rev:2,clockTurn:1,deadline:61000,link:{send(){}}};
-applyOnlineAction({type:'service',actor:0},0,2);assert.equal(net.rev,3);assert.equal(net.deadline,61000,'Actions do not reset the 60 seconds');assert.equal(state.players[0].service,1);
+net={role:'host',connected:true,phase:'playing',waiting:false,rev:2,clockTurn:1,deadline:100000,link:{send(){}}};
+applyOnlineAction({type:'service',actor:0},0,2);assert.equal(net.rev,3);assert.equal(net.deadline,100000,'Actions do not reset the 99 seconds');assert.equal(state.players[0].service,1);
 assert.throws(()=>applyOnlineAction({type:'end'},0,2),/更新/,'Reject repeated / old revisions');
-Date.now=()=>61000;const count=state.players[0].memory.length;assert.throws(()=>applyOnlineAction({type:'service',actor:1},0,3),/60秒/);assert.equal(state.turn,2);assert.equal(state.active,1);assert.equal(state.players[0].service,1,'Late action is not committed');assert.equal(state.players[0].memory.length,count);assert.equal(net.deadline,121000);
+Date.now=()=>100000;const count=state.players[0].memory.length;assert.throws(()=>applyOnlineAction({type:'service',actor:1},0,3),/99秒/);assert.equal(state.turn,2);assert.equal(state.active,1);assert.equal(state.players[0].service,1,'Late action is not committed');assert.equal(state.players[0].memory.length,count);assert.equal(net.deadline,199000);
 }finally{Date.now=realNow;net=null;}
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 vm.runInThisContext(readFileSync(new URL('../online.js',import.meta.url),'utf8'));

@@ -9,7 +9,7 @@ const c=vm.createContext({crypto:webcrypto,URLSearchParams,AbortController,Uint8
  setTimeout:()=>++timer,clearTimeout(){},sessionStorage:storage(session),localStorage:storage(saved),
  document:{hidden:false,addEventListener(){},querySelector:()=>view,defaultView:{addEventListener(){}}},
  team:['kayo','machi','natsume'],leader:'kayo',chosenEvents:['kayo','machi','natsume'],firstMode:'0',
- net:null,state:null,modal:null,screen:'setup',selection:{},aiTimer:null,battleMode:'online',
+ net:null,state:null,modal:null,resultShown:false,lastMove:null,screen:'setup',selection:{},aiTimer:null,battleMode:'online',
  IDOL:{validateAction:a=>a},updateClockLabel(){},render(){},renderModal(){},captureMotion(){return null;},animateMotion(){},schedule(){},notify(){},
  history:{replaceState:(...args)=>{replaced=args;}},
  fetch:async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>response};}
@@ -47,3 +47,13 @@ c.location.search='?room=0123';const pending=JSON.parse(session.get('idol-room-s
 c.fetch=async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>response};};
 vm.runInContext('roomResume()',c);await new Promise(r=>setImmediate(r));assert.equal(c.net.token,token);assert(requests.at(-1).url.endsWith('/0123/join'),'A lost join reply resumes with the same ticket even from an invitation URL');
 console.log('Room client: invitation reload, per-tab seat persistence, selection stability, durable retry and conflict recovery passed');
+// Losing results must open even if a previous match already showed its result.
+c.resultShown=true;c.modal={kind:'song',id:'x'};
+response={...response,round:1,rev:5,phase:'ended',state:{...snapshot,winner:1}};
+vm.runInContext('roomAccept(net,'+JSON.stringify(response)+')',c);assert.equal(c.modal.kind,'result');
+vm.runInContext('roomAccept(net,'+JSON.stringify(response)+')',c);assert.equal(c.modal.kind,'result','An unchanged poll must not close the result dialog');
+response={...response,round:2,rev:7,phase:'opening',readyLocal:false,state:{...snapshot,winner:null}};
+vm.runInContext('roomAccept(net,'+JSON.stringify(response)+')',c);assert.equal(c.resultShown,false);assert.equal(c.modal.kind,'opening');
+response={...response,rev:8,phase:'playing',clockMode:'choice',clockOwner:0,turnRemaining:73000,now:Date.now(),deadline:Date.now()+30000};
+vm.runInContext('roomAccept(net,'+JSON.stringify(response)+')',c);assert.match(view.textContent,/選択 30s/);
+console.log('Room results: loser dialog, poll stability, rematch reset and separate decision clock passed');
