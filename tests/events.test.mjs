@@ -16,7 +16,7 @@ function use(s,id,opts={}){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.play
 }
 {
  const s=game(),p=s.players[0],card=p.hand[0],n=p.hand.length,mem=p.memory.length;
- use(s,'wit',{hand:card.uid});ok(p.hand.length===n,'wit draws');ok(p.memory.length===mem-1&&p.memory.includes(card),'wit moves hand to memory after paying two');ok(!G.eventOK(s,0,'wit'),'once per turn');
+ use(s,'wit',{hand:card.uid});ok(p.hand.length===n,'wit draws');ok(p.memory.length===mem-2&&p.memory.includes(card),'wit moves hand to memory after paying three');ok(!G.eventOK(s,0,'wit'),'once per turn');
  G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end'});ok(G.eventOK(s,0,'wit'),'reusable next turn');
 }
 {
@@ -28,3 +28,4 @@ for(let seed=1;seed<=120;seed++){
  ok(s.winner!==null,'common event CPU match finishes');
 }
 console.log('Common events:',checks,'checks, 120 matches');
+

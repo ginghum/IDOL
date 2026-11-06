@@ -15,7 +15,10 @@ const COMMON = {
 redo:{event:'やり直し',short:'共通',color:'#73878b',cost:[0,3],effect:'観客ゾーンの観客をすべて観客デッキに戻してシャッフルし、空きを補充する。相手の独占チップ付き観客は移動しない。'},
 switch:{event:'センタースイッチ',short:'共通',color:'#73878b',cost:[0,3],effect:'別のメンバーをリーダーにする。前のリーダー能力で得た独占チップなどは取り除く。初期vol・手札は変更しない。'},
 trouble:{event:'会場トラブル',short:'共通',color:'#73878b',cost:[0,4],effect:'自分の獲得観客をランダムに1枚戻し、その後、相手の獲得観客をランダムに2枚観客デッキの下に戻す。'},
-wit:{event:'機転',short:'共通',color:'#73878b',cost:[0,2],repeat:true,effect:'手札1枚を選んでメモリーに置き、1枚ドロー。再使用可能。自分の各ターン1回まで。'}
+wit:{event:'機転',short:'共通',color:'#73878b',cost:[0,3],repeat:true,effect:'手札1枚を選んでメモリーに置き、1枚ドロー。再使用可能。自分の各ターン1回まで。'},
+overcome:{event:'乗り越える力',short:'共通',color:'#73878b',cost:[0,3],effect:'自分のボルテージが100％以上なら、カードを2枚引く。'},
+viewing:{event:'ライブビューイング',short:'共通',color:'#73878b',cost:[0,3],effect:'残りのゲーム中、自分のファンサービスでは応援チップの代わりにファンチップ1つを得る。'},
+mc:{event:'MCタイム',short:'共通',color:'#73878b',cost:[0,1],effect:'次の自分のターン開始時まで、自分の獲得ファンエリアは相手のカードの影響を受けない。'}
 };
 const EVENTS={...CHAR,...COMMON};
 const FAN = {
@@ -47,7 +50,7 @@ function draw(s,i,n=1){const p=s.players[i];let got=0;while(n-->0&&p.deck.length
 function fill(s){while(s.row.length<3&&s.audience.length){const f=s.audience.shift();if(s.deckMuteTurn===s.turn)f.muted=true;s.row.push(f);}}
 
 function unlocked(s,i){return s.row.filter(f=>f.lock===null||f.lock===i);}
-function eventOK(s,i,id){const p=s.players[i],d=EVENTS[id];return !!d&&p.events.some(e=>e.id===id&&!e.used&&(!d.repeat||e.lastTurn!==s.turn))&&paymentCards(p).length>=d.cost[1]&&paymentCards(p).filter(c=>c.owner===id||c.item==='meat').length>=d.cost[0]&&(id!=='shio'||p.vol>=180)&&(id!=='wit'||p.hand.length>0)&&(id!=='kayo'||p.hand.length>0)&&(id!=='hana'||p.ready.some(x=>!x))&&(id!=='rai'||(s.audienceCoreCount??s.audience.filter(f=>f.type==='core').length)>0&&unlocked(s,i).length>0);}
+function eventOK(s,i,id){const p=s.players[i],d=EVENTS[id];return !!d&&p.events.some(e=>e.id===id&&!e.used&&(!d.repeat||e.lastTurn!==s.turn))&&paymentCards(p).length>=d.cost[1]&&paymentCards(p).filter(c=>c.owner===id||c.item==='meat').length>=d.cost[0]&&(id!=='shio'||p.vol>=180)&&(id!=='overcome'||p.vol>=100)&&(id!=='wit'||p.hand.length>0)&&(id!=='kayo'||p.hand.length>0)&&(id!=='hana'||p.ready.some(x=>!x))&&(id!=='rai'||(s.audienceCoreCount??s.audience.filter(f=>f.type==='core').length)>0&&unlocked(s,i).length>0);}
 
 function finish(s){
  if(s.queue.length||s.pending)return;
@@ -55,9 +58,11 @@ function finish(s){
  if(winners.length){s.winner=winners.includes(s.active)?s.active:winners[0];log(s,s.winner?'CPUの勝利！':'あなたの勝利！');return;}
  for(let i=0;i<2;i++){const p=s.players[i];if(!p.deck.length&&!p.hand.length&&!p.events.some(e=>eventOK(s,i,e.id))){s.winner=1-i;log(s,(i?'CPU':'あなた')+'は山札・手札がなく、使用可能なイベントもないため敗北。');return;}}
 }
-function removeFan(s,i,id){const p=s.players[i],at=p.fans.findIndex(f=>f.uid===id);if(at<0)return;const f=p.fans.splice(at,1)[0];f.lock=null;s.audience.push(f);log(s,FAN[f.type].name+'を観客デッキの下へ戻した');}
+function fansProtected(s,i,source){return source!==i&&!!s.players[i].fanShield;}
+function removeFan(s,i,id,source=i){if(fansProtected(s,i,source))return;const p=s.players[i],at=p.fans.findIndex(f=>f.uid===id);if(at<0)return;const f=p.fans.splice(at,1)[0];f.lock=null;s.audience.push(f);log(s,FAN[f.type].name+'を観客デッキの下へ戻した');}
 function moveOut(s,f){s.row=s.row.filter(x=>x.uid!==f.uid);s.audience=s.audience.filter(x=>x.uid!==f.uid);f.lock=null;}
 function gain(s,i,list){
+ list=list.filter(f=>!s.players.some((p,j)=>fansProtected(s,j,i)&&p.fans.some(x=>x.uid===f.uid)));
  if(!list.length)return;
  for(const f of list){if(s.audience.some(x=>x.uid===f.uid)&&s.deckMuteTurn===s.turn)f.muted=true;for(const p of s.players)p.fans=p.fans.filter(x=>x.uid!==f.uid);moveOut(s,f);s.players[i].fans.push(f);}
  log(s,(i?'CPU':'あなた')+'：'+list.map(f=>FAN[f.type].name).join('・')+'を獲得');
@@ -91,7 +96,7 @@ function process(s){
  }
  }
  if(e.kind==='machiRemove'){
- if(p.fans.length){if(e.random)removeFan(s,e.p,p.fans[Math.floor(rng(s)*p.fans.length)].uid);else choice(s,'machiRemove',e.p,p.fans.map(f=>f.uid),'麻智の効果：自分の獲得済み観客から戻す1枚を選択');}
+ if(p.fans.length&&!fansProtected(s,e.p,1-e.p)){if(e.random)removeFan(s,e.p,p.fans[Math.floor(rng(s)*p.fans.length)].uid,1-e.p);else choice(s,'machiRemove',e.p,p.fans.map(f=>f.uid),'麻智の効果：自分の獲得済み観客から戻す1枚を選択');}
  }
  if(e.kind==='normal')normal(s,e.p,e.n);
  if(e.kind==='raiPick'){
@@ -107,7 +112,7 @@ function create(team,leader,cpuTeam,cpuLeader,first=0,seed=Date.now(),playerEven
  for(const [t,l,eventIds] of [[team,leader,playerEvents],[cpuTeam,cpuLeader,cpuEvents]]){
  if(eventIds.length!==3||new Set(eventIds).size!==3||eventIds.some(id=>typeof id!=='string'||!Object.hasOwn(EVENTS,id)))throw Error('イベントを異なる3枚選んでください');
  if(t.length!==3||new Set(t).size!==3||!t.includes(l)||t.some(x=>typeof x!=='string'||!Object.hasOwn(CHAR,x)))throw Error('編成を確認してください');
- const p={team:t,leader:l,vol:CHAR[l].vol,hand:[],deck:[],memory:[],discard:[],fans:[],events:eventIds.map(id=>({id,used:false,lastTurn:null})),ready:[true,true,true],chips:0,buff:0,eventBuff:0,cardBuff:0,temp:0,service:0,items:[],fanChips:0};
+ const p={team:t,leader:l,vol:CHAR[l].vol,hand:[],deck:[],memory:[],discard:[],fans:[],events:eventIds.map(id=>({id,used:false,lastTurn:null})),ready:[true,true,true],chips:0,buff:0,eventBuff:0,cardBuff:0,temp:0,service:0,items:[],fanChips:0,liveViewing:false,fanShield:false};
  t.forEach(owner=>{for(let n=1;n<=3;n++)for(let k=0;k<3;k++)p.deck.push({uid:uid(s),owner,n});});shuffle(s,p.deck);s.players.push(p);
  }
  for(const type in FAN)for(let n=0;n<FAN[type].count;n++)s.audience.push({uid:uid(s),type,lock:null});
@@ -118,7 +123,7 @@ function startSkill(s){const p=s.players[s.active];if(p.leader==='homura')s.queu
 function next(s){
  const p=s.players[s.active];p.temp=0;p.buff=0;p.eventBuff=0;p.cardBuff=0;s.deckMuteTurn=null;
  for(const f of [...s.row,...s.audience,...s.players.flatMap(p=>p.fans)])delete f.muted;
- s.active=1-s.active;s.turn++;const q=s.players[s.active];q.ready=[true,true,true];q.service=0;
+ s.active=1-s.active;s.turn++;const q=s.players[s.active];q.fanShield=false;q.ready=[true,true,true];q.service=0;
  log(s,'── '+(s.active?'CPU':'あなた')+'のターン ──');draw(s,s.active);startSkill(s);process(s);
 }
 
@@ -131,7 +136,7 @@ function dispatch(s,a){
  if(z.kind==='hakkaReady'&&a.value!=='skip')s.players[z.p].ready[Number(a.value)]=true;
  if(z.kind==='mutePick'&&a.value!=='skip'){const f=s.row.find(f=>f.uid===a.value);if(f){f.muted=true;log(s,FAN[f.type].name+'の効果をターン終了まで無効');s.queue.unshift({kind:'mutePick',p:z.p,left:z.left-1,selected:[...z.selected,a.value]});}}
  if(z.kind==='shio'){if(a.value==='chip')s.players[z.p].chips++;else voltage(s.players[z.p],10);}
- if(z.kind==='trouble'||z.kind==='machiRemove')removeFan(s,z.p,a.value);
+ if(z.kind==='trouble'||z.kind==='machiRemove')removeFan(s,z.p,a.value,z.kind==='machiRemove'?1-z.p:z.p);
  if(z.kind==='raiPick'){const f=[...s.row,...s.audience.slice(0,2)].find(f=>f.uid===a.value);if(f)gain(s,z.p,[f]);}
  process(s);return s;
  }
@@ -140,7 +145,7 @@ function dispatch(s,a){
  if(a.type==='end'){next(s);return s;}
  if(a.type==='service'){
  if(p.service>=2||!p.ready[a.actor])throw Error('ファンサービスは未行動の1人で各ターン2回までです');
- p.ready[a.actor]=false;p.service++;s.queue.push({kind:'chip',p:i});log(s,'ファンサービス：'+CHAR[p.team[a.actor]].short);process(s);return s;
+ p.ready[a.actor]=false;p.service++;if(p.liveViewing){p.fanChips=(p.fanChips||0)+1;log(s,'ライブビューイング：ファンチップ＋1');}else s.queue.push({kind:'chip',p:i});log(s,'ファンサービス：'+CHAR[p.team[a.actor]].short);process(s);return s;
  }
  if(a.type==='support'){
  const cost={draw:2,refresh:6,lock:1}[a.effect];
@@ -197,9 +202,12 @@ function dispatch(s,a){
  if(id==='machi'){const targets=s.row.filter(f=>(a.targets||[]).includes(f.uid));for(const f of targets)moveOut(s,f);s.audience.push(...shuffle(s,targets));fill(s);}
  if(id==='redo'){const cards=unlocked(s,i);for(const f of cards)moveOut(s,f);s.audience.push(...cards);shuffle(s,s.audience);fill(s);}
  if(id==='switch'){s.row.forEach(f=>{if(f.lock===i)f.lock=null;});p.buff=0;p.leader=a.leader;log(s,'リーダー変更：'+CHAR[p.leader].name);}
- if(id==='trouble'){for(const [who,n] of [[i,1],[1-i,2]])for(let j=0;j<n&&s.players[who].fans.length;j++){const list=s.players[who].fans;removeFan(s,who,list[Math.floor(rng(s)*list.length)].uid);}}
+ if(id==='trouble'){for(const [who,n] of [[i,1],[1-i,2]]){if(fansProtected(s,who,i))continue;for(let j=0;j<n&&s.players[who].fans.length;j++){const list=s.players[who].fans;removeFan(s,who,list[Math.floor(rng(s)*list.length)].uid,i);}}}
+ if(id==='overcome')draw(s,i,2);
+ if(id==='viewing')p.liveViewing=true;
+ if(id==='mc')p.fanShield=true;
  if(id==='wit'){const at=p.hand.findIndex(c=>c.uid===a.hand);p.memory.push(p.hand.splice(at,1)[0]);draw(s,i);}
- if(id==='haru'){const list=[...unlocked(s,i),...s.players[1-i].fans].filter(f=>f.type==='dream');gain(s,i,list);}
+ if(id==='haru'){const list=[...unlocked(s,i),...(fansProtected(s,1-i,i)?[]:s.players[1-i].fans)].filter(f=>f.type==='dream');gain(s,i,list);}
  if(id==='hakka'){const n=2+Math.floor(p.memory.length/3);p.fanChips=(p.fanChips||0)+n;p.discard.push(...p.memory);p.memory=[];log(s,'ファンチップ＋'+n+'（1つにつき1ポイント）');}
  if(id==='homura'){s.deckMuteTurn=s.turn;s.audience.forEach(f=>f.muted=true);p.cardBuff=(p.cardBuff||0)+1;}
  if(id==='natsume')p.eventBuff++;
@@ -234,11 +242,14 @@ function ai(s){
  }
  const i=s.active,p=s.players[i],ready=p.ready.filter(Boolean).length;
  const ev=(id,extra={})=>({type:'event',id,memory:autoPay(p,id),...extra});
- if(eventOK(s,i,'haru')&&[...unlocked(s,i),...s.players[1-i].fans].some(f=>f.type==='dream'))return ev('haru');
+ if(eventOK(s,i,'viewing')&&!p.liveViewing)return ev('viewing');
+ if(eventOK(s,i,'overcome')&&p.deck.length&&p.hand.length<6)return ev('overcome');
+ if(eventOK(s,i,'mc')&&p.fans.length&&!p.fanShield)return ev('mc');
+ if(eventOK(s,i,'haru')&&[...unlocked(s,i),...(fansProtected(s,1-i,i)?[]:s.players[1-i].fans)].some(f=>f.type==='dream'))return ev('haru');
  if(eventOK(s,i,'hakka')&&(score(p)+2+Math.floor((p.memory.length-autoPay(p,'hakka').filter(x=>p.memory.some(c=>c.uid===x)).length)/3)>=20||p.memory.length>=7||!p.deck.length))return ev('hakka');
  if(eventOK(s,i,'homura')&&p.hand.some(c=>actors(p,c)&&p.vol>=song(c).need))return ev('homura');
  if(eventOK(s,i,'wit')&&p.deck.length)return ev('wit',{hand:[...p.hand].sort((a,b)=>b.n-a.n)[0].uid});
- if(eventOK(s,i,'trouble')&&s.players[1-i].fans.length>=2)return ev('trouble');
+ if(eventOK(s,i,'trouble')&&!fansProtected(s,1-i,i)&&s.players[1-i].fans.length>=2)return ev('trouble');
  if(eventOK(s,i,'redo')&&unlocked(s,i).filter(f=>f.type==='trouble').length>=2)return ev('redo');
  if(eventOK(s,i,'switch')&&p.leader==='rai'&&p.team.includes('natsume')&&p.vol>=100)return ev('switch',{leader:'natsume'});
  if(eventOK(s,i,'shio')&&score(p)>=13)return ev('shio');
@@ -297,7 +308,7 @@ function publicView(s,i){const v=JSON.parse(JSON.stringify(s)),remap=x=>x===null
  v.players=[i,1-i].map((who,j)=>{const p=JSON.parse(JSON.stringify(s.players[who]));p.deck=p.deck.map((_,k)=>({uid:'hidden-d-'+j+'-'+k}));if(j){p.hand=p.hand.map((_,k)=>({uid:'hidden-h-'+k}));p.events=p.events.map(e=>e.used?e:{id:null,used:false,lastTurn:null});}for(const f of p.fans)f.lock=remap(f.lock);return p;});
  v.row.forEach(f=>f.lock=remap(f.lock));v.active=remap(s.active);v.first=remap(s.first);v.winner=remap(s.winner);if(v.pending){v.pending.p=remap(s.pending.p);if(s.pending.p!==i){v.pending.options=[];v.pending.text='相手が効果を選択しています';}}
  v.log=v.log.map(t=>t.replace(/あなた|CPU/g,x=>(x==='あなた'?0:1)===i?'あなた':'相手'));return v;}
-return {CHAR,COMMON,EVENTS,FAN,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
+return {CHAR,COMMON,EVENTS,FAN,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,fansProtected,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
 })();
 
 
