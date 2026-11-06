@@ -16,6 +16,10 @@ const disabled=songDock();assert.match(disabled,/data-action="play-vol" disabled
 selection.actors=IDOL.actors(p,c)||[];
 if(selection.actors.length)assert(!songDock().includes('data-action="play-vol" disabled'));
 p.memory.push(...p.deck.splice(0,3));modal={kind:'event',id:'redo'};selection={memory:p.memory.map(c=>c.uid),discard:[],targets:[]};state.active=1;renderModal();assert.match($('#modal').innerHTML,/data-action="event-confirm" disabled/,'Cannot use own event on CPU turn');
+modal=null;recordMove({type:'end'},JSON.parse(JSON.stringify(state)));render();assert.match($('#app').innerHTML,/ターン交代/);assert.equal(lastMove,null);render();assert(!$('#app').innerHTML.includes('move-announcement'),'Selection renders must not repeat the last announcement');
+modal={kind:'opening'};renderModal();assert.match($('#modal').innerHTML,/data-action="live-begin"/);assert($('#modal').innerHTML.includes(CHAR[state.players[0].leader].skillName),'Opening shows your leader skill');
+modal={kind:'member-info',p:0,j:0};renderModal();assert.match($('#modal').innerHTML,/member-detail-portrait/);
+screen='setup';modal=null;render();assert.match($('#app').innerHTML,/casting-grid/);assert.equal(($('#app').innerHTML.match(/class="casting-card /g)||[]).length,6);
 `) (document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 const map=JSON.parse(html.match(/const ARTWORK = (\{[\s\S]*?\n\});/)[1]);
 assert.equal(Object.keys(map).length,39);for(const path of Object.values(map))assert(existsSync(new URL('../'+path,import.meta.url)),path);
