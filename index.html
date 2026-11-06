@@ -8,6 +8,22 @@
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
 .art img{width:100%;height:100%;position:absolute;inset:0;object-fit:contain;background:var(--paper)}
+
+/* Preserve entire square jackets and full-length member portraits. */
+.art.has-art{border:0;overflow:hidden;isolation:isolate;background:#f2f0ec;min-height:0}
+.art.has-art:before,.art.has-art:after{display:none}
+.art.has-art img{display:block;width:100%;height:100%;object-fit:contain;position:absolute;inset:0;background:transparent}
+.art.has-art.album{height:auto;min-height:0;aspect-ratio:1}
+.char-card{display:flex;flex-direction:column}.char-card .char-content{flex:1}.char-card .art{width:100%;flex:none}
+.char-card .art.has-art.portrait{height:300px;background:#19171d}
+.idol-tile .art.has-art.portrait{height:155px;background:#19171d}
+.dialog>.art.has-art.album{width:min(100%,360px);height:auto;aspect-ratio:1;margin:0 auto 20px}
+.choice-card .art.has-art.album{margin:0 0 10px}
+.event-card>.art.has-art.album{width:min(100%,360px);margin:0 auto 12px}
+.memory-choice{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;align-items:center}
+.memory-choice .art.has-art.album{width:62px;margin:0}
+.memory-choice h3{overflow-wrap:anywhere}
+@media(max-width:720px){.char-card .art.has-art.portrait{height:205px}.idol-tile .art.has-art.portrait{height:115px}.memory-choice{grid-template-columns:44px minmax(0,1fr);gap:7px}.memory-choice .art.has-art.album{width:44px}.dialog>.art.has-art.album{max-width:300px}.catalog-grid .song-card .art.has-art.album{height:auto;aspect-ratio:1}}
 </style></head>
 <body><header class="app-header"><div class="brand"><span class="brand-icon">✦</span><div><strong>IDOL</strong><small>LIVE DUEL / 対バンカードゲーム</small></div></div><nav class="nav" aria-label="メインメニュー"><button data-action="catalog">カード一覧</button><button data-action="rules">遊び方</button></nav></header><main class="shell" id="app"></main><footer>IDOL / LIVE DUEL　 ·　 CPU BATTLE EDITION</footer><div id="modal"></div><script>/* IDOL rules engine. Browser-independent; commands and state are JSON serializable. */
 const IDOL = (() => {
@@ -266,9 +282,45 @@ const role={kayo:'DRAW / 手札展開',machi:'CONTROL / 得点妨害',natsume:'B
 const SAVE='idol-live-duel-v1';
 let state=null,team=['kayo','machi','natsume'],leader='kayo',firstMode='random',chosenEvents=['kayo','machi','natsume'],screen='setup',modal=null,selection={},busy=false,aiTimer=null,resultShown=false,aiSteps=0;
 let saved=null;try{saved=JSON.parse(localStorage.getItem(SAVE)||'null');if(saved?.version!==1||saved?.winner!==null)saved=null;}catch{}
-// Add image URLs here later, e.g. 'song-kayo-1': 'assets/kayo-1.webp'.
-const ARTWORK = {};
-const art=(key='')=>'<div class="art" data-art="'+key+'" aria-label="イラスト用の空欄">'+(ARTWORK[key]?'<img src="'+ARTWORK[key]+'" alt="" loading="lazy">':'<span>ILLUSTRATION</span>')+'</div>';
+// Local artwork: six members, eighteen songs and ten events.
+const ARTWORK = {
+  "song-kayo-1": "assets/art/song-kayo-1.webp",
+  "song-kayo-2": "assets/art/song-kayo-2.webp",
+  "song-kayo-3": "assets/art/song-kayo-3.webp",
+  "event-kayo": "assets/art/event-kayo.webp",
+  "song-machi-1": "assets/art/song-machi-1.webp",
+  "song-machi-2": "assets/art/song-machi-2.webp",
+  "song-machi-3": "assets/art/song-machi-3.webp",
+  "event-machi": "assets/art/event-machi.webp",
+  "song-natsume-1": "assets/art/song-natsume-1.webp",
+  "song-natsume-2": "assets/art/song-natsume-2.webp",
+  "song-natsume-3": "assets/art/song-natsume-3.webp",
+  "event-natsume": "assets/art/event-natsume.webp",
+  "song-shio-1": "assets/art/song-shio-1.webp",
+  "song-shio-2": "assets/art/song-shio-2.webp",
+  "song-shio-3": "assets/art/song-shio-3.webp",
+  "event-shio": "assets/art/event-shio.webp",
+  "song-rai-1": "assets/art/song-rai-1.webp",
+  "song-rai-2": "assets/art/song-rai-2.webp",
+  "song-rai-3": "assets/art/song-rai-3.webp",
+  "event-rai": "assets/art/event-rai.webp",
+  "song-hana-1": "assets/art/song-hana-1.webp",
+  "song-hana-2": "assets/art/song-hana-2.webp",
+  "song-hana-3": "assets/art/song-hana-3.webp",
+  "event-hana": "assets/art/event-hana.webp",
+  "event-redo": "assets/art/event-redo.webp",
+  "event-switch": "assets/art/event-switch.webp",
+  "event-trouble": "assets/art/event-trouble.webp",
+  "event-wit": "assets/art/event-wit.webp",
+  "idol-kayo": "assets/art/idol-kayo.webp",
+  "idol-machi": "assets/art/idol-machi.webp",
+  "idol-natsume": "assets/art/idol-natsume.webp",
+  "idol-shio": "assets/art/idol-shio.webp",
+  "idol-rai": "assets/art/idol-rai.webp",
+  "idol-hana": "assets/art/idol-hana.webp"
+};
+function artworkLabel(key){const parts=key.split('-'),id=parts[1];if(parts[0]==='idol')return CHAR[id]?.name+'の立ち絵';if(parts[0]==='song')return CHAR[id]?.songs[Number(parts[2])-1]+'のジャケット';if(parts[0]==='event')return EVENTS[id]?.event+'のジャケット';return '観客イラスト用の空欄';}
+const art=(key='')=>'<div class="art '+(ARTWORK[key]?'has-art':'')+' '+(key.startsWith('idol-')?'portrait':'album')+'" data-art="'+key+'">'+(ARTWORK[key]?'<img src="'+ARTWORK[key]+'" alt="'+artworkLabel(key)+'" loading="lazy" decoding="async" width="'+(key.startsWith('idol-')?'733':'800')+'" height="'+(key.startsWith('idol-')?'1100':'800')+'">':'<span>ILLUSTRATION</span>')+'</div>';
 function btn(label,action,cls='',disabled=false,attrs=''){return '<button class="'+cls+'" data-action="'+action+'" '+(disabled?'disabled ':'')+attrs+'>'+label+'</button>';}
 function charDot(id){return '<i class="dot" style="--c:'+CHAR[id].color+'"></i>';}
 function notify(t){document.querySelector('.toast')?.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;el.setAttribute('role','alert');document.body.append(el);setTimeout(()=>el.remove(),3500);}
@@ -289,7 +341,7 @@ function render(){
 }
 function setupHTML(){return '<div class="intro"><div><div class="eyebrow">BUILD YOUR UNIT. OWN THE STAGE.</div><h1>この3人で、<br>ステージを変える。</h1><p>アイドルを3人選び、リーダーを決めてCPUと対バン。<br>観客を集めて、先に20ポイントを目指そう。</p></div><div class="step">01 編成　 /　 02 リーダー　 /　 03 開演</div></div>'+
 (saved?'<div class="resume"><span>中断したライブがあります</span>'+btn('続きから','resume','small primary')+'</div>':'')+
-'<div class="setup-layout"><section><div class="section-line"><h2>メンバーを選択</h2><span class="counter">'+team.length+' / 3 SELECTED</span></div><div class="char-grid">'+IDS.map(id=>{const c=CHAR[id],idx=team.indexOf(id);return '<button class="char-card '+(idx>=0?'selected':'')+'" data-action="team" data-id="'+id+'" aria-pressed="'+(idx>=0)+'" style="--c:'+c.color+'">'+art('idol-'+id)+(idx>=0?'<span class="pick-number">'+(idx+1)+'</span>':'')+'<div class="char-content"><span class="tag">'+role[id]+'</span><h3>'+c.name+'</h3><small>初期vol '+c.vol+'％　/　手札 '+c.hand+'枚</small><p><b>'+c.skillName+'</b><br>'+c.skill+'</p></div></button>';}).join('')+'</div>'+eventSetupHTML()+'</section><aside class="panel setup-side"><div class="eyebrow">YOUR UNIT</div><h2>ライブの準備</h2><small>リーダーを1人選択</small><div class="leader-options">'+team.map(id=>'<button class="leader-option '+(leader===id?'on':'')+'" data-action="leader" data-id="'+id+'">'+charDot(id)+'<span><strong>'+CHAR[id].name+(leader===id?'　♛':'')+'</strong><small>vol '+CHAR[id].vol+'％ / 手札 '+CHAR[id].hand+'枚</small></span></button>').join('')+'</div>'+(leader&&team.includes(leader)?'<div class="leader-skill"><b>LEADER SKILL</b><br><strong>'+CHAR[leader].skillName+'</strong><br>'+CHAR[leader].skill+'</div>':'')+'<label for="first">先攻・後攻</label><select id="first"><option value="random" '+(firstMode==='random'?'selected':'')+'>ランダム</option><option value="0" '+(firstMode==='0'?'selected':'')+'>あなたが先攻</option><option value="1" '+(firstMode==='1'?'selected':'')+'>CPUが先攻</option></select><div class="divider"></div>'+btn('CPUとライブを始める　↗','start','pink wide',team.length!==3||chosenEvents.length!==3)+'<p class="setup-note">CPUは6人から3人をランダムに編成。<br>選んだ3人の専用楽曲27枚と選択したイベント3枚を使用します。</p><div class="divider"></div><small>カードイラストは後から追加予定です。<br>現在はCPU戦のみ遊べます。</small></aside></div>';}
+'<div class="setup-layout"><section><div class="section-line"><h2>メンバーを選択</h2><span class="counter">'+team.length+' / 3 SELECTED</span></div><div class="char-grid">'+IDS.map(id=>{const c=CHAR[id],idx=team.indexOf(id);return '<button class="char-card '+(idx>=0?'selected':'')+'" data-action="team" data-id="'+id+'" aria-pressed="'+(idx>=0)+'" style="--c:'+c.color+'">'+art('idol-'+id)+(idx>=0?'<span class="pick-number">'+(idx+1)+'</span>':'')+'<div class="char-content"><span class="tag">'+role[id]+'</span><h3>'+c.name+'</h3><small>初期vol '+c.vol+'％　/　手札 '+c.hand+'枚</small><p><b>'+c.skillName+'</b><br>'+c.skill+'</p></div></button>';}).join('')+'</div>'+eventSetupHTML()+'</section><aside class="panel setup-side"><div class="eyebrow">YOUR UNIT</div><h2>ライブの準備</h2><small>リーダーを1人選択</small><div class="leader-options">'+team.map(id=>'<button class="leader-option '+(leader===id?'on':'')+'" data-action="leader" data-id="'+id+'">'+charDot(id)+'<span><strong>'+CHAR[id].name+(leader===id?'　♛':'')+'</strong><small>vol '+CHAR[id].vol+'％ / 手札 '+CHAR[id].hand+'枚</small></span></button>').join('')+'</div>'+(leader&&team.includes(leader)?'<div class="leader-skill"><b>LEADER SKILL</b><br><strong>'+CHAR[leader].skillName+'</strong><br>'+CHAR[leader].skill+'</div>':'')+'<label for="first">先攻・後攻</label><select id="first"><option value="random" '+(firstMode==='random'?'selected':'')+'>ランダム</option><option value="0" '+(firstMode==='0'?'selected':'')+'>あなたが先攻</option><option value="1" '+(firstMode==='1'?'selected':'')+'>CPUが先攻</option></select><div class="divider"></div>'+btn('CPUとライブを始める　↗','start','pink wide',team.length!==3||chosenEvents.length!==3)+'<p class="setup-note">CPUは6人から3人をランダムに編成。<br>選んだ3人の専用楽曲27枚と選択したイベント3枚を使用します。</p><div class="divider"></div><small>専用楽曲・イベントのジャケットを収録。<br>現在はCPU戦のみ遊べます。</small></aside></div>';}
 function costLabel(d){return d.cost[0]?d.short+' '+d.cost[0]+'枚以上を含む、合計ちょうど'+d.cost[1]+'メモリー':'合計ちょうど'+d.cost[1]+'メモリー';}
 function eventSetupHTML(){return '<section class="panel" style="margin-top:22px"><div class="section-line"><h2>伏せるイベントを3枚選択</h2><span>'+chosenEvents.length+' / 3</span></div><p class="muted">専用・共通から合計3枚。専用イベントには対応するメンバーのメモリーが必要です。</p><div class="choice-grid" style="margin-top:12px">'+Object.entries(EVENTS).map(([id,d])=>'<button class="choice-card '+(chosenEvents.includes(id)?'on':'')+'" data-action="setup-event" data-id="'+id+'" aria-pressed="'+chosenEvents.includes(id)+'">'+art('event-'+id)+'<h3>'+d.event+'</h3><small>'+costLabel(d)+'<br>'+d.effect+'</small></button>').join('')+'</div></section>';}
 function scoreHTML(p,i){return '<div class="score-panel '+(state.active===i?'turn':'')+'"><div class="score-head"><div><strong>'+(i?'CPU UNIT':'YOUR UNIT')+'</strong> <span class="tag">'+(state.active===i?'ON STAGE':'WAITING')+'</span></div><div class="score-number">'+IDOL.score(p)+'<small> / 20 pt</small></div></div><div class="score-team">'+p.team.map(id=>(id===p.leader?'♛ ':'')+CHAR[id].name).join(' / ')+'</div><div class="vol-row"><b>VOL</b><div class="vol-track"><i style="width:'+p.vol/2+'%"></i></div><b>'+p.vol+'％</b></div><div class="stats-row"><span>応援 <b>'+p.chips+'</b></span><span>山札 <b>'+p.deck.length+'</b></span><span>手札 <b>'+p.hand.length+'</b></span><span>メモリー <b>'+p.memory.length+'</b></span><span>捨て札 <b>'+p.discard.length+'</b></span></div><div class="mini-actions" style="margin-top:8px">'+btn('獲得観客 '+p.fans.length,'inspect','small flat',false,'data-zone="fans" data-p="'+i+'"')+btn('メモリー','inspect','small flat',false,'data-zone="memory" data-p="'+i+'"')+btn('捨て札','inspect','small flat',false,'data-zone="discard" data-p="'+i+'"')+'</div></div>';}
@@ -301,7 +353,7 @@ function matchHTML(){
 }
 function dialog(title,body,large=false,close=true){return '<div class="overlay"><section class="dialog '+(large?'large':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="dialog-head"><div><div class="eyebrow">IDOL / LIVE DUEL</div><h2>'+title+'</h2></div>'+(close?btn('×','close','','', 'aria-label="閉じる"'):'')+'</div>'+body+'</section></div>';}
 function choiceFan(f,action,on=false){return '<button class="choice-card '+(on?'on':'')+'" data-action="'+action+'" data-id="'+f.uid+'"><h3>'+FAN[f.type].name+'　'+FAN[f.type].points+'pt</h3>'+art('fan-'+f.type)+'<small>'+FAN[f.type].text+'</small></button>';}
-function memChoice(c,action,on){return '<button class="choice-card '+(on?'on':'')+'" data-action="'+action+'" data-id="'+c.uid+'" style="border-top:3px solid '+CHAR[c.owner].color+'"><small>'+CHAR[c.owner].short+' / '+c.n+'人用</small><h3>'+IDOL.song(c).name+'</h3></button>';}
+function memChoice(c,action,on){return '<button class="choice-card memory-choice '+(on?'on':'')+'" data-action="'+action+'" data-id="'+c.uid+'" style="border-top:3px solid '+CHAR[c.owner].color+'">'+art('song-'+c.owner+'-'+c.n)+'<span><small>'+CHAR[c.owner].short+' / '+c.n+'人用</small><h3>'+IDOL.song(c).name+'</h3></span></button>';}
 // Retain dialog scroll/focus only while editing the same selection session.
 let renderedModal = null;
 function renderModal(){
