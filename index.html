@@ -55,6 +55,7 @@ body.in-setup{background:radial-gradient(ellipse at 80% 0,#55354e60,transparent 
 
 .dialog{color:var(--ink)}body.in-setup .resume{background:#254138;color:#d9eee4;border:1px solid #577d69}.casting-bottom-start{display:none}
 @media(max-width:720px){.casting-roster{display:contents}.casting-roster>.section-line{order:0;width:100%;margin:0}.casting-grid{order:1;width:100%}.casting-unit{order:2}.casting-events{order:3;width:100%;margin:0}.casting-bottom-start{display:block;margin-top:20px}}
+@media(max-height:720px){.casting-unit{position:static}}
 </style></head>
 <body><header class="app-header"><div class="brand"><span class="brand-icon">✦</span><div><strong>IDOL</strong><small>LIVE DUEL / 対バンカードゲーム</small></div></div><nav class="nav" aria-label="メインメニュー"><button data-action="catalog">カード一覧</button><button data-action="rules">遊び方</button></nav></header><main class="shell" id="app"></main><footer>IDOL / LIVE DUEL　 ·　 CPU BATTLE EDITION</footer><div id="modal"></div><script>/* IDOL rules engine. Browser-independent; commands and state are JSON serializable. */
 const IDOL = (() => {
