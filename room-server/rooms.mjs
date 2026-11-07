@@ -39,28 +39,28 @@ export async function handle(request,env){
  if(request.method==='GET'&&parts[0]==='health')return json({ok:true,protocol:PROTOCOL,storage:!!env.BUCKET});
  if(!env.BUCKET)throw new Problem('対戦サーバーの準備中です',503);
  if(request.method==='POST'&&!parts.length){const b=await body(request);if(b.protocol!==PROTOCOL)throw new Problem('ゲームを再読み込みしてください',426);if(!ticket(b.ticket))throw new Problem('参加情報がありません');const c=config(b.config);
- for(let n=0;n<30;n++){const num=code(),key='rooms/'+num+'.json',old=await env.BUCKET.get(key);if(old&&(await old.json()).expires>=now)continue;const r={code:num,protocol:PROTOCOL,rev:1,phase:'waiting',seats:[{token:b.ticket,config:c},null],ready:[false,false],rematchReady:[false,false],departed:[false,false],round:1,state:null,deadline:0,seen:[],created:now,updated:now,expires:now+LOBBY};const saved=await env.BUCKET.put(key,JSON.stringify(r),{onlyIf:old?{etagMatches:old.etag}:new Headers({'if-none-match':'*'}),httpMetadata:{contentType:'application/json'}});if(saved)return json(view(r,0,now));}throw new Problem('空き部屋を作れませんでした。少し待ってください',503);}
+ for(let n=0;n<30;n++){const num=code(),key='rooms/'+num+'.json',old=await env.BUCKET.get(key);if(old&&(await old.json()).expires>=now)continue;const r={code:num,protocol:PROTOCOL,rev:1,phase:'waiting',selectBeforeStart:b.flow==='selection',seats:[{token:b.ticket,config:c},null],ready:[false,false],rematchReady:[false,false],departed:[false,false],round:1,state:null,deadline:0,seen:[],created:now,updated:now,expires:now+LOBBY};const saved=await env.BUCKET.put(key,JSON.stringify(r),{onlyIf:old?{etagMatches:old.etag}:new Headers({'if-none-match':'*'}),httpMetadata:{contentType:'application/json'}});if(saved)return json(view(r,0,now));}throw new Problem('空き部屋を作れませんでした。少し待ってください',503);}
  const num=parts[0];if(!/^\d{4}$/.test(num||''))throw new Problem('部屋番号は4桁の数字で入力してください');
  const b=request.method==='POST'?await body(request):{},token=request.headers.get('authorization')?.replace(/^Bearer /,'')||'';
  if(request.method==='POST'&&parts[1]==='join'){
  if(b.protocol!==PROTOCOL)throw new Problem('ゲームを再読み込みしてください',426);if(!ticket(b.ticket))throw new Problem('参加情報がありません');const c=config(b.config);
- return await transaction(env.BUCKET,num,r=>{const existing=r.seats.findIndex(s=>s?.token===b.ticket);if(existing>=0)return {changed:false,response:json(view(r,existing,now))};if(r.phase!=='waiting'||r.seats[1])throw new Problem('この部屋は満員、または対戦済みです',409);r.seats[1]={token:b.ticket,config:c};const a=r.seats[0].config,first=a.first??(crypto.getRandomValues(new Uint32Array(1))[0]%2);r.state=IDOL.create(a.team,a.leader,c.team,c.leader,first,crypto.getRandomValues(new Uint32Array(1))[0],a.events,c.events);r.phase='opening';bump(r,now);return {changed:true,response:json(view(r,1,now))};},now);}
+ return await transaction(env.BUCKET,num,r=>{const existing=r.seats.findIndex(s=>s?.token===b.ticket);if(existing>=0)return {changed:false,response:json(view(r,existing,now))};if(r.phase!=='waiting'||r.seats[1])throw new Problem('この部屋は満員、または対戦済みです',409);r.seats[1]={token:b.ticket,config:c};if(r.selectBeforeStart){r.phase='selecting';bump(r,now);return {changed:true,response:json(view(r,1,now))};}const a=r.seats[0].config,first=a.first??(crypto.getRandomValues(new Uint32Array(1))[0]%2);r.state=IDOL.create(a.team,a.leader,c.team,c.leader,first,crypto.getRandomValues(new Uint32Array(1))[0],a.events,c.events);r.phase='opening';bump(r,now);return {changed:true,response:json(view(r,1,now))};},now);}
  if(!ticket(token))throw new Problem('この端末の参加情報がありません',401);
  return await transaction(env.BUCKET,num,r=>{
  const seat=r.seats.findIndex(s=>s?.token===token);if(seat<0)throw new Problem('この部屋の参加情報がありません',403);
  let changed=expireTurn(r,now);
  if(request.method==='GET'&&parts.length===1)return {changed,response:json(view(r,seat,now))};
  if(request.method!=='POST')throw new Problem('操作が見つかりません',404);
- if(parts[1]==='rematch'){
+ if(parts[1]==='rematch'||parts[1]==='prepare'){
  if(b.round!==undefined&&b.round!==(r.round||1))return {changed,response:json(view(r,seat,now))};
- if(r.phase!=='ended')throw new Problem('決着後に再戦を選べます',409);
+ const initial=parts[1]==='prepare'&&r.phase==='selecting';if(!initial&&r.phase!=='ended')throw new Problem('編成選択中か決着後に対戦準備をしてください',409);
  if(r.departed?.some(Boolean))throw new Problem('相手が部屋を退出しました。新しい部屋を作ってください',409);
  r.rematchReady??=[false,false];
  // A confirmed lineup is immutable for this round, including lost-response retries.
  if(r.rematchReady[seat])return {changed,response:json(view(r,seat,now))};
  const next=config(b.config??r.seats[seat].config);
  r.seats[seat].config=next;r.rematchReady[seat]=true;
- if(r.rematchReady.every(Boolean)){const a=r.seats[0].config,c=r.seats[1].config,first=1-r.state.first;r.state=IDOL.create(a.team,a.leader,c.team,c.leader,first,crypto.getRandomValues(new Uint32Array(1))[0],a.events,c.events);r.round=(r.round||1)+1;r.phase='opening';r.ready=[false,false];r.rematchReady=[false,false];r.seen=[];r.move=null;r.deadline=0;r.clockMode='turn';r.turnRemaining=TURN;}
+ if(r.rematchReady.every(Boolean)){const a=r.seats[0].config,c=r.seats[1].config,first=initial?(a.first??(crypto.getRandomValues(new Uint32Array(1))[0]%2)):1-r.state.first;r.state=IDOL.create(a.team,a.leader,c.team,c.leader,first,crypto.getRandomValues(new Uint32Array(1))[0],a.events,c.events);r.round=initial?(r.round||1):(r.round||1)+1;r.phase='opening';r.ready=[false,false];r.rematchReady=[false,false];r.seen=[];r.move=null;r.deadline=0;r.clockMode='turn';r.turnRemaining=TURN;}
  bump(r,now);changed=true;
  }else if(parts[1]==='ready'){if(r.phase==='opening'&&!r.ready[seat]){r.ready[seat]=true;if(r.ready.every(Boolean)){r.phase='playing';r.clockMode='turn';r.turnRemaining=TURN;r.deadline=now+TURN;syncClock(r,now,r.state.turn);}bump(r,now);changed=true;}}
  else if(parts[1]==='action'){
@@ -74,7 +74,7 @@ export async function handle(request,env){
  try{r.state=IDOL.peerAction(r.state,clean,seat);}catch(e){throw new Problem(e.message);}
  r.move=move;r.seen.push(seat+':'+b.requestId);r.seen=r.seen.slice(-128);syncClock(r,now,turn);bump(r,now);changed=true;
  }else if(parts[1]==='leave'){
- r.departed??=[false,false];r.departed[seat]=true;if(r.state&&r.state.winner===null){r.state.winner=1-seat;r.state.endReason='resign';r.phase='ended';r.deadline=0;r.clockMode='ended';r.move={actor:seat,title:'投了',art:null,detail:''};}else if(r.phase==='waiting')r.phase='closed';bump(r,now);changed=true;
+ r.departed??=[false,false];r.departed[seat]=true;if(r.state&&r.state.winner===null){r.state.winner=1-seat;r.state.endReason='resign';r.phase='ended';r.deadline=0;r.clockMode='ended';r.move={actor:seat,title:'投了',art:null,detail:''};}else if(r.phase==='waiting'||r.phase==='selecting')r.phase='closed';bump(r,now);changed=true;
  }else throw new Problem('操作が見つかりません',404);
  return {changed,response:json(view(r,seat,now))};
  },now);

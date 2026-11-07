@@ -15,7 +15,7 @@ state=IDOL.create(team,leader,['rai','hana','shio'],'rai',0,123,chosenEvents,['r
 net=roomNet();net.code='1234';net.phase='ended';net.connected=true;net.round=1;net.rev=9;
 unitSlots[4]={name:'雷の新編成',team:['rai','haru','homura'],leader:'rai',events:['rai','haru','mc']};modal={kind:'result'};renderModal();
 `);
-assert(nodes.get('#modal').innerHTML.includes('保存した編成で再戦'));
+assert(nodes.get('#modal').innerHTML.includes('data-action="online-result-ok"'));assert(!nodes.get('#modal').innerHTML.includes('data-action="online-rematch"'));
 await run("onlineAction('online-rematch-choose')");assert.equal(run('modal.kind'),'rematch-unit');
 assert(nodes.get('#modal').innerHTML.includes('雷の新編成'));
 document.querySelector('#rematch-unit-slot').value='4';await run("onlineAction('online-rematch-pick')");
