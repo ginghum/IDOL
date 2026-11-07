@@ -8,10 +8,13 @@ for(const G of [browser,server]){
  const make=()=>G.create(['hikari','kayo','hana'],'hikari',['machi','natsume','rai'],'machi',0,73,['hikari','switch','redo']);
  const give=(s,n)=>{const p=s.players[0];for(const z of ['hand','deck','memory','discard']){const at=p[z].findIndex(c=>c.owner==='hikari'&&c.n===n);if(at>=0){const [c]=p[z].splice(at,1);p.hand.push(c);return c;}}throw Error('missing');};
  {const s=make(),p=s.players[0];assert.equal(p.vol,30);assert.equal(p.hand.length,6);assert.equal(p.deck.length,21);const bad=[p.hand[0].uid,p.hand[0].uid,p.hand[1].uid],before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,{type:'leaderSkill',discard:bad},0));assert.equal(JSON.stringify(s),before);assert.throws(()=>G.peerAction(s,{type:'leaderSkill',discard:p.hand.slice(0,3).map(c=>c.uid)},1));
- const paid=p.hand.slice(0,3).map(c=>c.uid),t=G.peerAction(s,{type:'leaderSkill',discard:paid},0),q=t.players[0];assert.equal(q.chips,6);assert.equal(q.hand.length,3);assert.equal(q.discard.length,3);assert(q.hikariSkillUsed);assert.deepEqual(q.ready,[true,true,true]);assert.throws(()=>G.peerAction(t,{type:'leaderSkill',discard:q.hand.map(c=>c.uid)},0));
+ p.vol=100;const paid=p.hand.slice(0,3).map(c=>c.uid),t=G.peerAction(s,{type:'leaderSkill',discard:paid},0),q=t.players[0];assert.equal(q.chips,6);assert.equal(q.hand.length,3);assert.equal(q.discard.length,3);assert(q.hikariSkillUsed);assert.deepEqual(q.ready,[true,true,true]);assert.throws(()=>G.peerAction(t,{type:'leaderSkill',discard:q.hand.map(c=>c.uid)},0));
  // Actually switch out and back; usage survives both changes.
  const paySwitch=()=>{q.memory.push(...q.deck.splice(0,3));q.events.find(e=>e.id==='switch').used=false;G.dispatch(t,{type:'event',id:'switch',memory:G.autoPay(q,'switch'),leader:q.leader==='hikari'?'kayo':'hikari'});};paySwitch();paySwitch();assert.equal(q.leader,'hikari');assert.throws(()=>G.peerAction(t,{type:'leaderSkill',discard:q.hand.map(c=>c.uid)},0));
  }
+ for(const vol of [0,30,99,100,101,200]){const s=make(),p=s.players[0];p.vol=vol;const action={type:'leaderSkill',discard:p.hand.slice(0,3).map(c=>c.uid)},before=JSON.stringify(s);if(vol<100){assert.throws(()=>G.peerAction(s,action,0),/VOL100/);assert.equal(JSON.stringify(s),before);assert.notEqual(G.ai(s).type,'leaderSkill');}else{const used=G.peerAction(s,action,0);assert.equal(used.players[0].vol,vol);assert.equal(used.players[0].chips,6);assert(used.players[0].hikariSkillUsed);}}
+ // Reaching the threshold during a turn unlocks the skill immediately.
+ {const s=make(),p=s.players[0];p.vol=90;const c=give(s,1);G.dispatch(s,{type:'play',card:c.uid,actors:[0],mode:'vol'});assert.equal(p.vol,100);G.dispatch(s,{type:'leaderSkill',discard:p.hand.slice(0,3).map(c=>c.uid)});assert.equal(p.vol,100);assert.equal(p.chips,6);}
  for(const n of [1,2,3])for(const mode of ['vol','fan']){
  const s=make(),p=s.players[0],c=give(s,n);p.vol=100;s.row.forEach(f=>{f.type='light';});const h=p.hand.length,d=p.deck.length;G.dispatch(s,{type:'play',card:c.uid,actors:Array.from({length:n},(_,j)=>j),mode});
  assert.equal(p.memory.at(-1).uid,c.uid);if(mode==='vol'&&n<3){assert.equal(s.pending,null);assert.equal(p.hand.length,h-1);continue;}
@@ -42,7 +45,7 @@ new Function('document','localStorage','setTimeout','clearTimeout','assert',code
 state=IDOL.create(['hikari','kayo','hana'],'hikari',['rai','shio','machi'],'rai',0,5);screen='match';modal=null;
 state.pending={p:0,kind:'hikariOffer',count:2,options:['skip','accept'],text:'手札交換'};renderModal();assert.match($('#modal').innerHTML,/今回は使わない/);
 state.pending={p:0,kind:'hikariDiscard',count:2,selected:[],options:state.players[0].hand.map(c=>c.uid),text:'手札選択'};renderModal();assert.match($('#modal').innerHTML,/data-action="choose"/);
-state.pending=null;modal={kind:'hikari-skill'};selection={discard:state.players[0].hand.slice(0,3).map(c=>c.uid)};renderModal();assert.match($('#modal').innerHTML,/3枚捨てて応援＋6/);assert.match($('#modal').innerHTML,/キャンセル/);
-assert.match(matchHTML(),/光 · 手札3枚→応援6/);
+state.players[0].vol=100;state.pending=null;modal={kind:'hikari-skill'};selection={discard:state.players[0].hand.slice(0,3).map(c=>c.uid)};renderModal();assert.match($('#modal').innerHTML,/3枚捨てて応援＋6/);assert.match($('#modal').innerHTML,/キャンセル/);
+assert.match(matchHTML(),/光 · 手札3枚→応援6/);assert.match($('#modal').innerHTML,/VOL100％以上/);state.players[0].vol=99;assert.match(matchHTML(),/光 · VOL100%以上で解禁/);renderModal();assert.match($('#modal').innerHTML,/data-action="hikari-skill-confirm" disabled/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Hikari: both engines, exact/optional discard, privacy, skill reuse/switch, WHITEOUT pre-payment count, timeout, UI and 200 CPU matches passed');
