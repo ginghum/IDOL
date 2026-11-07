@@ -54,9 +54,17 @@ try{
  // A normal decision gives both seats results and requires mutual rematch consent.
  const ended=JSON.parse(bucket.map.get(key).value);ended.state.winner=0;ended.phase='ended';ended.clockMode='ended';ended.deadline=0;ended.rev++;bucket.map.get(key).value=JSON.stringify(ended);
  assert.equal((await req('/'+room)).data.state.winner,0);assert.equal((await req('/'+room,undefined,guest)).data.state.winner,1);
- const one=await req('/'+room+'/rematch',{round:1});assert.equal(one.data.phase,'ended');assert.equal(one.data.rematchLocal,true);
- assert.equal((await req('/'+room,undefined,guest)).data.rematchOther,true);
- const two=await req('/'+room+'/rematch',{round:1},guest);assert.equal(two.data.phase,'opening');assert.equal(two.data.round,2);assert.equal(two.data.state.first,0,'Guest is first after swapping sides');assert.equal(two.data.state.turn,1);assert.equal(two.data.state.winner,null);assert.equal(two.data.deadline,0);assert.deepEqual(two.data.ready,[false,false]);assert(two.data.state.players.every(p=>p.memory.length===0&&p.fans.length===0));
+ const hostNext={team:['rai','hana','shio'],leader:'rai',events:['rai','wit','mc']},guestNext={team:['haru','hakka','homura'],leader:'hakka',events:['haru','hakka','overcome']};
+ assert.equal((await req('/'+room+'/rematch',{round:1,config:{...hostNext,team:['rai','rai','shio']}})).status,400);
+ assert.equal((await req('/'+room)).data.rematchLocal,false,'Invalid config does not confirm readiness');
+ const one=await req('/'+room+'/rematch',{round:1,config:hostNext});assert.equal(one.data.phase,'ended');assert.equal(one.data.rematchLocal,true);
+ const waitingGuest=(await req('/'+room,undefined,guest)).data;assert.equal(waitingGuest.rematchOther,true);
+ assert(!JSON.stringify(waitingGuest.configLocal).includes('wit'),'Only your own next config is returned');
+ assert.deepEqual(one.data.configLocal.team,hostNext.team);
+ const retried=await req('/'+room+'/rematch',{round:1,config:guestNext});assert.deepEqual(retried.data.configLocal.team,hostNext.team,'Lost-response retry cannot replace a locked config');
+ const two=await req('/'+room+'/rematch',{round:1,config:guestNext},guest);assert.equal(two.data.phase,'opening');assert.equal(two.data.round,2);assert.equal(two.data.state.first,0,'Guest is first after swapping sides');assert.equal(two.data.state.turn,1);assert.equal(two.data.state.winner,null);assert.equal(two.data.deadline,0);assert.deepEqual(two.data.ready,[false,false]);assert(two.data.state.players.every(p=>p.memory.length===0&&p.fans.length===0));
+ assert.deepEqual(two.data.state.players[0].team,guestNext.team);assert.equal(two.data.state.players[0].leader,guestNext.leader);assert.deepEqual(two.data.state.players[0].events.map(e=>e.id),guestNext.events);assert.deepEqual(two.data.state.players[1].team,hostNext.team);assert(two.data.state.players[1].events.every(e=>!e.id),'Opponent events stay private');
+ assert.deepEqual((await req('/'+room)).data.configLocal.events,hostNext.events,'Reconnection restores confirmed lineup');
  assert.equal((await req('/'+room+'/rematch',{round:1},guest)).data.round,2,'Retry cannot start an extra match');
  await req('/'+room+'/ready',{});const restarted=await req('/'+room+'/ready',{},guest);assert.equal(restarted.data.deadline-clock,99000);
  await req('/'+room+'/leave',{},guest);assert.equal((await req('/'+room)).data.opponentLeft,true);assert.equal((await req('/'+room+'/rematch',{round:2})).status,409);

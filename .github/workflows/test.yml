@@ -14,3 +14,4 @@ jobs:
         with:
           node-version: '22'
       - run: for test in tests/*.test.mjs; do node "$test" || exit 1; done
+      - run: node room-server/rooms.test.mjs
