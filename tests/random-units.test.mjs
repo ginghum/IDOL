@@ -17,7 +17,22 @@ run("unitSlots[0]=unitSnapshot('保存テスト',unitConfig());unitLoaded=0;unit
 click('unit-random');const preview=run('JSON.stringify(modal.draft)');click('unit-random-again');assert.equal(run('JSON.stringify(unitConfig())'),original);click('close');assert.equal(run('JSON.stringify(unitConfig())'),original);
 click('unit-random');const accepted=run('JSON.stringify(modal.draft)');click('unit-random-confirm');assert.equal(run('JSON.stringify(unitConfig())'),accepted);assert.equal(run('setupTab'),'match');assert.equal(run('screen'),'setup');assert.equal(run('unitLoaded'),null);assert.equal(run('JSON.stringify(unitSlots[0])'),savedUnit);assert.equal(saved.size,0,'Random apply never persists a unit');
 click('unit-save-open');assert.equal(run('modal.kind'),'unit-save');click('close');
-run("battleMode='online'");click('unit-random');click('unit-random-confirm');assert.equal(run('battleMode'),'online','Online preparation uses the same random flow');assert.equal(run('net'),null,'Randomizing never creates or leaves a room');
+// Original excludes Extra characters and events; Extra is the full pool, not Extra-only.
+run(`COMMON.futureExtra={...COMMON.redo,event:'追加共通テスト'};EVENTS.futureExtra=COMMON.futureExtra;`);
+let sawHikari=false,sawOriginal=false,sawExtraEvent=false;
+for(let i=0;i<300;i++){
+ run("var originalRoll=randomCpuConfig('original');var extraRoll=randomCpuConfig('extra');");
+ assert(run("originalRoll.team.every(id=>cardSeries('character',id)==='original')"));
+ assert(run("originalRoll.events.every(id=>cardSeries('event',id)==='original')"));
+ assert(run('cpuConfigOK(originalRoll)&&cpuConfigOK(extraRoll)'));
+ sawHikari ||= run("extraRoll.team.includes('hikari')");sawOriginal ||= run("extraRoll.team.some(id=>cardSeries('character',id)==='original')");sawExtraEvent ||= run("extraRoll.events.includes('futureExtra')");
+}
+assert(sawHikari&&sawOriginal&&sawExtraEvent);run('delete COMMON.futureExtra;delete EVENTS.futureExtra;');
+const changeRange=value=>{for(const fn of listeners.change)fn({target:{id:'random-collection',value}});};
+run("battleMode='online'");click('unit-random');assert.equal(run('modal.collection'),'extra');assert(nodes.get('#modal').innerHTML.includes('エクストラを含む全キャラクター'));
+const beforeRange=run('JSON.stringify(unitConfig())');changeRange('original');assert.equal(run('modal.collection'),'original');assert(run("modal.draft.team.every(id=>cardSeries('character',id)==='original')"));assert.equal(run('JSON.stringify(unitConfig())'),beforeRange);
+click('unit-random-again');assert.equal(run('modal.collection'),'original');assert(run("modal.draft.team.every(id=>cardSeries('character',id)==='original')"));click('unit-random-cancel');assert.equal(run('JSON.stringify(unitConfig())'),beforeRange);
+click('unit-random');changeRange('extra');click('unit-random-confirm');assert.equal(run('battleMode'),'online','Online preparation uses the same random flow');assert.equal(run('net'),null,'Randomizing never creates or leaves a room');
 // Random rematch is a draft until explicitly applied and separately confirmed for replay.
 run(`state=IDOL.create(team,leader,['rai','hana','shio'],'rai',0,123,chosenEvents,['rai','hana','shio']);state.winner=0;screen='match';net=roomNet();net.code='1234';net.phase='ended';net.round=1;net.rev=9;net.connected=true;modal={kind:'rematch-unit',draft:JSON.parse(JSON.stringify(net.config)),name:'元の編成',slot:0};`);
 const beforeRematch=run('JSON.stringify(modal.draft)'),token=run('net.token');
@@ -26,7 +41,7 @@ run("location={search:'',pathname:'/IDOL/',hash:''};history={replaceState(){}}")
 c.poll={protocol:'idol-rooms-1',code:'1234',rev:10,round:1,phase:'ended',now:Date.now(),rematchLocal:false,rematchOther:true,readyLocal:true,state:run('JSON.parse(JSON.stringify(state))'),configLocal:run('net.config')};
 run('roomAccept(net,poll)');assert.equal(run('modal.kind'),'unit-random-confirm','Opponent readiness must preserve the confirmation preview');
 click('unit-random-cancel');assert.equal(run('JSON.stringify(modal.draft)'),beforeRematch);assert.equal(run('modal.slot'),0);
-click('unit-random');const rematchRandom=run('JSON.stringify(modal.draft)');click('unit-random-confirm');assert.equal(run('modal.kind'),'rematch-unit');assert.equal(run('modal.slot'),'random');assert.equal(run('JSON.stringify({team:modal.draft.team,leader:modal.draft.leader,events:modal.draft.events})'),rematchRandom);assert.equal(run('net.rematchPending'),null);assert.equal(run('net.token'),token);assert.equal(run('JSON.stringify(unitSlots[0])'),savedUnit);
+click('unit-random');changeRange('original');click('unit-random-again');assert.equal(run('modal.collection'),'original');const rematchRandom=run('JSON.stringify(modal.draft)');click('unit-random-confirm');assert.equal(run('modal.kind'),'rematch-unit');assert.equal(run('modal.slot'),'random');assert.equal(run('modal.name'),'オリジナルランダム');assert(run("modal.draft.team.every(id=>cardSeries('character',id)==='original')"));assert.equal(run('JSON.stringify({team:modal.draft.team,leader:modal.draft.leader,events:modal.draft.events})'),rematchRandom);assert.equal(run('net.rematchPending'),null);assert.equal(run('net.token'),token);assert.equal(run('JSON.stringify(unitSlots[0])'),savedUnit);
 assert(nodes.get('#modal').innerHTML.includes('value="random" selected'));
 click('unit-random');c.poll={...c.poll,rev:11,opponentLeft:true};run('roomAccept(net,poll)');assert.equal(run('modal.kind'),'result','Departed opponents close the random picker');const configBefore=run('JSON.stringify(net.config)');click('unit-random-confirm');assert.equal(run('JSON.stringify(net.config)'),configBefore);
 console.log('Random units: compatible events, confirmation/cancel/reroll, untouched saves, main online mode, rematch session stability and opponent readiness/departure passed');
