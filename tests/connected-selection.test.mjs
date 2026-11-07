@@ -12,7 +12,7 @@ function client(store=new Map()){
  return {c,run:s=>vm.runInContext(s,c),nodes,store,listeners};
 }
 const a=client(),b=client(),tick=()=>new Promise(r=>setImmediate(r));
-a.run('battleMode="online";onlineLobby()');await a.run("onlineAction('online-host')");
+a.run('firstMode="0";battleMode="online";onlineLobby()');await a.run("onlineAction('online-host')");
 const number=a.run('net.code'),token=a.run('net.token');assert.equal(a.run('screen'),'setup');assert.equal(a.run('net.phase'),'waiting');assert.equal(a.run('state'),null);assert.match(a.nodes.get('#app').innerHTML,/接続中キャラ選択/);
 b.run('battleMode="online";onlineLobby()');b.run('net.input='+JSON.stringify(number));await b.run("onlineAction('online-join')");await a.run('roomSync(net)');
 for(const x of [a,b]){assert.equal(x.run('screen'),'setup');assert.equal(x.run('net.phase'),'selecting');assert.equal(x.run('state'),null);assert.equal(x.run('net.deadline'),0);assert.match(x.nodes.get('#app').innerHTML,/編成を呼び出す/);assert.match(x.nodes.get('#app').innerHTML,/編成ランダム/);}
