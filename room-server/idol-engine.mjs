@@ -243,7 +243,7 @@ function ai(s){
  const fs=[...s.row,...s.audience.slice(0,2)].filter(f=>z.options.includes(f.uid)).sort((a,b)=>(FAN[b.type].points+(b.type==='cheer'?.3:0))-(FAN[a.type].points+(a.type==='cheer'?.3:0)));
  return {type:'choose',value:fs[0].uid};
  }
- const i=s.active,p=s.players[i],ready=p.ready.filter(Boolean).length;
+ const i=s.active,p=s.players[i],ready=p.ready.filter(Boolean).length,volTarget=p.events.some(e=>e.id==='shio'&&!e.used)?180:100;
  const ev=(id,extra={})=>({type:'event',id,memory:autoPay(p,id),...extra});
  if(eventOK(s,i,'viewing')&&!p.liveViewing)return ev('viewing');
  if(eventOK(s,i,'overcome')&&p.deck.length&&p.hand.length<6)return ev('overcome');
@@ -271,8 +271,8 @@ function ai(s){
  let best=null,bestValue=-1;
  for(const c of p.hand){
  const aa=actors(p,c);if(!aa)continue;const d=song(c);
- if(p.vol<d.need||p.leader==='shio'&&p.vol<180&&p.events.some(e=>e.id==='shio'&&!e.used)){
- const value=Math.min(d.vol,Math.max(0,(p.leader==='shio'?180:100)-p.vol))/d.n*.12+(c.owner==='kayo'?.9:c.owner==='hana'?.5:c.owner==='hakka'?.7:0);
+ if(p.vol<d.need||volTarget===180&&p.vol<180){
+ const value=Math.min(d.vol,Math.max(0,volTarget-p.vol))/d.n*.12+(c.owner==='kayo'?.9:c.owner==='hana'?.5:c.owner==='hakka'?.7:0);
  if(value>bestValue){bestValue=value;best={type:'play',card:c.uid,actors:aa,mode:'vol'};}
  }
  if(p.vol>=d.need){
@@ -316,4 +316,4 @@ return {CHAR,COMMON,EVENTS,FAN,song,detail,create,dispatch,playOK,score,fanPoint
 
 
 
-export { IDOL };
+export {IDOL};

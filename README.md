@@ -126,3 +126,7 @@ CPU戦は時間制限なし。対人戦のみ各ターン99秒で、サーバー
 初期観客は既存52枚＋記者1枚の53枚。記者は1点、獲得時にゲーム外からインフルエンサー（5点・初期0枚・効果なし）を1枚追加して観客山札をシャッフルする。戻された記者を再獲得しても発動する。効果無効中は追加しない。一括獲得のカード確定→観客効果→補充の順を維持する。
 
 追加イベント3枚と新観客2枚のイラストを収録。カード一覧から観客カードも確認できる。開発用の「試作」表記、画像枠のILLUSTRATION、重複した見出し・フッター・英語の役割ラベル、古い接続方式の案内を整理。コスト・持続効果・時間制限など判断に必要な表示は維持する。
+
+## CPU opponent selection
+
+CPU matches now show a compact opponent editor before launch. Choose three members, their leader, and exactly three events from that team’s dedicated events and common events, or use the random lineup button. Changes stay in a draft until confirmed. Rematches retain the actual opponent lineup and events. CPU voltage planning now accounts for Shio’s 180% event requirement even when Shio is not the leader.
