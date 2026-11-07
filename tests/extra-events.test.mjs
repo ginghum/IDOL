@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const front=new Function(code.split('const $=s=>')[0]+';return IDOL;')();
 assert.deepEqual(front.COMMON,G.COMMON,'Browser and online server use identical event definitions');
-assert.equal(Object.keys(G.COMMON).length,7);assert.equal(G.COMMON.wit.cost[1],3);
+assert.equal(Object.keys(G.COMMON).length,7);assert.equal(G.COMMON.wit.cost[1],4);
 const make=(events=['overcome','viewing','mc'],seed=91)=>G.create(['shio','kayo','machi'],'kayo',['machi','haru','hana'],'hana',0,seed,events,['trouble','haru','wit']);
 function move(p,owner,n){for(const zone of ['deck','hand']){const at=p[zone].findIndex(c=>(!owner||c.owner===owner)&&(!n||c.n===n));if(at>=0)return p[zone].splice(at,1)[0];}throw Error('fixture card unavailable');}
 function prepare(s,i,id){const p=s.players[i],d=G.EVENTS[id];while(p.memory.filter(c=>c.owner===id).length<d.cost[0])p.memory.push(move(p,id));while(p.memory.length<d.cost[1])p.memory.push(move(p));return G.autoPay(p,id);}
@@ -37,11 +37,11 @@ function play(s,i,owner,n,mode='fan'){const p=s.players[i],card=move(p,owner,n);
  const view=G.publicView(s,1);assert.equal(view.players[1].fanShield,true,'Protection is visible to the opponent');
 }
 {
- const s=make(['wit','viewing','mc']),p=s.players[0];p.memory.push(...p.deck.splice(0,2));assert(!G.eventOK(s,0,'wit'));p.memory.push(p.deck.shift());assert(G.eventOK(s,0,'wit'));const n=p.hand.length,c=p.hand[0];assert.throws(()=>G.peerAction(s,{type:'event',id:'wit',memory:p.memory.slice(0,2).map(c=>c.uid),hand:c.uid},0));G.dispatch(s,{type:'event',id:'wit',memory:p.memory.map(c=>c.uid),hand:c.uid});assert.equal(p.hand.length,n);assert.equal(p.memory.length,1);assert.equal(p.discard.length,3);assert(!G.eventOK(s,0,'wit'));
+ const s=make(['wit','viewing','mc']),p=s.players[0];p.memory.push(...p.deck.splice(0,3));assert(!G.eventOK(s,0,'wit'));p.memory.push(p.deck.shift());assert(G.eventOK(s,0,'wit'));const n=p.hand.length,c=p.hand[0];assert.throws(()=>G.peerAction(s,{type:'event',id:'wit',memory:p.memory.slice(0,2).map(c=>c.uid),hand:c.uid},0));G.dispatch(s,{type:'event',id:'wit',memory:p.memory.map(c=>c.uid),hand:c.uid});assert.equal(p.hand.length,n);assert.equal(p.memory.length,1);assert.equal(p.discard.length,4);assert(!G.eventOK(s,0,'wit'));
 }
 for(let seed=1;seed<=60;seed++){
  const s=make(seed%2?['overcome','viewing','mc']:['wit','viewing','overcome'],seed);s.players[1].events=['viewing','mc','overcome'].map(id=>({id,used:false,lastTurn:null}));let steps=0;
  while(s.winner===null&&steps++<1800){G.dispatch(s,G.ai(s));for(const p of s.players){assert.equal(p.hand.length+p.deck.length+p.memory.length+p.discard.length,27);assert(p.vol>=0&&p.vol<=200&&p.chips>=0&&p.fanChips>=0);}}
  assert.notEqual(s.winner,null,'New event CPU match terminates');
 }
-console.log('Extra events: VOL threshold, exact payments, persistent service conversion, 20-point win, protection boundaries, hostile removals/theft, own penalties, Wit nerf and 60 CPU matches passed');
+console.log('Extra events: VOL threshold, exact payments, persistent service conversion, 20-point win, protection boundaries, hostile removals/theft, own penalties, Wit four-memory cost and 60 CPU matches passed');

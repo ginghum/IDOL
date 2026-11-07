@@ -31,7 +31,7 @@ function event(s,id){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.players[0]
  // Meat also substitutes another character's named memory and total, not only Hakka.
  const t=make('hakka',['haru','wit','redo']),q=t.players[0];q.items=Array.from({length:5},(_,j)=>({uid:'meat'+j,item:'meat'}));assert(G.eventOK(t,0,'haru'));event(t,'haru');assert.equal(q.items.length,0);assert.equal(q.discard.length,0);
  // Optional leader recovery triggers on reusable common events too.
- const u=make('hakka',['wit','redo','hakka']),r=u.players[0];mem(u,'hakka',3);r.ready[0]=false;G.dispatch(u,{type:'event',id:'wit',memory:G.autoPay(r,'wit'),hand:r.hand[0].uid});assert.equal(u.pending.kind,'hakkaReady');G.dispatch(u,{type:'choose',value:'skip'});assert.equal(r.ready[0],false);
+ const u=make('hakka',['wit','redo','hakka']),r=u.players[0];mem(u,'hakka',4);r.ready[0]=false;G.dispatch(u,{type:'event',id:'wit',memory:G.autoPay(r,'wit'),hand:r.hand[0].uid});assert.equal(u.pending.kind,'hakkaReady');G.dispatch(u,{type:'choose',value:'skip'});assert.equal(r.ready[0],false);
 }
 {
  const s=make('homura'),p=s.players[0];p.vol=100;row(s,['trouble','core','heavy']);play(s,'homura',3);assert.equal(s.pending.kind,'mutePick');const bad=s.row[0],heavy=s.row[2];G.dispatch(s,{type:'choose',value:bad.uid});G.dispatch(s,{type:'choose',value:heavy.uid});assert.equal(p.fans.length,3);assert.equal(G.score(p),6);assert.equal(p.vol,100);assert(p.fans.find(f=>f.uid===bad.uid).muted);assert.equal(s.row.length,3);G.dispatch(s,{type:'end'});assert(p.fans.every(f=>!f.muted));G.dispatch(s,{type:'end'});assert.equal(p.chips,2);

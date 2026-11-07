@@ -130,3 +130,10 @@ CPU戦は時間制限なし。対人戦のみ各ターン99秒で、サーバー
 ## CPU opponent selection
 
 CPU matches now show a compact opponent editor before launch. Choose three members, their leader, and exactly three events from that team’s dedicated events and common events, or use the random lineup button. Changes stay in a draft until confirmed. Rematches retain the actual opponent lineup and events. CPU voltage planning now accounts for Shio’s 180% event requirement even when Shio is not the leader.
+
+## Balance update: November 7, 2026
+
+- Live Viewing costs exactly 5 memories; Wit costs exactly 4 (still reusable once per own turn).
+- Rai’s three-member song may replace normal acquisition with a simultaneous choice of 2 spectators from the visible row and top 2 audience cards. Choices are collected before any acquisition/effect/refill; unselected deck cards keep their order. Rai’s 1/2-member songs remain single picks. Acquisition bonuses do not increase replacement counts.
+- I Am Destroyer costs exactly 3 memories, including at least 2 Rai memories (meat substitution remains available). Homura is unchanged.
+- Both solo and authoritative room engines use these rules; private peek cards remain hidden from the opponent until acquired.

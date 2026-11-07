@@ -16,7 +16,7 @@ function use(s,id,opts={}){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.play
 }
 {
  const s=game(),p=s.players[0],card=p.hand[0],n=p.hand.length,mem=p.memory.length;
- use(s,'wit',{hand:card.uid});ok(p.hand.length===n,'wit draws');ok(p.memory.length===mem-2&&p.memory.includes(card),'wit moves hand to memory after paying three');ok(!G.eventOK(s,0,'wit'),'once per turn');
+ use(s,'wit',{hand:card.uid});ok(p.hand.length===n,'wit draws');ok(p.memory.length===mem-3&&p.memory.includes(card),'wit moves hand to memory after paying four');ok(!G.eventOK(s,0,'wit'),'once per turn');
  G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end'});ok(G.eventOK(s,0,'wit'),'reusable next turn');
 }
 {
