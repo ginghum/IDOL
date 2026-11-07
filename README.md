@@ -137,3 +137,16 @@ CPU matches now show a compact opponent editor before launch. Choose three membe
 - Rai’s three-member song may replace normal acquisition with a simultaneous choice of 2 spectators from the visible row and top 2 audience cards. Choices are collected before any acquisition/effect/refill; unselected deck cards keep their order. Rai’s 1/2-member songs remain single picks. Acquisition bonuses do not increase replacement counts.
 - I Am Destroyer costs exactly 3 memories, including at least 2 Rai memories (meat substitution remains available). Homura is unchanged.
 - Both solo and authoritative room engines use these rules; private peek cards remain hidden from the opponent until acquired.
+
+
+## ユニット編成・保存
+
+選択画面はメンバーとイベントのタブを切り替えて編集します。メンバーは名前・楽曲・リーダー能力で検索でき、役割・選択中の絞り込みと6人ずつのページ切り替えに対応しています。
+
+- メンバー3人・リーダー1人・異なるイベント3枚を選ぶと、そのままCPU戦・対人戦へ進めます。保存は必須ではありません。
+- 「この編成を保存」を開き、名前と保存先を選んで保存します。最大15編成を、このブラウザーのlocalStorageに保持します。
+- 「保存した編成」から呼び出し・削除できます。呼び出した後の編集は独立した一時編成で、保存ボタンを押して上書きを確定するまで元の保存内容を変更しません。
+- 「新規」は編集中のメンバー・イベントを空にします。保存済み編成や中断した対戦は削除しません。
+- 保存先は端末・ブラウザーごとです。サイトデータの削除で保存内容も消えるため、通常のブラウザーで利用してください。
+
+検証：`for test in tests/*.test.mjs; do node "$test" || exit 1; done`

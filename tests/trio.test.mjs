@@ -63,6 +63,6 @@ new Function('document','localStorage','setTimeout','clearTimeout','assert',code
 state=IDOL.create(['haru','hakka','homura'],'hakka',['kayo','machi','hana'],'kayo',0,4);screen='match';modal=null;state.players[0].items=[{uid:'meat-test',item:'meat'}];state.players[0].fanChips=3;render();assert.match($('#app').innerHTML,/data-id="meat-test"/);assert.match($('#app').innerHTML,/ファンチップ/);assert.match($('#app').innerHTML,/ITEM/);
 modal={kind:'event',id:'hakka'};selection={memory:['meat-test'],discard:[],targets:[]};renderModal();assert.match($('#modal').innerHTML,/data-action="pay" data-id="meat-test"/);
 modal=null;const p=state.players[0];p.discard.push(p.deck.shift());state.pending={kind:'recover',p:0,options:p.discard.map(c=>c.uid),text:'recover'};renderModal();assert.match($('#modal').innerHTML,/data-action="choose"/);
-state.pending=null;screen='setup';modal=null;render();const setup=$('#app').innerHTML;for(const id of ['haru','hakka','homura'])assert(setup.indexOf('data-action="setup-event" data-id="'+id+'"')<setup.indexOf('data-action="setup-event" data-id="redo"'));
+state.pending=null;screen='setup';modal=null;setupTab='events';eventFilter='all';render();const setup=$('#app').innerHTML;for(const id of ['haru','hakka','homura'])assert(setup.indexOf('data-action="setup-event" data-id="'+id+'"')<setup.indexOf('data-action="setup-event" data-id="redo"'));
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Trio: rule interactions, turn timing, meat payments, UI, online views and 180 CPU matches passed');

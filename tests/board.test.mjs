@@ -43,7 +43,7 @@ displayed.push({dataset:{id:'meat-new'},animate(){animated.push('meat-new');}});
 animated.length=0;const beforeDraw=captureMotion({});state.players[0].items.push({uid:'meat-new',item:'meat'});
 const beforeNextDraw=captureMotion({});displayed.push({dataset:{id:'song-new'},animate(){animated.push('song-new');}});animateMotion(beforeNextDraw);assert.deepEqual(animated,['song-new'],'New songs retain their draw animation');
 delete document.body;
-screen='setup';modal=null;render();assert.match($('#app').innerHTML,/casting-grid/);assert.equal(($('#app').innerHTML.match(/class="casting-card /g)||[]).length,9);
+screen='setup';modal=null;render();assert.match($('#app').innerHTML,/casting-grid/);assert.equal(($('#app').innerHTML.match(/class="casting-card /g)||[]).length,ROSTER_PAGE_SIZE);
 `) (document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 const map=JSON.parse(html.match(/const ARTWORK = (\{[\s\S]*?\n\});/)[1]);
 assert.equal(Object.keys(map).length,61);for(const path of Object.values(map))assert(existsSync(new URL('../'+path,import.meta.url)),path);
