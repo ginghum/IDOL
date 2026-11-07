@@ -129,7 +129,7 @@ CPU戦は時間制限なし。対人戦のみ各ターン99秒で、サーバー
 
 ## CPU opponent selection
 
-CPU matches now show a compact opponent editor before launch. Choose three members, their leader, and exactly three events from that team’s dedicated events and common events, or use the random lineup button. Changes stay in a draft until confirmed. Rematches retain the actual opponent lineup and events. CPU voltage planning now accounts for Shio’s 180% event requirement even when Shio is not the leader.
+CPU matches start against a newly randomized opponent unless you explicitly select and confirm one through the opponent editor. Choose three members, their leader, and exactly three events from that team’s dedicated events and common events, or use the random lineup button. Changes stay in a draft until confirmed. Rematches retain the actual opponent lineup and events. CPU voltage planning now accounts for Shio’s 180% event requirement even when Shio is not the leader.
 
 ## Balance update: November 7, 2026
 
@@ -164,3 +164,6 @@ CPU matches now show a compact opponent editor before launch. Choose three membe
 メンバー選択・対戦準備の「編成ランダム」は、3人のメンバーとそのうちのリーダー1人を抽選し、選択メンバーの専用イベントと共通イベントから異なる3枚を選びます。生成した編成を確認して「この編成を使う」を押すまで編集中の内容を変更しません。「もう一度ランダム」とキャンセルにも対応します。
 
 対戦準備の「この編成を保存」から、生成した編成も保存できます。対人戦の再戦編成選択にも「編成ランダム」があり、接続を保ったまま同じ確認手順で適用できます。再戦の希望は適用後に別途確定し、保存済み編成を自動で上書きしません。
+
+
+CPUの相手編成が未指定なら、対戦開始時にメンバー・リーダー・対応するイベントをランダム生成し、相手の編成編集画面を挟まず開始します。「相手を選ぶ」で確定した場合は指定した編成を使用します。相手選択をキャンセルしただけでは指定済みになりません。
