@@ -9,12 +9,12 @@ let serial=0;
 async function action(a,seat=0){const d=await req('/'+code,undefined,seat);return req('/'+code+'/action',{rev:d.rev,requestId:'ayame-action-'+String(++serial).padStart(6,'0'),action:a},seat);}
 let v=await req('/'+code);assert.deepEqual(v.state.lottery,{count:15});assert.equal(v.state.players[0].hand.length,5);assert(v.state.players[1].hand.every(c=>!c.owner));
 // Earn one end-of-turn ticket without forging state; use it on next own turn.
-await action({type:'service',actor:0});await action({type:'end',ticket:true});await action({type:'end'},1);v=await req('/'+code);const id=v.state.players[0].items.find(c=>c.item==='ticket').uid,deadline=v.deadline;
+await action({type:'service',actor:0});const tooFew=await action({type:'end',ticket:true});assert.equal(tooFew.status,400);await action({type:'service',actor:1});await action({type:'end',ticket:true});await action({type:'end'},1);v=await req('/'+code);const id=v.state.players[0].items.find(c=>c.item==='ticket').uid,deadline=v.deadline;
 const bad=await action({type:'ticket',id},1);assert.equal(bad.status,400);
 const drawn=await action({type:'ticket',id});assert.equal(drawn.status,200);assert.equal(drawn.deadline,deadline);assert.equal(drawn.state.players[0].items.filter(c=>c.item==='ticket').length,0);assert.match(drawn.move.art,/^lottery-(grand|medium|small|miss|bomb)$/);assert.equal(drawn.move.title,'くじ：'+({grand:'大あたり',medium:'中あたり',small:'小あたり',miss:'ハズレ',bomb:'爆弾'}[drawn.state.lotteryLast.result]));
 const other=await req('/'+code,undefined,1);assert.equal(other.state.lotteryLast.result,drawn.state.lotteryLast.result);assert.equal(other.state.lotteryLast.p,1);assert.deepEqual(other.state.lottery,{count:15});assert.equal(other.move.art,drawn.move.art);
 const again=await action({type:'ticket',id});assert.equal(again.status,400);assert.equal((await req('/'+code)).rev,drawn.rev);
 // Retry of the original accepted request is idempotent, no second draw.
-const retry=await req('/'+code+'/action',{rev:drawn.rev-1,requestId:'ayame-action-000005',action:{type:'ticket',id}});assert.equal(retry.status,200);assert.equal(retry.state.lotteryLast.uid,drawn.state.lotteryLast.uid);
+const retry=await req('/'+code+'/action',{rev:drawn.rev-1,requestId:'ayame-action-000007',action:{type:'ticket',id}});assert.equal(retry.status,200);assert.equal(retry.state.lotteryLast.uid,drawn.state.lotteryLast.uid);
 await req('/'+code+'/leave',{});await req('/'+code+'/leave',{},1);
 console.log('Ayame room API: selection, end-ticket exchange, both-seat hidden lottery/order and public results, turn authority, unchanged clock, consumed-ticket rejection and idempotence passed');
