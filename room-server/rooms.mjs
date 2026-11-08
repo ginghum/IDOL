@@ -72,7 +72,7 @@ export async function handle(request,env){
  let clean;try{clean=IDOL.validateAction(b.action);}catch(e){throw new Problem(e.message);}
  const move=notice(r.state,clean,seat),turn=r.state.turn;
  try{r.state=IDOL.peerAction(r.state,clean,seat);}catch(e){throw new Problem(e.message);}
- r.move=move;r.seen.push(seat+':'+b.requestId);r.seen=r.seen.slice(-128);syncClock(r,now,turn);bump(r,now);changed=true;
+ if(clean.type==='ticket'){move.title='くじ：'+IDOL.LOTTERY[r.state.lotteryLast.result].name;move.art='lottery-'+r.state.lotteryLast.result;move.detail=r.state.lotteryLast.detail;}r.move=move;r.seen.push(seat+':'+b.requestId);r.seen=r.seen.slice(-128);syncClock(r,now,turn);bump(r,now);changed=true;
  }else if(parts[1]==='leave'){
  r.departed??=[false,false];r.departed[seat]=true;if(r.state&&r.state.winner===null){r.state.winner=1-seat;r.state.endReason='resign';r.phase='ended';r.deadline=0;r.clockMode='ended';r.move={actor:seat,title:'投了',art:null,detail:''};}else if(r.phase==='waiting'||r.phase==='selecting')r.phase='closed';bump(r,now);changed=true;
  }else throw new Problem('操作が見つかりません',404);

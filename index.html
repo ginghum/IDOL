@@ -166,6 +166,7 @@ body.in-setup{background:radial-gradient(ellipse at 80% 0,#55354e60,transparent 
  .hand-zone>.song-dock{top:var(--hand-controls-height);bottom:auto;max-height:calc(100% - var(--hand-controls-height) - 4px)}
  .hand-track .fan-chip-art{min-height:0}
 }
+.lottery-result{max-width:360px;margin:0 auto}.lottery-result .art{aspect-ratio:1}.lottery-result img{object-fit:contain}
 </style></head>
 <body><header class="app-header"><div class="brand"><span class="brand-icon">✦</span><div><strong>IDOL</strong><small>LIVE DUEL / 対バンカードゲーム</small></div></div><nav class="nav" aria-label="メインメニュー"><button data-action="catalog">カード一覧</button><button data-action="rules">遊び方</button></nav></header><main class="shell" id="app"></main><div id="modal"></div>
 <script>/* IDOL rules engine. Browser-independent; commands and state are JSON serializable. */
@@ -185,7 +186,8 @@ aya:{skillName:'私にできること、全部',name:'宝槻彩',reading:'ほう
 emi:{skillName:'あなたも、救われる。',name:'黒曜恵美',reading:'こくようえみ',short:'恵美',color:'#786b88',vol:30,hand:5,skill:'自分のターン開始時、応援チップ2枚を支払ってもよい。そうした場合、自分の獲得済みの厄介なファン1枚を信者（3ポイント）と入れ替える。',songs:['唯一神','使命至上主義','愛憎奉納IDOLSTAGE'],event:'BLACK×MISSIONS',cost:[3,5],effect:'相手の獲得済みの1ポイントの観客1枚を選び、アンチ（－3ポイント）と入れ替える。交換元はゲーム外に置く。ファンチップは対象外。'} ,
 akina:{skillName:'私なりの最適解',name:'弓城秋奈',reading:'ゆみしろあきな',short:'秋奈',color:'#e99747',vol:30,hand:5,skill:'ターン開始時のドローは、山札の上から最大3枚を見て1枚選ぶ。残りを山札に戻し、山札全体をシャッフルする。初期手札や他のドローには適用しない。',songs:['白chu夢','可愛いの論証','幸福追求エクスキューズ'],event:'真実は嘘より奇なり',cost:[1,1],repeat:true,unlimited:true,effect:'手札の楽曲カードを好きな枚数（0枚も可）、メモリーに置く。支払いは秋奈1メモリー。使用するたびに支払い、同じターンでも何度でも使える。'},
 moe:{skillName:'どうぞ、ごゆっくり。',name:'西藤萌',reading:'にしふじもえ',short:'萌',color:'#8052ab',vol:30,hand:5,skill:'応援効果を追加：自分の各ターン1回、応援チップ2枚で、相手の行動済みアイドル1人を選ぶ。次の相手ターン開始時、そのアイドルは未行動に戻らない。カード効果による未行動化は可能。無料使用も回数制限を共有する。',songs:['Dear Friends','In My Care','Between Us'],event:'信じてくれるなら',cost:[0,6],costEach:2,effect:'編成メンバーそれぞれのメモリー2枚ずつ、合計6枚を支払う。このターン、必要な応援チップが3枚以下の応援効果を、コストを支払わずに合計3回まで使ってもよい。'},
-nina:{skillName:'ライトファンと一緒に',name:'街角仁奈',reading:'まちかどにな',short:'仁奈',color:'#c12e73',vol:30,hand:5,skill:'自分がライトファンを1枚獲得するたび、応援チップを1つ得る。',songs:['等身大リアル','今イズマイ頂点','世界は私のお気に入り'],event:'枕の横のテディベア',cost:[2,4],effect:'手札のアイテム「くまのぬいぐるみ」1つにつき、ファンチップを1つ得る。ぬいぐるみは消費しない。'}
+nina:{skillName:'ライトファンと一緒に',name:'街角仁奈',reading:'まちかどにな',short:'仁奈',color:'#c12e73',vol:30,hand:5,skill:'自分がライトファンを1枚獲得するたび、応援チップを1つ得る。',songs:['等身大リアル','今イズマイ頂点','世界は私のお気に入り'],event:'枕の横のテディベア',cost:[2,4],effect:'手札のアイテム「くまのぬいぐるみ」1つにつき、ファンチップを1つ得る。ぬいぐるみは消費しない。'},
+ayame:{skillName:'退屈以外は大歓迎！',name:'美澄あやめ',reading:'みすみあやめ',short:'あやめ',color:'#70a787',vol:30,hand:5,skill:'自分のターン終了時、応援チップ1枚を捨ててもよい。そうしたら、くじ引き券を1枚得る。',songs:["C'mon！",'王冠だって遊び道具','筋書きどおりはつまんない！'],event:'Freeeeeedom!!',cost:[3,5],effect:'アイテム「くじ引き券」を5枚得る。'}
 };
 const COMMON = {
 collection:{event:'プライベートコレクション',short:'共通',color:'#a96a83',cost:[0,3],effect:'アイテム「くまのぬいぐるみ」を2つ得る。'},
@@ -215,6 +217,7 @@ dream:{name:'ゆめかわファン',points:0,count:0,text:'獲得側のメンバ
 };
 function song(c){return {name:CHAR[c.owner].songs[c.n-1],owner:c.owner,n:c.n,vol:c.n*10-(c.owner==='akina'?10:0)+(c.owner==='shio'||c.owner==='aya'&&c.n===1?10:0),fan:c.owner==='natsume'&&c.n===3?4:c.n,need:[60,80,100][c.n-1]};}
 function detail(c){const d=song(c);d.volText=c.owner==='kayo'?'カードを1枚引く。':c.owner==='hana'?'応援チップを1枚得る。':'';d.fanText=c.owner==='machi'?(c.n===3?'相手の獲得済み観客をランダムに1枚戻す。':'相手は自身の獲得済み観客1枚を選んで戻す。'):c.owner==='natsume'&&c.n<3?'volを追加で10％下げると、獲得枚数＋1。':c.owner==='rai'?(c.n===1?'応援チップ1枚で通常獲得の代わりに観客ゾーンの1枚を選んで獲得。':c.n===2?'通常獲得の代わりに観客ゾーンの1枚を選んで獲得してもよい。':'通常獲得の代わりに観客デッキの上2枚を見て、観客ゾーンと合わせた最大5枚から2枚を選び、同時に獲得してもよい。'):c.owner==='hana'&&c.n===3?'応援チップを1枚得る。':'';if(c.owner==='moe'){if(c.n<3)d.fanText='このターン、次に行うファンサービス1回の効果を2倍にする。重複しない。';else d.volText=d.fanText='使用後、自分のアイドル1人を未行動にする。その後、可能ならそのアイドルでファンサービスする（各ターン2回まで）。';}if(c.owner==='haru'){d.volText=c.n===3?'ゆめかわファン1枚を観客山札の一番上に置く。':'';d.fanText=c.n<3?'ゆめかわファン1枚を観客山札の一番上に置く。':'獲得済みのゆめかわファンが2枚以上なら、獲得枚数＋1。';}
+if(c.owner==='ayame')d.volText=d.fanText='アイテム「くじ引き券」を1枚得る。';
 if(c.owner==='nina')d.volText='アイテム「くまのぬいぐるみ」を1つ得る。';
 if(c.owner==='hakka'){d.volText='肉を1つ得る。';d.fanText=c.n===3?'肉を1つ得る。':'';}
 if(c.owner==='akina')d.volText=d.fanText='使用後、この楽曲をメモリーから手札に戻してもよい。';
@@ -233,6 +236,16 @@ function items(p){return p.items||[];}
 function paymentCards(p){return [...p.memory,...items(p).filter(c=>c.item==='meat')];}
 function paymentOK(p,id,paid){const d=EVENTS[id],cards=paymentCards(p);if(!d||!Array.isArray(paid)||paid.length!==d.cost[1]||new Set(paid).size!==paid.length||!paid.every(x=>cards.some(c=>c.uid===x)))return false;const chosen=cards.filter(c=>paid.includes(c.uid));if(d.costEach){if(!p.team.includes(id))return false;const counts=p.team.map(owner=>chosen.filter(c=>c.owner===owner&&!c.item).length);return chosen.every(c=>c.item==='meat'||p.team.includes(c.owner))&&counts.every(n=>n<=d.costEach)&&counts.reduce((n,c)=>n+d.costEach-c,0)===chosen.filter(c=>c.item==='meat').length;}return chosen.filter(c=>c.owner===id||c.item==='meat').length>=d.cost[0];}
 function meat(s,p){(p.items??=[]).push({uid:uid(s),item:'meat'});log(s,'肉を1つ獲得（手札のアイテム）');}
+const LOTTERY={grand:{name:'大あたり',count:1,points:5},medium:{name:'中あたり',count:3,points:2},small:{name:'小あたり',count:5,points:1},miss:{name:'ハズレ',count:5,points:0},bomb:{name:'爆弾',count:1,points:0}};
+function ticketCount(p){return items(p).filter(c=>c.item==='ticket').length;}
+function ticket(s,p,n=1){for(let j=0;j<n;j++)(p.items??=[]).push({uid:uid(s),item:'ticket'});log(s,'くじ引き券を'+n+'枚獲得（手札のアイテム）');}
+function lotteryDeck(s){return shuffle(s,Object.entries(LOTTERY).flatMap(([id,d])=>Array(d.count).fill(id)));}
+function useTicket(s,i,id){const p=s.players[i],at=items(p).findIndex(c=>c.uid===id&&c.item==='ticket');if(at<0)throw Error('使用できるくじ引き券がありません');
+ p.items.splice(at,1);s.lottery??=lotteryDeck(s);const result=s.lottery.shift(),d=LOTTERY[result];let detail=d.points?'ファンチップ＋'+d.points:'効果なし';
+ if(result==='bomb'){if(p.fans.length){const f=p.fans[Math.floor(rng(s)*p.fans.length)],name=FAN[f.type].name;detail=removeFan(s,i,f.uid,i)?name+'を観客山札の下へ戻した':name+'はぬいぐるみに守られた';}else detail='獲得済み観客がいないため、何も起こらなかった';}
+ else p.fanChips=(p.fanChips||0)+d.points;
+ s.lottery.push(result);shuffle(s,s.lottery);s.lotteryLast={uid:uid(s),p:i,result,detail};log(s,(i?'CPU':'あなた')+'のくじ：'+d.name+' / '+detail);finish(s);
+}
 function teddyCount(p){return items(p).filter(c=>c.item==='teddy').length;}
 function teddy(s,p){(p.items??=[]).push({uid:uid(s),item:'teddy'});log(s,'くまのぬいぐるみを1つ獲得（手札のアイテム）');}
 function teddyProtect(s,i,f){const p=s.players[i],at=items(p).findIndex(c=>c.item==='teddy');if(at<0)return false;p.items.splice(at,1);log(s,'くまのぬいぐるみを1つ捨て、'+FAN[f.type].name+'を獲得済みゾーンに残した');return true;}
@@ -248,7 +261,7 @@ function finish(s){
  if(s.queue.length||s.pending)return;
  const winners=s.players.map((p,i)=>score(p)>=20?i:-1).filter(i=>i>=0);
  if(winners.length){s.winner=winners.includes(s.active)?s.active:winners[0];log(s,s.winner?'CPUの勝利！':'あなたの勝利！');return;}
- for(let i=0;i<2;i++){const p=s.players[i];if(!p.deck.length&&!p.hand.length&&!p.events.some(e=>eventOK(s,i,e.id))){s.winner=1-i;log(s,(i?'CPU':'あなた')+'は山札・手札がなく、使用可能なイベントもないため敗北。');return;}}
+ for(let i=0;i<2;i++){const p=s.players[i];if(!p.deck.length&&!p.hand.length&&!ticketCount(p)&&!p.events.some(e=>eventOK(s,i,e.id))){s.winner=1-i;log(s,(i?'CPU':'あなた')+'は山札・手札がなく、使用可能なイベントもないため敗北。');return;}}
 }
 function fansProtected(s,i,source){return source!==i&&!!s.players[i].fanShield;}
 function removeFan(s,i,id,source=i){if(fansProtected(s,i,source))return;const p=s.players[i],at=p.fans.findIndex(f=>f.uid===id);if(at<0||teddyProtect(s,i,p.fans[at]))return;const f=p.fans.splice(at,1)[0];f.lock=null;s.audience.push(f);log(s,FAN[f.type].name+'を観客デッキの下へ戻した');return true;}
@@ -321,6 +334,7 @@ function create(team,leader,cpuTeam,cpuLeader,first=0,seed=Date.now(),playerEven
  t.forEach(owner=>{for(let n=1;n<=3;n++)for(let k=0;k<3;k++)p.deck.push({uid:uid(s),owner,n});});shuffle(s,p.deck);s.players.push(p);
  }
  for(const type in FAN)for(let n=0;n<FAN[type].count;n++)s.audience.push({uid:uid(s),type,lock:null});
+ if(s.players.some(p=>p.team.includes('ayame')))s.lottery=lotteryDeck(s);
  shuffle(s,s.audience);fill(s);for(let i=0;i<2;i++)draw(s,i,CHAR[s.players[i].leader].hand);
  log(s,(first?'CPU':'あなた')+'の先攻でライブ開始！');startSkill(s);process(s);return s;
 }
@@ -358,7 +372,8 @@ function dispatch(s,a){
  }
  if(s.pending)throw Error('先に効果を選択してください');
  const i=s.active,p=s.players[i];
- if(a.type==='end'){next(s);return s;}
+ if(a.type==='end'){if(a.ticket){if(p.leader!=='ayame'||p.chips<1)throw Error('あやめの終了時能力を使用できません');p.chips--;ticket(s,p);}next(s);return s;}
+ if(a.type==='ticket'){useTicket(s,i,a.id);return s;}
  if(a.type==='leaderSkill'){
  if(p.leader!=='hikari'||p.hikariSkillUsed)throw Error('光のリーダースキルはゲーム中1度だけです');
  if(p.vol<100)throw Error('光のリーダースキルにはVOL100％以上が必要です');
@@ -391,6 +406,7 @@ function dispatch(s,a){
  if(a.pick&&!(a.mode==='fan'&&c.owner==='rai'))throw Error('選択獲得ができません');
  if(a.pick&&c.n===1&&p.chips<1)throw Error('応援チップが足りません');
  p.hand.splice(at,1);p.memory.push(c);p.songsPlayed=(p.songsPlayed||0)+1;actors.forEach(j=>p.ready[j]=false);log(s,(i?'CPU':'あなた')+'「'+d.name+'」'+(a.mode==='vol'?' vol＋'+d.vol+'％':' fan'));
+ if(c.owner==='ayame')ticket(s,p);
  if(a.mode==='vol'){
  if(c.owner==='emi')s.queue.push({kind:'emiBottom',p:i});
  if(c.owner==='kayo')s.queue.push({kind:'draw',p:i});
@@ -436,6 +452,7 @@ function dispatch(s,a){
  if(id==='redo'){const cards=unlocked(s,i);for(const f of cards)moveOut(s,f);s.audience.push(...cards);shuffle(s,s.audience);fill(s);}
  if(id==='switch'){s.row.forEach(f=>{if(f.lock===i)f.lock=null;});p.buff=0;p.leader=a.leader;log(s,'リーダー変更：'+CHAR[p.leader].name);}
  if(id==='trouble'){for(const [who,n] of [[i,1],[1-i,2]]){if(fansProtected(s,who,i))continue;for(let j=0;j<n&&s.players[who].fans.length;j++){const list=s.players[who].fans;removeFan(s,who,list[Math.floor(rng(s)*list.length)].uid,i);}}}
+ if(id==='ayame')ticket(s,p,5);
  if(id==='collection'){teddy(s,p);teddy(s,p);}
  if(id==='rampage'){const q=s.players[1-i];q.fanChips=(q.fanChips||0)+a.amount;log(s,'暴走舞台：相手のファンチップ＋'+a.amount);voltage(p,a.amount*20);log(s,'暴走舞台：VOL＋'+(a.amount*20)+'％');}
  if(id==='scandal'){let returned=0;for(const f of [...p.fans])if(removeFan(s,i,f.uid))returned++;const n=returned+3+p.buff+(p.cardBuff||0);p.buff=0;log(s,'炎上商法：'+returned+'枚を戻し、観客'+n+'枚を獲得');s.queue.push({kind:'normal',p:i,n});}
@@ -495,8 +512,10 @@ function ai(s){
  }
  const i=s.active,p=s.players[i],ready=p.ready.filter(Boolean).length,volTarget=p.events.some(e=>e.id==='shio'&&!e.used)&&p.vol>=140&&score(p)>=10?180:100;
  const free=(effect)=>supportFree(p,effect);
+ if(ticketCount(p)){const t=items(p).find(c=>c.item==='ticket');return {type:'ticket',id:t.uid};}
  if(p.leader==='hana'&&p.chips>=2&&p.deck.length&&p.hand.some(c=>actors(p,c)&&p.vol>=song(c).need))return {type:'support',effect:'draw'};
  const ev=(id,extra={})=>({type:'event',id,memory:autoPay(p,id),...extra});
+ if(eventOK(s,i,'ayame'))return ev('ayame');
  if(eventOK(s,i,'rampage')&&ready>0){const target=Math.min(volTarget,Math.max(60,...p.hand.filter(c=>actors(p,c)).map(c=>song(c).need))),amount=Math.min(5,Math.ceil((target-p.vol)/20));if(amount>0&&score(s.players[1-i])+amount<20)return ev('rampage',{amount});}
  if(eventOK(s,i,'collection')&&(teddyCount(p)<2||p.events.some(e=>e.id==='nina'&&!e.used)))return ev('collection');
  if(eventOK(s,i,'buzz')&&p.hand.some(c=>actors(p,c)&&p.vol>=song(c).need))return ev('buzz');
@@ -538,12 +557,12 @@ function ai(s){
  for(const c of p.hand){
  const aa=actors(p,c);if(!aa)continue;const d=song(c);
  if(p.vol<d.need||volTarget===180&&p.vol<180||c.owner==='nina'&&teddyCount(p)<3&&p.events.some(e=>e.id==='nina'&&!e.used)){
- const value=Math.min(d.vol,Math.max(0,volTarget-p.vol))/d.n*.12+(c.owner==='kayo'?.9:c.owner==='hana'?.5:c.owner==='hakka'?.7:c.owner==='nina'?(teddyCount(p)<3?.75:.25):0);
+ const value=Math.min(d.vol,Math.max(0,volTarget-p.vol))/d.n*.12+(c.owner==='kayo'?.9:c.owner==='ayame'?1/c.n:c.owner==='hana'?.5:c.owner==='hakka'?.7:c.owner==='nina'?(teddyCount(p)<3?.75:.25):0);
  if(value>bestValue){bestValue=value;best={type:'play',card:c.uid,actors:aa,mode:'vol'};}
  }
  if(p.vol>=d.need){
  const n=fanCount(p,c),boost=c.owner==='natsume'&&c.n<3&&p.vol>=d.need+10;
- let value=estimate(s,i,n+(boost?1:0))/d.n+(c.owner==='machi'&&s.players[1-i].fans.length?.8/d.n:0)+(c.owner==='hana'&&c.n===3?.2:0)+(c.owner==='moe'&&(c.n===3||!p.moeDouble&&p.service<2)?.4:0);
+ let value=estimate(s,i,n+(boost?1:0))/d.n+(c.owner==='ayame'?1/d.n:0)+(c.owner==='machi'&&s.players[1-i].fans.length?.8/d.n:0)+(c.owner==='hana'&&c.n===3?.2:0)+(c.owner==='moe'&&(c.n===3||!p.moeDouble&&p.service<2)?.4:0);
  if(estimate(s,i,n+(boost?1:0))+score(p)>=20)value+=50;
  let pick=false;
  if(c.owner==='rai'&&(c.n!==1||p.chips>=1)){
@@ -561,12 +580,13 @@ function ai(s){
  }
  if(p.chips>=2&&p.deck.length&&(p.hand.length<4||ready>0))return {type:'support',effect:'draw'};
  if(p.service<2&&ready)return {type:'service',actor:p.ready.findIndex(Boolean)};
- return {type:'end'};
+ return {type:'end',...(p.leader==='ayame'&&p.chips>0?{ticket:true}:{})};
 }
 // Deterministic timeout: finish already-triggered choices, then end this turn.
 function timeout(s){if(s.winner!==null)return s;process(s);const turn=s.turn;let guard=0;while(s.pending&&s.turn===turn&&s.winner===null){if(++guard>512)throw Error('効果の自動処理が上限に達しました');dispatch(s,{type:'choose',value:s.pending.options[0]});}if(s.winner===null&&s.turn===turn){log(s,'99秒経過：未確定の操作を取り消してターン終了');dispatch(s,{type:'end'});}return s;}
 function validateAction(a){if(!a||typeof a!=='object'||Array.isArray(a))throw Error('操作が不正です');const str=x=>typeof x==='string'&&x.length>0&&x.length<=60,ids=x=>Array.isArray(x)&&x.length<=256&&x.every(str),actor=x=>Number.isInteger(x)&&x>=0&&x<3;let out={type:a.type};
- if(a.type==='end')return out;
+ if(a.type==='end'&&(a.ticket===undefined||typeof a.ticket==='boolean'))return {...out,...(a.ticket!==undefined?{ticket:a.ticket}:{})};
+ if(a.type==='ticket'&&str(a.id))return {...out,id:a.id};
  if(a.type==='leaderSkill'&&ids(a.discard)&&a.discard.length===3)return {...out,discard:[...a.discard]};
  if(a.type==='choose'&&str(a.value))return {...out,value:a.value};
  if(a.type==='service'&&actor(a.actor))return {...out,actor:a.actor};
@@ -575,16 +595,13 @@ function validateAction(a){if(!a||typeof a!=='object'||Array.isArray(a))throw Er
  if(a.type==='event'&&typeof a.id==='string'&&Object.hasOwn(EVENTS,a.id)&&ids(a.memory)&&[a.discard,a.targets].every(x=>x===undefined||ids(x))&&[a.target,a.hand,a.leader].every(x=>x===undefined||x===null||str(x))&&(a.actor===undefined||a.actor===null||actor(a.actor))&&(a.amount===undefined||Number.isInteger(a.amount)&&a.amount>=1&&a.amount<=5))return {...out,id:a.id,memory:[...a.memory],discard:a.discard||[],targets:a.targets||[],target:a.target,hand:a.hand,leader:a.leader,actor:a.actor,...(a.amount!==undefined?{amount:a.amount}:{})};
  throw Error('操作が不正です');}
 function peerAction(s,a,i){if(s.winner!==null)throw Error('ライブは終了しています');if((s.pending?.p??s.active)!==i)throw Error('相手の手番です');const clean=validateAction(a),copy=JSON.parse(JSON.stringify(s));dispatch(copy,clean);return copy;}
-function publicView(s,i){const v=JSON.parse(JSON.stringify(s)),remap=x=>x===null?null:x===i?0:1;delete v.seed;delete v.serial;delete v.clock;v.queue=[];v.audienceCoreCount=s.audience.filter(f=>f.type==='core').length;v.audienceHasInfluencer=s.audience.some(f=>f.type==='influencer');
+function publicView(s,i){const v=JSON.parse(JSON.stringify(s)),remap=x=>x===null?null:x===i?0:1;delete v.seed;delete v.serial;delete v.clock;if(v.lottery)v.lottery={count:s.lottery.length};if(v.lotteryLast)v.lotteryLast.p=remap(s.lotteryLast.p);v.queue=[];v.audienceCoreCount=s.audience.filter(f=>f.type==='core').length;v.audienceHasInfluencer=s.audience.some(f=>f.type==='influencer');
  v.audience=s.audience.map((f,j)=>j<2&&s.pending?.p===i&&s.pending.kind==='raiPick'&&(s.pending.options.includes(f.uid)||s.pending.selected?.includes(f.uid))?{...f}:{uid:'hidden-a-'+j,type:null,lock:null});
  v.players=[i,1-i].map((who,j)=>{const p=JSON.parse(JSON.stringify(s.players[who]));p.deck=p.deck.map((c,k)=>j===0&&s.pending?.p===i&&s.pending.kind==='akinaDraw'&&k<3?{...c}:{uid:'hidden-d-'+j+'-'+k});if(j){p.hand=p.hand.map((_,k)=>({uid:'hidden-h-'+k}));p.events=p.events.map(e=>e.used?e:{id:null,used:false,lastTurn:null});}for(const f of p.fans)f.lock=remap(f.lock);return p;});
  v.row.forEach(f=>f.lock=remap(f.lock));v.active=remap(s.active);v.first=remap(s.first);v.winner=remap(s.winner);if(v.pending){v.pending.p=remap(s.pending.p);if(s.pending.p!==i){v.pending.options=[];if(v.pending.selected)v.pending.selected=[];v.pending.text='相手が効果を選択しています';}}
  v.log=v.log.map(t=>t.replace(/あなた|CPU/g,x=>(x==='あなた'?0:1)===i?'あなた':'相手'));return v;}
-return {CHAR,COMMON,EVENTS,FAN,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,teddyCount,fansProtected,ayaEventCount,moeTargets,supportFree,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
+return {CHAR,COMMON,EVENTS,FAN,LOTTERY,ticketCount,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,teddyCount,fansProtected,ayaEventCount,moeTargets,supportFree,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
 })();
-
-
-
 const $=s=>document.querySelector(s);
 const {CHAR,COMMON,EVENTS,FAN}=IDOL;
 const IDS=Object.keys(CHAR);
@@ -597,12 +614,24 @@ function cardSeries(kind,id){return (kind==='character'?ORIGINAL_CARDS.character
 function seriesLabel(kind,id){return cardSeries(kind,id)==='original'?'オリジナル':'エクストラ';}
 function seriesBadge(kind,id){return '<span class="series-badge '+cardSeries(kind,id)+'">'+seriesLabel(kind,id)+'</span>';}
 
-const role={kayo:'手札展開',machi:'得点妨害',natsume:'大量獲得',shio:'高出力',rai:'観客独占',hana:'応援連携',haru:'理想郷創造',hakka:'冒険と肉',homura:'効果無効',hikari:'未知への挑戦',aya:'仲間の再行動',emi:'観客の変換',akina:'可愛さを叶える口実',moe:'信頼とおもてなし',nina:'今を楽しみ、守る'};
+const role={ayame:'自由とくじ引き',kayo:'手札展開',machi:'得点妨害',natsume:'大量獲得',shio:'高出力',rai:'観客独占',hana:'応援連携',haru:'理想郷創造',hakka:'冒険と肉',homura:'効果無効',hikari:'未知への挑戦',aya:'仲間の再行動',emi:'観客の変換',akina:'可愛さを叶える口実',moe:'信頼とおもてなし',nina:'今を楽しみ、守る'};
 const SAVE='idol-live-duel-v1';
 let state=null,team=['kayo','machi','natsume'],leader='kayo',firstMode='random',chosenEvents=['kayo','machi','natsume'],screen='setup',modal=null,selection={},busy=false,aiTimer=null,resultShown=false,aiSteps=0;
 let saved=null;try{saved=JSON.parse(localStorage.getItem(SAVE)||'null');if(saved?.version!==1||saved?.winner!==null)saved=null;}catch{}
 // Local artwork: six members, eighteen songs and ten events.
 const ARTWORK = {
+  "idol-ayame": "assets/art/idol-ayame.webp",
+  "song-ayame-1": "assets/art/song-ayame-1.webp",
+  "song-ayame-2": "assets/art/song-ayame-2.webp",
+  "song-ayame-3": "assets/art/song-ayame-3.webp",
+  "event-ayame": "assets/art/event-ayame.webp",
+  "item-ticket": "assets/art/item-ticket.webp",
+  "lottery-grand": "assets/art/lottery-grand.webp",
+  "lottery-medium": "assets/art/lottery-medium.webp",
+  "lottery-small": "assets/art/lottery-small.webp",
+  "lottery-miss": "assets/art/lottery-miss.webp",
+  "lottery-bomb": "assets/art/lottery-bomb.webp",
+
   "event-collection": "assets/art/event-collection.webp",
   "event-rampage": "assets/art/event-rampage.webp",
   "event-scandal": "assets/art/event-scandal.webp",
@@ -704,7 +733,7 @@ const ARTWORK = {
   "fan-reporter": "assets/art/fan-reporter.webp",
   "fan-influencer": "assets/art/fan-influencer.webp"
 };
-function artworkLabel(key){const parts=key.split('-'),id=parts[1];if(parts[0]==='idol')return CHAR[id]?.name+'の立ち絵';if(parts[0]==='song')return CHAR[id]?.songs[Number(parts[2])-1]+'のジャケット';if(parts[0]==='event')return EVENTS[id]?.event+'のジャケット';if(parts[0]==='fan')return FAN[id]?.name+'のイラスト';if(parts[0]==='item')return (id==='teddy'?'くまのぬいぐるみ':'肉')+'のイラスト';return 'イラスト';}
+function artworkLabel(key){const parts=key.split('-'),id=parts[1];if(parts[0]==='idol')return CHAR[id]?.name+'の立ち絵';if(parts[0]==='song')return CHAR[id]?.songs[Number(parts[2])-1]+'のジャケット';if(parts[0]==='event')return EVENTS[id]?.event+'のジャケット';if(parts[0]==='fan')return FAN[id]?.name+'のイラスト';if(parts[0]==='lottery')return IDOL.LOTTERY[id].name+'のイラスト';if(parts[0]==='item')return (id==='ticket'?'くじ引き券':id==='teddy'?'くまのぬいぐるみ':'肉')+'のイラスト';return 'イラスト';}
 const art=(key='')=>'<div class="art '+(ARTWORK[key]?'has-art':'')+' '+(key.startsWith('idol-')?'portrait':'album')+'" data-art="'+key+'">'+(ARTWORK[key]?'<img src="'+ARTWORK[key]+'" alt="'+esc(artworkLabel(key))+'" loading="lazy" decoding="async" width="'+(key.startsWith('idol-')?'733':'800')+'" height="'+(key.startsWith('idol-')?'1100':'800')+'">':'')+'</div>';
 function btn(label,action,cls='',disabled=false,attrs=''){return '<button class="'+cls+'" data-action="'+action+'" '+(disabled?'disabled ':'')+attrs+'>'+label+'</button>';}
 function charDot(id){return '<i class="dot" style="--c:'+CHAR[id].color+'"></i>';}
@@ -729,7 +758,7 @@ function publishOnline(move=null,action=null){if(net?.role!=='host'||!net.connec
 function onlineStartIfReady(){if(net?.role!=='host'||net.phase!=='opening'||!net.ready.every(Boolean))return;net.phase='playing';net.deadline=Date.now()+TURN_MS;net.clockTurn=state.turn;net.rev++;modal=null;render();publishOnline();}
 function onlineReady(){if(!net?.connected)return;net.readyLocal=true;modal={kind:'online-ready'};renderModal();if(net.role==='host'){net.ready[0]=true;onlineStartIfReady();}else net.link.send({kind:'ready'});}
 function receiveOnline(m){const n=net;if(!n)return;try{
- if(n.role==='host'&&m.kind==='hello'&&n.phase==='lobby'){const c=m.config;if(!c||!Array.isArray(c.team)||!Array.isArray(c.events))throw Error('相手の編成が不正です');const first=n.config.first==='random'?crypto.getRandomValues(new Uint8Array(1))[0]%2:Number(n.config.first);state=IDOL.create(n.config.team,n.config.leader,c.team,c.leader,first,crypto.getRandomValues(new Uint32Array(1))[0],n.config.events,c.events);n.phase='opening';screen='match';modal={kind:'opening'};lastMove=null;resultShown=false;render();publishOnline();return;}
+ if(n.role==='host'&&m.kind==='hello'&&n.phase==='lobby'){const c=m.config;if(!c||!Array.isArray(c.team)||!Array.isArray(c.events))throw Error('相手の編成が不正です');const first=n.config.first==='random'?crypto.getRandomValues(new Uint8Array(1))[0]%2:Number(n.config.first);state=IDOL.create(n.config.team,n.config.leader,c.team,c.leader,first,crypto.getRandomValues(new Uint32Array(1))[0],n.config.events,c.events);n.phase='opening';screen='match';modal={kind:'opening'};lastMove=null;lastLotteryShown=null;resultShown=false;render();publishOnline();return;}
  if(n.role==='host'&&m.kind==='ready'&&n.phase==='opening'){n.ready[1]=true;onlineStartIfReady();return;}
  if(n.role==='host'&&m.kind==='action'){applyOnlineAction(m.action,1,m.rev);return;}
  if(n.role==='host'&&m.kind==='resign'){if(state&&state.winner===null){state.winner=0;state.endReason='resign';state.log.push('CPUが投了しました');n.phase='ended';n.rev++;modal=null;render();publishOnline();schedule();}return;}
@@ -751,7 +780,7 @@ function cpuEventPool(t){return [...t,...Object.keys(COMMON)];}
 function randomCpuConfig(collection='extra'){const pick=a=>{a=[...a];for(let j=a.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[a[j],a[k]]=[a[k],a[j]];}return a;},t=pick(IDS.filter(id=>collection!=='original'||cardSeries('character',id)==='original')).slice(0,3);return {team:t,leader:t[Math.floor(Math.random()*3)],events:(()=>{const dedicated=pick(t).slice(0,2),pool=cpuEventPool(t).filter(id=>!dedicated.includes(id)&&(collection!=='original'||cardSeries('event',id)==='original'));return pick([...dedicated,pick(pool)[0]]);})()};}
 function cpuConfigOK(c){return !!c&&c.team.length===3&&new Set(c.team).size===3&&c.team.every(id=>IDS.includes(id))&&c.team.includes(c.leader)&&c.events.length===3&&new Set(c.events).size===3&&c.events.every(id=>cpuEventPool(c.team).includes(id));}
 function openCpuSetup(launch=false){modal={kind:'cpu-setup',launch,draft:JSON.parse(JSON.stringify(cpuConfig||randomCpuConfig()))};renderModal();}
-function start(confirmed=false,opponent=null){if(!unitOK(unitConfig())){notify('メンバー3人・リーダー・イベント3枚を選んでください');return;}if(connectedSelection()){onlineAction('online-lineup-confirm');return;}if(battleMode==='online'){onlineLobby();return;}if(net){net.link?.close();net=null;}const cpu=opponent||cpuConfig||randomCpuConfig();if(!cpuConfigOK(cpu)){notify('CPUのメンバー3人・リーダー・イベント3枚を選んでください');return;}state=IDOL.create([...team],leader,[...cpu.team],cpu.leader,firstMode==='random'?(Math.random()<.5?0:1):Number(firstMode),Date.now(),[...chosenEvents],[...cpu.events]);screen='match';lastMove=null;resultShown=false;aiSteps=0;modal={kind:'opening'};persist();render();schedule();}
+function start(confirmed=false,opponent=null){if(!unitOK(unitConfig())){notify('メンバー3人・リーダー・イベント3枚を選んでください');return;}if(connectedSelection()){onlineAction('online-lineup-confirm');return;}if(battleMode==='online'){onlineLobby();return;}if(net){net.link?.close();net=null;}const cpu=opponent||cpuConfig||randomCpuConfig();if(!cpuConfigOK(cpu)){notify('CPUのメンバー3人・リーダー・イベント3枚を選んでください');return;}state=IDOL.create([...team],leader,[...cpu.team],cpu.leader,firstMode==='random'?(Math.random()<.5?0:1):Number(firstMode),Date.now(),[...chosenEvents],[...cpu.events]);screen='match';lastMove=null;lastLotteryShown=null;resultShown=false;aiSteps=0;modal={kind:'opening'};persist();render();schedule();}
 function cpuSetupHTML(){const c=modal.draft,l=CHAR[c.leader];return `<div class="cpu-setup"><div class="cpu-setup-top"><p>メンバー ${c.team.length}/3 · イベント ${c.events.length}/3</p>${btn('おまかせ編成','cpu-random','small')}</div><h3>メンバーを3人選択</h3><div class="cpu-member-grid">${IDS.map(id=>`<button class="cpu-member ${c.team.includes(id)?'on':''}" data-action="cpu-member" data-id="${id}" aria-pressed="${c.team.includes(id)}">${art('idol-'+id)}<strong>${CHAR[id].short}</strong><small>${role[id]}</small></button>`).join('')}</div><label class="cpu-leader-label" for="cpu-leader">リーダー</label><select id="cpu-leader">${c.team.map(id=>`<option value="${id}" ${c.leader===id?'selected':''}>${CHAR[id].name}</option>`).join('')}</select>${l?`<p class="cpu-skill"><b>${l.skillName}</b><br>${l.skill}<br>初期VOL ${l.vol}% · 手札 ${l.hand}枚</p>`:''}<h3>イベントを3枚選択</h3><div class="cpu-event-grid">${cpuEventPool(c.team).map(id=>`<button class="cpu-event ${c.events.includes(id)?'on':''}" data-action="cpu-event" data-id="${id}" aria-pressed="${c.events.includes(id)}"><span>${c.events.includes(id)?'✓':'＋'}</span><div><strong>${EVENTS[id].event}</strong><small>${costLabel(EVENTS[id])}</small><p>${EVENTS[id].effect}</p></div></button>`).join('')}</div><div class="cpu-setup-footer">${btn(modal.launch?'この相手とライブを始める →':'編成を保存','cpu-confirm','pink',!cpuConfigOK(c))}</div></div>`;}
 
 function send(a){if(net){onlineSend(a);return;}try{const before=JSON.parse(JSON.stringify(state)),motion=captureMotion(a);state=IDOL.peerAction(state,a,state.pending?.p??state.active);if(state.turn!==before.turn)armCpuClock(true);recordMove(a,before);modal=null;selection={};persist();render();animateMotion(motion);schedule();}catch(e){if(modal?.kind==='song'){const p=state.players[0],c=p.hand.find(c=>c.uid===modal.id);if(c)selection.actors=(selection.actors||[]).filter((j,k,a)=>Number.isInteger(j)&&p.ready[j]&&a.indexOf(j)===k).slice(0,c.n);else modal=null;render();}notify(e.message);}}
@@ -764,6 +793,8 @@ function schedule(){
  if(isCPU){aiTimer=setTimeout(()=>{if(modal)return;try{const a=IDOL.ai(state);if(a.type==='end')aiSteps=0;else aiSteps++;if(aiSteps>90&&!state.pending)send({type:'end'});else send(a);}catch(e){notify('CPUの操作を進められませんでした。ページを再読み込みしてください。');console.error(e);}},1550);}
 }
 function render(){
+ const draw=state?.lotteryLast;if(screen==='match'&&draw&&lastLotteryShown!==draw.uid){lastLotteryShown=draw.uid;modal={kind:'lottery-result',draw:{...draw}};}
+
  document.body?.classList?.toggle('in-duel',screen==='match');
  document.body?.classList?.toggle('in-setup',screen==='setup');
  const openSetupDetails=screen==='setup'?[...document.querySelectorAll?.('.unit-editor details[open]')||[]].map(el=>el.className):[];
@@ -807,8 +838,9 @@ function eventSetupHTML(){return '<section class="panel" style="margin-top:22px"
 function scoreHTML(p,i){return '<div class="score-panel '+(state.active===i?'turn':'')+'"><div class="score-head"><div><strong>'+(i?'CPU UNIT':'YOUR UNIT')+'</strong> <span class="tag">'+(state.active===i?'ON STAGE':'WAITING')+'</span></div><div class="score-number">'+IDOL.score(p)+'<small> / 20 pt</small></div></div><div class="score-team">'+p.team.map(id=>(id===p.leader?'♛ ':'')+CHAR[id].name).join(' / ')+'</div><div class="vol-row"><b>VOL</b><div class="vol-track"><i style="width:'+p.vol/2+'%"></i></div><b>'+p.vol+'％</b></div><div class="stats-row"><span>応援 <b>'+p.chips+'</b></span><span>山札 <b>'+p.deck.length+'</b></span><span>手札 <b>'+p.hand.length+'</b></span><span>メモリー <b>'+p.memory.length+'</b></span><span>捨て札 <b>'+p.discard.length+'</b></span></div><div class="mini-actions" style="margin-top:8px">'+btn('獲得観客 '+p.fans.length,'inspect','small flat',false,'data-zone="fans" data-p="'+i+'"')+btn('メモリー','inspect','small flat',false,'data-zone="memory" data-p="'+i+'"')+btn('捨て札','inspect','small flat',false,'data-zone="discard" data-p="'+i+'"')+'</div></div>';}
 function fanHTML(f,idx=null,owner=null){const d=FAN[f.type],points=IDOL.fanPoints(owner,f);return '<div class="fan-card '+f.type+'">'+(idx!==null?'<div class="queue-label">'+(idx===0?'01 / 先頭':'0'+(idx+1))+'</div>':'')+'<div class="fan-head"><h3>'+d.name+'</h3><span class="points">'+points+'<small> PT</small></span></div>'+art('fan-'+f.type)+'<p>'+(f.muted?'効果無効（ターン終了まで）':d.text)+'</p>'+(f.lock!==null?'<span class="lock">'+(f.lock===0?'あなた':rival())+'の独占</span>':'')+'</div>';}
 function songHTML(c,interactive=true){const d=IDOL.detail(c),p=state?.players[0],can=p&&!!IDOL.actors(p,c);return '<'+(interactive?'button':'div')+' class="song-card" style="--c:'+CHAR[c.owner].color+'" '+(interactive?'data-action="song" data-id="'+c.uid+'"':'')+'><div class="song-meta"><span>'+CHAR[c.owner].short+' / '+c.n+'人用</span><span>SONG</span></div><h3>'+d.name+'</h3>'+art('song-'+c.owner+'-'+c.n)+'<div class="song-line"><span>VOL</span><b>＋'+d.vol+'％</b></div><div class="song-line"><span>FAN <small>必要 '+d.need+'％</small></span><b>＋'+d.fan+'</b></div>'+(d.volText?'<p><b>vol：</b>'+d.volText+'</p>':'')+(d.fanText?'<p><b>fan：</b>'+d.fanText+'</p>':'')+(interactive&&!can?'<div class="unavailable">指定メンバー・行動人数が必要</div>':'')+'</'+(interactive?'button':'div')+'>';}
-let lastMove=null, moveSerial=0;
-function itemHTML(c,action='item-info',on=false){const chip=c.item==='fanChip',bear=c.item==='teddy',name=chip?'ファンチップ':bear?'くまのぬいぐるみ':'肉';return `<button class="playing-card item-card ${on?'item-selected':''}" data-action="${action}" data-id="${c.uid}" style="--c:${bear?'#c12e73':'#b68b43'}"><div class="card-title"><b>${name}</b><span>ITEM${c.count?' ×'+c.count:''}</span></div>${chip?'<div class="fan-chip-art">★</div>':art(bear?'item-teddy':'item-meat')}<div class="card-effect">${chip?'1つにつき観客ポイント＋1。':bear?'獲得済みのファン1枚が離れるかわりに、このアイテム1つを捨てる（強制）。':'イベント支払い時、好きなキャラのメモリー1枚の代わりに使える。'}</div></button>`;}
+let lastMove=null, moveSerial=0,lastLotteryShown=null;
+function itemHTML(c,action='item-info',on=false){const chip=c.item==='fanChip',bear=c.item==='teddy',ticket=c.item==='ticket',name=chip?'ファンチップ':ticket?'くじ引き券':bear?'くまのぬいぐるみ':'肉';return `<button class="playing-card item-card ${on?'item-selected':''}" data-action="${action}" data-id="${c.uid}" style="--c:${ticket?'#70a787':bear?'#c12e73':'#b68b43'}"><div class="card-title"><b>${name}</b><span>ITEM${c.count?' ×'+c.count:''}</span></div>${chip?'<div class="fan-chip-art">★</div>':art(ticket?'item-ticket':bear?'item-teddy':'item-meat')}<div class="card-effect">${chip?'1つにつき観客ポイント＋1。':ticket?'自分のターンに1枚捨ててくじを1回引く。行動不要。':bear?'獲得済みのファン1枚が離れるかわりに、このアイテム1つを捨てる（強制）。':'イベント支払い時、好きなキャラのメモリー1枚の代わりに使える。'}</div></button>`;}
+
 function tableSong(c){const d=IDOL.detail(c),active=modal?.kind==='song'&&modal.id===c.uid,p=state.players[0],can=humanTurn()&&!!IDOL.actors(p,c),reason=!humanTurn()?'今は使用できません':!p.ready[p.team.indexOf(c.owner)]?CHAR[c.owner].short+'が行動済みです':'未行動のメンバーが足りません';return `<button class="playing-card ${active?'lifted':''} ${can?'playable':'unplayable'}" title="${can?'':reason}" style="--c:${CHAR[c.owner].color}" data-action="song" data-id="${c.uid}" aria-label="${esc(d.name)}を選ぶ"><div class="card-title"><b>${d.name}</b><span>${c.n}人</span></div>${art('song-'+c.owner+'-'+c.n)}<div class="card-modes"><span>VOL +${d.vol}%</span><span>FAN +${d.fan}<small> ${d.need}%〜</small></span></div><div class="card-effect">${d.volText?'vol：'+d.volText:''}${d.volText&&d.fanText?'<br>':''}${d.fanText?'fan：'+d.fanText:''}</div></button>`;}
 function tableMember(id,j,i){const p=state.players[i],selected=i===0&&modal?.kind==='song',c=selected?p.hand.find(x=>x.uid===modal.id):null,on=selected&&selection.actors.includes(j);return `<button class="member-card ${p.ready[j]?'ready':'exhausted'} ${on?'actor-on':''}" data-action="${selected?'board-actor':'member-info'}" data-id="${j}" data-p="${i}" aria-label="${CHAR[id].short} ${p.ready[j]?'未行動':'行動済み'}${on?' 選択中':''}" ${selected&&!p.ready[j]?'disabled':''}><span class="member-badge">${(p.moeHeld||[]).includes(id)?'次の開始時は回復なし':p.leader===id?'♛ リーダー':p.ready[j]?'未行動':'行動済み'}</span>${art('idol-'+id)}<b>${CHAR[id].short}</b>${c&&id===c.owner?'<em>必須</em>':''}</button>`;}
 function tableStacks(p,i){return `<div class="table-stacks">${btn('カード束','zones','mobile-zones',false,'data-p="'+i+'"')}<div class="pile deck-pile"><span>✦</span><b>${p.deck.length}</b><small>山札</small></div>${['memory','discard','fans'].map(z=>`<button class="pile ${z}" data-action="inspect" data-p="${i}" data-zone="${z}"><span>${z==='memory'?'≋':z==='fans'?'♡':'◇'}</span><b>${p[z].length}</b><small>${z==='memory'?'メモリー':z==='fans'?'獲得観客':'捨て札'}</small></button>`).join('')}</div>`;}
@@ -828,7 +860,7 @@ function animateMotion(m){if(!m||typeof requestAnimationFrame==='undefined')retu
  for(const el of document.querySelectorAll('.hand-track > .playing-card'))if(!m.handIds.includes(el.dataset.id))el.animate([{opacity:0,transform:'translateY(-70px) rotate(8deg)'},{opacity:1,transform:'translateY(0) rotate(0)'}],{duration:600});
  });}
 
-function recordMove(a,before){const i=before.pending?.p??before.active,p=before.players[i],c=p.hand.find(c=>c.uid===a.card);let title='',key='';if(c){title=IDOL.song(c).name;key='song-'+c.owner+'-'+c.n;}else if(a.type==='event'){title=EVENTS[a.id].event;key='event-'+a.id;}else title={end:'ターン交代',service:'ファンサービス',support:'応援チップ効果',leaderSkill:'怖いからこそ、全速力！',choose:'効果を選択'}[a.type]||'';const gained=state.players[i].fans.length-p.fans.length;lastMove={who:i?rival():'YOU',title,art:key,detail:(a.mode==='vol'?'VOL +'+IDOL.song(c).vol+'%':a.mode==='fan'?'FANモード':'')+(gained>0?' · 観客 +'+gained:'')};moveSerial++;}
+function recordMove(a,before){const i=before.pending?.p??before.active,p=before.players[i],c=p.hand.find(c=>c.uid===a.card);let title='',key='';if(a.type==='ticket'){title='くじ：'+IDOL.LOTTERY[state.lotteryLast.result].name;key='lottery-'+state.lotteryLast.result;}else if(c){title=IDOL.song(c).name;key='song-'+c.owner+'-'+c.n;}else if(a.type==='event'){title=EVENTS[a.id].event;key='event-'+a.id;}else title={end:'ターン交代',service:'ファンサービス',support:'応援チップ効果',leaderSkill:'怖いからこそ、全速力！',choose:'効果を選択'}[a.type]||'';const gained=state.players[i].fans.length-p.fans.length;lastMove={who:i?rival():'YOU',title,art:key,detail:(a.mode==='vol'?'VOL +'+IDOL.song(c).vol+'%':a.mode==='fan'?'FANモード':'')+(gained>0?' · 観客 +'+gained:'')};moveSerial++;}
 
 function dialog(title,body,large=false,close=true){return '<div class="overlay"><section class="dialog '+(large?'large':'')+'" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="dialog-head"><div><h2>'+title+'</h2></div>'+(close?btn('×','close','','', 'aria-label="閉じる"'):'')+'</div>'+body+'</section></div>';}
 function choiceFan(f,action,on=false){return '<button class="choice-card '+(on?'on':'')+'" data-action="'+action+'" data-id="'+f.uid+'"><h3>'+FAN[f.type].name+'　'+IDOL.fanPoints(state?.players.find(p=>p.fans.some(x=>x.uid===f.uid)),f)+'pt</h3>'+art('fan-'+f.type)+'<small>'+(f.muted?'効果無効（ターン終了まで）':FAN[f.type].text)+'</small></button>';}
@@ -879,6 +911,8 @@ function renderModalContent(){
  if(!modal){root.innerHTML='';return;}
  const p=state?.players[0];
  let body='',title='',large=false;
+ if(modal.kind==='ayame-end'){title=CHAR.ayame.skillName;body='<p>応援チップ1枚を捨てて、くじ引き券を1枚得ますか？ 得た券は次の自分のターンから使用できます。</p><div class="dialog-footer">'+btn('戻る','close')+btn('使わず終了','ayame-end-skip')+btn('応援1枚 → くじ引き券','ayame-end-confirm','primary',!humanTurn()||p.leader!=='ayame'||p.chips<1)+'</div>';}
+ if(modal.kind==='lottery-result'){const d=modal.draw;title=(d.p?'相手':'自分')+'のくじ：'+IDOL.LOTTERY[d.result].name;body='<div class="lottery-result">'+art('lottery-'+d.result)+'</div><p>'+esc(d.detail)+'</p><p class="setup-note">くじを山札に戻し、15枚でシャッフルしました。</p>'+btn('OK','lottery-ok','primary wide');}
  if(modal.kind==='song'){
  const c=p.hand.find(c=>c.uid===modal.id);if(!c){modal=null;root.innerHTML='';return;}const d=IDOL.detail(c);title=d.name;
  const count=selection.actors.length,valid=humanTurn()&&IDOL.playOK(state,0,c,selection.actors,'vol'),fanValid=humanTurn()&&IDOL.playOK(state,0,c,selection.actors,'fan');
@@ -890,6 +924,7 @@ function renderModalContent(){
  const id=modal.id,d=EVENTS[id];title=d.event;large=true;
  const paid=selection.memory,valid=humanTurn()&&IDOL.eventOK(state,0,id)&&IDOL.paymentOK(p,id,paid);
  body=art('event-'+id)+'<p>'+d.effect+'</p><div class="dialog-section"><h3>支払うメモリー・肉を選択</h3><p>'+costLabel(d)+'。選択中 '+paid.length+' / '+d.cost[1]+'枚</p><div class="choice-grid">'+p.memory.map(c=>memChoice(c,'pay',paid.includes(c.uid))).join('')+IDOL.items(p).filter(c=>c.item==='meat').map(c=>itemHTML(c,'pay',paid.includes(c.uid))).join('')+'</div></div>';
+ if(id==='ayame')body+=btn('くじデッキを見る','lottery-catalog','wide');
  if(id==='nina')body+='<p>現在のくまのぬいぐるみ：'+IDOL.teddyCount(p)+'個 → ファンチップ＋'+IDOL.teddyCount(p)+'。ぬいぐるみは残ります。</p>';
  if(id==='moe')body+='<p>選択内訳：'+p.team.map(owner=>CHAR[owner].short+' '+p.memory.filter(c=>paid.includes(c.uid)&&c.owner===owner).length+'/2枚').join(' ／ ')+'。肉は不足するメンバーのメモリーを1枚ずつ代用します。</p>';
  if(id==='rampage')body+='<div class="dialog-section"><h3>数字を選択</h3><p>相手にファンチップを渡した後、自分のVOLが上がります。一連の処理後に勝敗を判定します。</p><div class="actor-select">'+[1,2,3,4,5].map(n=>btn(n+'：相手★＋'+n+' ／ VOL＋'+(n*20)+'％','rampage-amount',selection.amount===n?'pink':'',false,'data-id="'+n+'"')).join('')+'</div></div>';
@@ -904,12 +939,13 @@ function renderModalContent(){
  const targetValid=id==='rampage'?Number.isInteger(selection.amount)&&selection.amount>=1&&selection.amount<=5:id==='kayo'?selection.discard.length>=1&&selection.discard.length<=3:id==='wit'?!!selection.hand:id==='switch'?!!selection.leader:id==='hana'?selection.actor!==null:id==='emi'?state.players[1].fans.some(f=>f.uid===selection.target&&IDOL.fanPoints(state.players[1],f)===1):id==='rai'?!!selection.target&&(state.audienceCoreCount??state.audience.filter(f=>f.type==='core').length)>0:true;
  body+='<div class="dialog-footer">'+btn('キャンセル','close')+btn('コストを支払って使用','event-confirm','pink',!valid||!targetValid)+'</div>';
  }
- if(modal.kind==='item'){const c=IDOL.items(p).find(c=>c.uid===modal.id);title=c?(c.item==='teddy'?'くまのぬいぐるみ':'肉'):'ファンチップ';body=c?.item==='teddy'?itemHTML(c)+'<p>自分の獲得済みのファン1枚がゾーンを離れるとき、かわりに1つを捨てて残します。強制効果で、厄介なファン・自分の効果・交換にも有効です。メモリーの代用や楽曲としての使用はできません。</p>':c?itemHTML(c)+'<p>イベントを開き、メモリーと一緒に肉を選んで支払います。肉1つで任意のキャラの専用メモリー1枚を代替します。</p>':'<p>ファンチップ '+(p.fanChips||0)+'つ。1つにつき1ポイントを保持します。観客カードの返却対象にはなりません。</p>'; }
+ if(modal.kind==='item'){const c=IDOL.items(p).find(c=>c.uid===modal.id);title=c?(c.item==='ticket'?'くじ引き券':c.item==='teddy'?'くまのぬいぐるみ':'肉'):'ファンチップ';body=c?.item==='ticket'?itemHTML(c)+'<p>自分のターンに1枚捨てて使用します。大あたり1・中あたり3・小あたり5・ハズレ5・爆弾1の計15枚から引き、結果を公開して戻し、毎回シャッフルします。爆弾は自分の獲得済み観客をランダムに1人戻します。メモリーの代用には使えません。</p>'+btn('券を1枚使って引く','ticket-use','primary wide',!humanTurn(),'data-id="'+c.uid+'"'):c?.item==='teddy'?itemHTML(c)+'<p>自分の獲得済みのファン1枚がゾーンを離れるとき、かわりに1つを捨てて残します。強制効果で、厄介なファン・自分の効果・交換にも有効です。メモリーの代用や楽曲としての使用はできません。</p>':c?itemHTML(c)+'<p>イベントを開き、メモリーと一緒に肉を選んで支払います。肉1つで任意のキャラの専用メモリー1枚を代替します。</p>':'<p>ファンチップ '+(p.fanChips||0)+'つ。1つにつき1ポイントを保持します。観客カードの返却対象にはなりません。</p>'; }
  if(modal.kind==='lock'){title='独占チップを置く';body='<p>'+(modal.free?'無料使用です。':'応援チップ1枚を支払います。')+'置いた後の付け替えはできません。</p><div class="choice-grid">'+state.row.filter(f=>f.lock===null).map(f=>choiceFan(f,'place-lock')).join('')+'</div>';}
  if(modal.kind==='inspect'){
  title=(modal.p?rival():'あなた')+'の'+({fans:'獲得観客',memory:'メモリー',discard:'捨て札'}[modal.zone]);large=true;
  const list=state.players[modal.p][modal.zone];body=list.length?'<div class="'+(modal.zone==='fans'?'choice-grid':'catalog-grid')+'">'+list.map(c=>modal.zone==='fans'?fanHTML(c,null,state.players[modal.p]):songHTML(c,false)).join('')+'</div>':'<div class="empty">カードはありません。</div>';
  }
+ if(modal.kind==='lottery-catalog'){title='くじデッキ · 計15枚';large=true;body='<div class="catalog-grid">'+Object.entries(IDOL.LOTTERY).map(([id,d])=>'<section>'+art('lottery-'+id)+'<h3>'+d.name+' ×'+d.count+'枚</h3><p>'+(d.points?'ファンチップ＋'+d.points:id==='bomb'?'獲得済み観客をランダムに1人戻す。':'効果なし。')+'</p></section>').join('')+'</div>'; }
  if(modal.kind==='fan-catalog'){title='観客カード';large=true;body='<div class="catalog-grid">'+Object.entries(FAN).map(([id,d])=>'<section>'+fanHTML({uid:'catalog-'+id,type:id,lock:null})+'<p class="setup-note">'+(d.count?'初期山札：'+d.count+'枚':'ゲーム中に追加')+'</p></section>').join('')+'</div>';}
  if(modal.kind==='common-catalog'){title='共通イベント';large=true;body='<div class="catalog-grid">'+Object.entries(COMMON).map(([id,d])=>'<div class="event-card">'+art('event-'+id)+seriesBadge('event',id)+'<h3>'+d.event+'</h3><p>'+d.effect+'</p><small>'+costLabel(d)+'</small></div>').join('')+'</div>';}
  if(modal.kind==='hikari-skill'){title=CHAR.hikari.skillName;body='<p>ゲーム中1度、VOL100％以上のときに使用できます。手札を3枚選んで捨て、応援チップ6枚を得ます。VOLは消費しません。</p><p>選択 '+selection.discard.length+' / 3枚</p><div class="choice-grid">'+p.hand.map(c=>memChoice(c,'hikari-discard',selection.discard.includes(c.uid))).join('')+'</div><div class="dialog-footer">'+btn('キャンセル','close')+btn('3枚捨てて応援＋6','hikari-skill-confirm','primary',selection.discard.length!==3||p.hikariSkillUsed||p.vol<100||p.leader!=='hikari')+'</div>';}
@@ -933,7 +969,7 @@ function renderModalContent(){
 
  root.innerHTML=dialog(title,body,large,!(modal.kind==='result'&&net?.mode==='room'));
 }
-function rulesHTML(){return '<div class="rules"><h3>1. 編成と勝利条件</h3><p>'+IDS.length+'人から3人を選び、1人をリーダーにします。専用楽曲は各3種類×3枚、3人で27枚。選んだメンバーの専用・共通イベントから異なる3枚を選び、伏せて用意します。初期volと初期手札はリーダーで決まります。</p><p>観客の得点と一時的な得点を合わせて20点以上で勝利。観客をまとめて獲得した場合は、マイナス効果を含むすべての処理を終えてから判定します。同時に20点以上になった場合は手番側が勝利します。</p><h3>2. ターンと楽曲</h3><ol><li>自分のアイドル全員を未行動に戻し、1枚ドロー。先攻の最初のターンだけドローなし。</li><li>楽曲、ファンサービス、イベント、応援チップ効果を好きな順で使用。いつでもターン終了できます。</li><li>楽曲には指定メンバーを含む1〜3人の未行動アイドルが必要。行動したアイドルはそのターン再使用できません。</li><li>volモードは必要volなし。fanモードは指定vol以上が必要ですが、volは消費しません。対応するモードの追加能力を先に処理してから、VOL上昇・ファン獲得を行います。観客効果の処理後に補充します。</li><li>使用した楽曲はメモリーへ。イベントのコストとして支払ったメモリーは捨て札へ。</li></ol><h3>佳代の開始時ドロー</h3><p>自分のターン開始時、通常ドローの直前に楽曲手札が4枚以下なら、1枚のかわりに2枚引きます。肉・ぬいぐるみなどのアイテムは数えません。初期手札や先攻最初のドローなし、楽曲・応援・イベントのドローには適用しません。佳代の旧能力による観客山札の閲覧はできません。</p><h3>3. ボルテージ・応援</h3><p>volの範囲は0〜200％。「－10％」は80％→70％のように増減します。手札上限はありません。</p><ul><li>ファンサービス：未行動1人を行動済みにして応援チップ1枚。各ターン2回まで。</li><li>応援チップ2枚：1枚ドロー。6枚：自分の全員を未行動に。</li><li>イベントの使用にアイドルの行動は不要。メモリー支払いは合計指定枚数ちょうど。機転は4メモリーで各自のターン1回・再使用可。秋奈のイベントは秋奈1メモリーで同一ターンにも何度でも使えます。その他は対戦中1回。ライブビューイングのファンチップ獲得はファンサービスだけに適用し、残りのゲーム中続きます。MCタイムは相手のカードによる獲得ファンの返却・移動を防ぎ、次の自分のターン開始時に解除します。自分の観客効果や自分のイベントには影響しません。センタースイッチで初期手札や初期volは再適用しません。</li></ul><h3>4. 観客</h3><p>初期観客山札は53枚（記者1枚を含む）。通常は公開中の観客を先頭から獲得します。一度に4枚以上なら、公開中の3枚を取り、残りはデッキ上から取ります。その後、空きを詰めて3枚に補充。相手の独占チップ付き観客は飛ばします。</p><table><thead><tr><th>観客</th><th>点</th><th>初期枚数</th><th>効果</th></tr></thead><tbody>'+Object.values(FAN).map(f=>'<tr><td>'+f.name+'</td><td>'+f.points+'</td><td>'+f.count+'</td><td>'+f.text+'</td></tr>').join('')+'</tbody></table><p>記者を獲得するたびに、ゲーム外から5点のインフルエンサー1枚を観客山札に加えてシャッフルします。一括獲得をすべて終え、観客効果を処理してから補充するため、追加したインフルエンサーは同じ一括獲得には含まれません。効果を失っている記者は追加を行いません。</p><p>獲得した観客は全員分の効果が発動します。先頭から処理し、厄介なファンはまだ戻されていない同時獲得観客から自身以外の最高得点1枚を戻します。同点なら獲得した側が選択。戻された観客も獲得時の効果は消えません。</p><h3>5. 独占・追加効果</h3><ul><li>独占チップは付け替え不可。観客がゾーンを離れると回収し、再び応援チップ1枚で置けます。</li><li>雷の選択獲得は通常獲得を丸ごと置き換えます。1・2人用は1枚、3人用は観客席と山札の上2枚の最大5枚から2枚を選び同時に獲得。選べる観客が2枚未満なら選べる分だけ獲得します。獲得枚数の増加は適用されません。見て選ばなかったデッキのカードは元の順番で戻します。交換イベントは山札にコアファンがある場合のみ使用できます。</li><li>華の強化は応援チップ効果の使用1回ごとに＋1。累積し、次のファン獲得で消費。volモードでは消費せず、ターン終了時に消滅。「雷鳴」の追加支払いでは発動しません。</li><li>夏芽のリーダー能力は自分の全メンバーの3人用楽曲に適用。専用イベントの強化は楽曲だけが対象です。</li></ul><h3>6. 追加メンバーとアイテム</h3><p>ゆめかわファンは初期山札に含まれない特殊観客。獲得側に春がいれば1点、いなければ0点。春のイベントで相手からも獲得できます。肉は手札のアイテムとして表示され、イベント支払い時に任意のキャラのメモリー1枚を代替して消費します。楽曲として使用・メモリー化・捨て札化はできません。ファンチップは1つ1点で保持され、手札にまとめて表示します。焔の楽曲で選んだ観客は獲得後もターン終了まで効果無効。焔のイベントは観客山札のみ無効化し、既に観客席にあるカードは無効化しません。ターン終了で全ての無効化が解除されます。</p><h3>光の手札交換とWHITEOUT</h3><p>光のリーダースキルはゲーム中1度、VOL100％以上のときだけ使用可能。手札3枚を捨てて応援チップ6枚を得ます。VOLは消費しません。リーダー変更で光に戻っても使用権は回復しません。楽曲の手札交換は任意で、指定枚数を全て捨てた場合だけ引きます。WHITEOUTは使用前の捨て札枚数を数え、2枚につきこのターン1点。その後、支払いメモリーを捨て札へ置きます。端数は切り捨てます。</p><h3>彩の再行動と連続獲得</h3><p>彩の2・3人用FAN効果は、観客の獲得・効果処理後にVOLを支払い、彩以外の仲間を未行動にします。VOL80％で2人用を使用し、追加で20％を払えます。ターン中の手札からの楽曲使用はVOL/FANとも1枚につき1回数え、3枚以上なら彩リーダーはターン終了時にファンチップ2枚を得ます。イベントやファンサービス、手札をメモリーに置く効果は数えません。彩のイベントは使用前のメモリー・捨て札の1人用を数え、最大6回、観客1人の獲得・観客効果・補充を順番に繰り返します。獲得枚数の増加は適用しません。</p><h3>恵美の交換と観客席の整理</h3><p>恵美リーダーは自分のターン開始時だけ、応援チップ2枚を支払い、獲得済みの厄介なファン1枚を信者（3点）に交換できます。対象が1枚でも選択し、今回は使わないことも可能。応援チップがない場合は発動しません。BLACK×MISSIONSは相手の現在1点の観客をアンチ（－3点）に交換します。交換元はゲーム外へ置き、信者・アンチはゲーム外から用意します。初期観客山札には含みません。交換は獲得ではないため獲得時効果は発動せず、既に処理した厄介なファンの効果も取り消しません。MCタイム中の相手は交換できず、ファンチップは対象外です。楽曲で観客席を戻す場合、相手の独占付き観客は選べません。戻した後に観客席を補充し、その後VOL上昇またはFAN獲得へ進みます。</p><h3>秋奈の選択ドローと楽曲回収</h3><p>秋奈のターン開始ドローは、山札の上から最大3枚を見て1枚選び、残りの山札全体をシャッフルします。初期手札4枚や応援などのドローには適用せず、先攻の最初のターンにも追加ドローしません。楽曲はVOL・FANどちらも効果処理後に、その使用カード自身をメモリーから手札へ戻すか選べます。使用メンバーの行動状態は戻りません。「真実は嘘より奇なり」は毎回秋奈1メモリーを支払い、選んだ手札の楽曲0枚以上をメモリーへ置きます。肉・ファンチップは移せません。1ターンの使用回数制限はありません。</p><h3>萌の信頼と応援効果</h3><p>萌の応援2枚の行動封じ（無料と通常を合わせ自分の各ターン1回）は、相手の行動済み1人について次の相手ターン開始時の回復だけを妨げます。別のカード効果で未行動には戻せます。1人への重複指定はできません。Friendsの後継「Dear Friends」はFAN＋1。1・2人用の次回ファンサ2倍は重複せず、応援チップまたはライブビューイングのファンチップを2枚得ます。回数は1回分で、各ターン2回までの制限を守ります。3人用は通常の効果処理後に自分の1人を未行動にし、可能ならその人でファンサを行います。ファンサ上限に達していれば未行動のままです。イベントは編成メンバー各2枚ずつ計6メモリー。肉は既存ルールで代用可能。このターン、応援3枚以下の応援効果を合計3回まで無料使用でき、通常支払いと選べます。応援6枚の全員回復は対象外。華のリーダーは無料使用でも発動します。</p><h3>仁奈とくまのぬいぐるみ</h3><p>仁奈リーダーはライトファン1枚の獲得ごとに応援チップ1つを得ます。観客自身の効果ではないため、ライトファンの効果無効中も発動します。仁奈のVOL楽曲は全てくまのぬいぐるみ1つを手札欄に加えます。ぬいぐるみは獲得済みファン1枚が離れるかわりに1つを捨てて残す強制効果で、自分・相手の効果、厄介なファン、交換にも有効。交換を防ぐと交換先も登場しません。肉と異なりメモリー支払いには使えず、楽曲のドロー・捨て札・メモリー化の対象外です。専用イベントは解決時に残っている個数だけファンチップを得て、ぬいぐるみを消費しません。</p><h3>エクストラのその他イベント</h3><p>プライベートコレクションは3メモリーでぬいぐるみ2つ。暴走舞台は2メモリーで数字1～5を選び、相手に同数のファンチップを与えてから自分のVOLを数字×20％上げます（上限200％）。炎上商法は5メモリー。獲得済みファンを全て戻し、実際に戻った枚数＋3枚をまとめて獲得し、観客効果も全て処理します。ぬいぐるみで残ったファンは戻した数に含めず、ファンチップは戻しません。華の累積・焔イベントの獲得数加算は適用します。唐突バズは3メモリーで山札のインフルエンサーと先頭を交換。獲得ではなく、交換元は同じ山札位置に戻し、シャッフルしません。相手の独占付き先頭は交換できません。全て使い切りで、指定キャラは不要です。</p><h3>7. 99秒の持ち時間</h3><p>CPU戦は時間制限なし。対人戦は各ターン99秒。相手に効果の選択を求める間は手番側の時計を止め、選択する相手に30秒の時計を表示します。30秒を過ぎると先頭の候補を自動選択し、手番側の残り時間から再開します。自身のカード選択や詳細表示中は通常の時計が進みます。時間切れでは未確定の使用を取り消し、発動済みの効果の選択を先頭の候補で自動処理してターン終了。対人戦では両者のライブ開始後から計測します。</p><h3>8. 敗北</h3><p>山札切れだけでは敗北しません。引けないドローは行わず続行。山札0枚・手札0枚・使用可能なイベントなし、の3条件をすべて満たすと敗北します。アイテムは楽曲手札とは別に数え、アイテムだけ残っていても使用可能なイベントがなければ敗北します。効果の途中ではなく、ひとまとまりの処理後に勝敗を判定します。</p></div>';}
+function rulesHTML(){return '<div class="rules"><h3>1. 編成と勝利条件</h3><p>'+IDS.length+'人から3人を選び、1人をリーダーにします。専用楽曲は各3種類×3枚、3人で27枚。選んだメンバーの専用・共通イベントから異なる3枚を選び、伏せて用意します。初期volと初期手札はリーダーで決まります。</p><p>観客の得点と一時的な得点を合わせて20点以上で勝利。観客をまとめて獲得した場合は、マイナス効果を含むすべての処理を終えてから判定します。同時に20点以上になった場合は手番側が勝利します。</p><h3>2. ターンと楽曲</h3><ol><li>自分のアイドル全員を未行動に戻し、1枚ドロー。先攻の最初のターンだけドローなし。</li><li>楽曲、ファンサービス、イベント、応援チップ効果を好きな順で使用。いつでもターン終了できます。</li><li>楽曲には指定メンバーを含む1〜3人の未行動アイドルが必要。行動したアイドルはそのターン再使用できません。</li><li>volモードは必要volなし。fanモードは指定vol以上が必要ですが、volは消費しません。対応するモードの追加能力を先に処理してから、VOL上昇・ファン獲得を行います。観客効果の処理後に補充します。</li><li>使用した楽曲はメモリーへ。イベントのコストとして支払ったメモリーは捨て札へ。</li></ol><h3>佳代の開始時ドロー</h3><p>自分のターン開始時、通常ドローの直前に楽曲手札が4枚以下なら、1枚のかわりに2枚引きます。肉・ぬいぐるみなどのアイテムは数えません。初期手札や先攻最初のドローなし、楽曲・応援・イベントのドローには適用しません。佳代の旧能力による観客山札の閲覧はできません。</p><h3>3. ボルテージ・応援</h3><p>volの範囲は0〜200％。「－10％」は80％→70％のように増減します。手札上限はありません。</p><ul><li>ファンサービス：未行動1人を行動済みにして応援チップ1枚。各ターン2回まで。</li><li>応援チップ2枚：1枚ドロー。6枚：自分の全員を未行動に。</li><li>イベントの使用にアイドルの行動は不要。メモリー支払いは合計指定枚数ちょうど。機転は4メモリーで各自のターン1回・再使用可。秋奈のイベントは秋奈1メモリーで同一ターンにも何度でも使えます。その他は対戦中1回。ライブビューイングのファンチップ獲得はファンサービスだけに適用し、残りのゲーム中続きます。MCタイムは相手のカードによる獲得ファンの返却・移動を防ぎ、次の自分のターン開始時に解除します。自分の観客効果や自分のイベントには影響しません。センタースイッチで初期手札や初期volは再適用しません。</li></ul><h3>4. 観客</h3><p>初期観客山札は53枚（記者1枚を含む）。通常は公開中の観客を先頭から獲得します。一度に4枚以上なら、公開中の3枚を取り、残りはデッキ上から取ります。その後、空きを詰めて3枚に補充。相手の独占チップ付き観客は飛ばします。</p><table><thead><tr><th>観客</th><th>点</th><th>初期枚数</th><th>効果</th></tr></thead><tbody>'+Object.values(FAN).map(f=>'<tr><td>'+f.name+'</td><td>'+f.points+'</td><td>'+f.count+'</td><td>'+f.text+'</td></tr>').join('')+'</tbody></table><p>記者を獲得するたびに、ゲーム外から5点のインフルエンサー1枚を観客山札に加えてシャッフルします。一括獲得をすべて終え、観客効果を処理してから補充するため、追加したインフルエンサーは同じ一括獲得には含まれません。効果を失っている記者は追加を行いません。</p><p>獲得した観客は全員分の効果が発動します。先頭から処理し、厄介なファンはまだ戻されていない同時獲得観客から自身以外の最高得点1枚を戻します。同点なら獲得した側が選択。戻された観客も獲得時の効果は消えません。</p><h3>5. 独占・追加効果</h3><ul><li>独占チップは付け替え不可。観客がゾーンを離れると回収し、再び応援チップ1枚で置けます。</li><li>雷の選択獲得は通常獲得を丸ごと置き換えます。1・2人用は1枚、3人用は観客席と山札の上2枚の最大5枚から2枚を選び同時に獲得。選べる観客が2枚未満なら選べる分だけ獲得します。獲得枚数の増加は適用されません。見て選ばなかったデッキのカードは元の順番で戻します。交換イベントは山札にコアファンがある場合のみ使用できます。</li><li>華の強化は応援チップ効果の使用1回ごとに＋1。累積し、次のファン獲得で消費。volモードでは消費せず、ターン終了時に消滅。「雷鳴」の追加支払いでは発動しません。</li><li>夏芽のリーダー能力は自分の全メンバーの3人用楽曲に適用。専用イベントの強化は楽曲だけが対象です。</li></ul><h3>6. 追加メンバーとアイテム</h3><p>ゆめかわファンは初期山札に含まれない特殊観客。獲得側に春がいれば1点、いなければ0点。春のイベントで相手からも獲得できます。肉は手札のアイテムとして表示され、イベント支払い時に任意のキャラのメモリー1枚を代替して消費します。楽曲として使用・メモリー化・捨て札化はできません。ファンチップは1つ1点で保持され、手札にまとめて表示します。焔の楽曲で選んだ観客は獲得後もターン終了まで効果無効。焔のイベントは観客山札のみ無効化し、既に観客席にあるカードは無効化しません。ターン終了で全ての無効化が解除されます。</p><h3>光の手札交換とWHITEOUT</h3><p>光のリーダースキルはゲーム中1度、VOL100％以上のときだけ使用可能。手札3枚を捨てて応援チップ6枚を得ます。VOLは消費しません。リーダー変更で光に戻っても使用権は回復しません。楽曲の手札交換は任意で、指定枚数を全て捨てた場合だけ引きます。WHITEOUTは使用前の捨て札枚数を数え、2枚につきこのターン1点。その後、支払いメモリーを捨て札へ置きます。端数は切り捨てます。</p><h3>彩の再行動と連続獲得</h3><p>彩の2・3人用FAN効果は、観客の獲得・効果処理後にVOLを支払い、彩以外の仲間を未行動にします。VOL80％で2人用を使用し、追加で20％を払えます。ターン中の手札からの楽曲使用はVOL/FANとも1枚につき1回数え、3枚以上なら彩リーダーはターン終了時にファンチップ2枚を得ます。イベントやファンサービス、手札をメモリーに置く効果は数えません。彩のイベントは使用前のメモリー・捨て札の1人用を数え、最大6回、観客1人の獲得・観客効果・補充を順番に繰り返します。獲得枚数の増加は適用しません。</p><h3>恵美の交換と観客席の整理</h3><p>恵美リーダーは自分のターン開始時だけ、応援チップ2枚を支払い、獲得済みの厄介なファン1枚を信者（3点）に交換できます。対象が1枚でも選択し、今回は使わないことも可能。応援チップがない場合は発動しません。BLACK×MISSIONSは相手の現在1点の観客をアンチ（－3点）に交換します。交換元はゲーム外へ置き、信者・アンチはゲーム外から用意します。初期観客山札には含みません。交換は獲得ではないため獲得時効果は発動せず、既に処理した厄介なファンの効果も取り消しません。MCタイム中の相手は交換できず、ファンチップは対象外です。楽曲で観客席を戻す場合、相手の独占付き観客は選べません。戻した後に観客席を補充し、その後VOL上昇またはFAN獲得へ進みます。</p><h3>秋奈の選択ドローと楽曲回収</h3><p>秋奈のターン開始ドローは、山札の上から最大3枚を見て1枚選び、残りの山札全体をシャッフルします。初期手札4枚や応援などのドローには適用せず、先攻の最初のターンにも追加ドローしません。楽曲はVOL・FANどちらも効果処理後に、その使用カード自身をメモリーから手札へ戻すか選べます。使用メンバーの行動状態は戻りません。「真実は嘘より奇なり」は毎回秋奈1メモリーを支払い、選んだ手札の楽曲0枚以上をメモリーへ置きます。肉・ファンチップは移せません。1ターンの使用回数制限はありません。</p><h3>萌の信頼と応援効果</h3><p>萌の応援2枚の行動封じ（無料と通常を合わせ自分の各ターン1回）は、相手の行動済み1人について次の相手ターン開始時の回復だけを妨げます。別のカード効果で未行動には戻せます。1人への重複指定はできません。Friendsの後継「Dear Friends」はFAN＋1。1・2人用の次回ファンサ2倍は重複せず、応援チップまたはライブビューイングのファンチップを2枚得ます。回数は1回分で、各ターン2回までの制限を守ります。3人用は通常の効果処理後に自分の1人を未行動にし、可能ならその人でファンサを行います。ファンサ上限に達していれば未行動のままです。イベントは編成メンバー各2枚ずつ計6メモリー。肉は既存ルールで代用可能。このターン、応援3枚以下の応援効果を合計3回まで無料使用でき、通常支払いと選べます。応援6枚の全員回復は対象外。華のリーダーは無料使用でも発動します。</p><h3>仁奈とくまのぬいぐるみ</h3><p>仁奈リーダーはライトファン1枚の獲得ごとに応援チップ1つを得ます。観客自身の効果ではないため、ライトファンの効果無効中も発動します。仁奈のVOL楽曲は全てくまのぬいぐるみ1つを手札欄に加えます。ぬいぐるみは獲得済みファン1枚が離れるかわりに1つを捨てて残す強制効果で、自分・相手の効果、厄介なファン、交換にも有効。交換を防ぐと交換先も登場しません。肉と異なりメモリー支払いには使えず、楽曲のドロー・捨て札・メモリー化の対象外です。専用イベントは解決時に残っている個数だけファンチップを得て、ぬいぐるみを消費しません。</p><h3>エクストラのその他イベント</h3><p>プライベートコレクションは3メモリーでぬいぐるみ2つ。暴走舞台は2メモリーで数字1～5を選び、相手に同数のファンチップを与えてから自分のVOLを数字×20％上げます（上限200％）。炎上商法は5メモリー。獲得済みファンを全て戻し、実際に戻った枚数＋3枚をまとめて獲得し、観客効果も全て処理します。ぬいぐるみで残ったファンは戻した数に含めず、ファンチップは戻しません。華の累積・焔イベントの獲得数加算は適用します。唐突バズは3メモリーで山札のインフルエンサーと先頭を交換。獲得ではなく、交換元は同じ山札位置に戻し、シャッフルしません。相手の独占付き先頭は交換できません。全て使い切りで、指定キャラは不要です。</p><h3>あやめとくじ引き券</h3><p>自分のターン終了時、あやめリーダーは応援チップ1枚を捨てて券1枚を得てもよい（1回）。券は自分のターン中、他の効果の解決中でなければ1枚ずつ捨てて使用でき、アイドルの行動は不要。終了時に得た券は次の自分のターンから使います。共有のくじ山札は15枚：大あたり1枚（ファンチップ5）、中あたり3枚（2）、小あたり5枚（1）、ハズレ5枚、爆弾1枚。結果を公開し、毎回戻してシャッフル。爆弾は自分の獲得済み観客をランダムに1人戻し、ぬいぐるみは強制で肩代わりします。観客がいなければ何も起きず、MCタイムでは防げません。券はメモリーに使えず、使用できる券が残る間は山札・手札切れで敗北しません。時間切れでは終了時の交換を行いません。</p><h3>7. 99秒の持ち時間</h3><p>CPU戦は時間制限なし。対人戦は各ターン99秒。相手に効果の選択を求める間は手番側の時計を止め、選択する相手に30秒の時計を表示します。30秒を過ぎると先頭の候補を自動選択し、手番側の残り時間から再開します。自身のカード選択や詳細表示中は通常の時計が進みます。時間切れでは未確定の使用を取り消し、発動済みの効果の選択を先頭の候補で自動処理してターン終了。対人戦では両者のライブ開始後から計測します。</p><h3>8. 敗北</h3><p>山札切れだけでは敗北しません。引けないドローは行わず続行。山札0枚・手札0枚・使用可能なイベントなし、の3条件をすべて満たすと敗北します。アイテムは楽曲手札とは別に数え、アイテムだけ残っていても使用可能なイベントがなければ敗北します。効果の途中ではなく、ひとまとまりの処理後に勝敗を判定します。</p></div>';}
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-action]');if(!b||b.disabled)return;
  const a=b.dataset.action,id=b.dataset.id;
@@ -980,12 +1016,14 @@ document.addEventListener('click',e=>{
  if(a==='catalog-tab'){modal.tab=id;renderModal();}
  if(a==='close'&&modal?.kind==='unit-random-confirm'){modal=modal.returnTo||null;renderModal();return;}
  if(a==='close'&&modal?.kind==='rematch-unit'){modal={kind:'result'};renderModal();return;}
+ if(a==='close'&&modal?.kind==='lottery-result'){modal=state.winner!==null?{kind:'result'}:null;renderModal();schedule();return;}
  if(a==='close'){const wasSong=modal?.kind==='song';modal=null;if(wasSong)render();else renderModal();schedule();}
  if(a==='leave'){modal={kind:'leave'};renderModal();}
  if(a==='leave-confirm'){if(net){leaveOnline();return;}clearTimeout(aiTimer);saved=state;screen='setup';modal=null;render();}
  if(a==='new-match'){clearTimeout(aiTimer);screen='setup';saved=null;modal=null;render();}
  if(a==='rematch'){const q=state.players[1];start(true,{team:[...q.team],leader:q.leader,events:q.events.map(e=>e.id)});}
  if(a==='inspect'){modal={kind:'inspect',p:Number(b.dataset.p),zone:b.dataset.zone};renderModal();}
+ if(a==='lottery-catalog'){modal={kind:'lottery-catalog'};renderModal();return;}
  if(a==='item-info'){modal={kind:'item',id};renderModal();}
  if(a==='song'){if(!humanTurn()){notify('あなたの手番で効果の処理後に使えます');return;}const c=state.players[0].hand.find(c=>c.uid===id);if(!c)return;modal={kind:'song',id};selection={actors:IDOL.actors(state.players[0],c)||[],boost:false,pick:false};render();}
  if(a==='play-vol'||a==='play-fan'){if(modal?.kind!=='song'||!humanTurn())return;send({type:'play',card:modal.id,actors:selection.actors,mode:a==='play-vol'?'vol':'fan',boost:a==='play-fan'&&selection.boost,pick:a==='play-fan'&&selection.pick});}
@@ -999,7 +1037,11 @@ document.addEventListener('click',e=>{
  if(a==='hold-target'){send({type:'support',effect:'hold',target:id,free:!!modal?.free});return;}
  if(a==='service')send({type:'service',actor:Number(id)});
  if(a==='draw'||a==='refresh')send({type:'support',effect:a});
- if(a==='end')send({type:'end'});
+ if(a==='end'&&humanTurn()){if(state.players[0].leader==='ayame'&&state.players[0].chips>0){modal={kind:'ayame-end'};renderModal();}else send({type:'end'});}
+ if(a==='ayame-end-confirm'&&humanTurn()){send({type:'end',ticket:true});return;}
+ if(a==='ayame-end-skip'&&humanTurn()){send({type:'end'});return;}
+ if(a==='ticket-use'&&humanTurn()){send({type:'ticket',id});return;}
+ if(a==='lottery-ok'){modal=state.winner!==null?{kind:'result'}:null;renderModal();schedule();return;}
  if(a==='choose')send({type:'choose',value:id});
  if(a==='lock'){modal={kind:'lock'};renderModal();}
  if(a==='place-lock')send({type:'support',effect:'lock',target:id,free:!!modal?.free});
@@ -1017,6 +1059,6 @@ document.addEventListener('input',e=>{const el=e.target;if(el.id==='unit-name'){
 document.addEventListener('change',e=>{const el=e.target;if(el.id==='random-collection'&&modal?.kind==='unit-random-confirm'){if(!['original','extra'].includes(el.value))return;if(modal.returnTo&&(net?.phase!=='ended'||net.rematchLocal||net.rematchPending||net.opponentLeft||net.waiting))return;modal.collection=el.value;modal.draft=randomCpuConfig(el.value);renderModal();return;}if(el.id==='roster-filter'){rosterFilter=el.value;rosterPage=0;render();return;}if(el.id==='event-filter'){eventFilter=el.value;render();return;}if(el.id==='unit-target'){unitTarget=Number(el.value);renderModal();return;}if(el.id==='cpu-leader'&&modal?.kind==='cpu-setup'){modal.draft.leader=el.value;renderModal();return;}if(el.id==='first')firstMode=el.value;if(el.dataset.field==='actor'){const n=Number(el.value);selection.actors=el.checked?[...selection.actors,n]:selection.actors.filter(x=>x!==n);renderModal();}if(el.dataset.field==='boost'||el.dataset.field==='pick'){selection[el.dataset.field]=el.checked;if(modal?.kind==='song')render();}});
 document.addEventListener('scroll',e=>{if(e.target.matches?.('.hand-track'))updateHandScroll();},true);
 document.defaultView?.addEventListener('resize',updateHandScroll);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal){if(['online','opening','online-ready','online-disconnect','lineup-wait'].includes(modal.kind)||modal.kind==='result'&&net?.mode==='room')return;const song=modal.kind==='song';modal=null;if(song)render();else renderModal();schedule();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal){if(['online','opening','online-ready','online-disconnect','lineup-wait'].includes(modal.kind)||modal.kind==='result'&&net?.mode==='room')return;if(modal.kind==='lottery-result'){modal=state.winner!==null?{kind:'result'}:null;renderModal();schedule();return;}const song=modal.kind==='song';modal=null;if(song)render();else renderModal();schedule();}});
 render();
 </script><script src="rooms.js"></script></body></html>
