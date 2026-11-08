@@ -10,7 +10,7 @@ function play(s,owner,n,mode='fan'){const c=give(s,owner,n),p=s.players[s.active
 function mem(s,owner,n){const p=s.players[0];for(let j=0;j<n;j++){const c=give(s,owner,(j%3)+1);p.hand=p.hand.filter(x=>x.uid!==c.uid);p.memory.push(c);}}
 function event(s,id){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.players[0],id)});}
 {
- for(const [id,hand,vol] of [['haru',5,30],['hakka',4,30],['homura',4,20]]){const s=make(id),p=s.players[0];assert.equal(p.hand.length,hand);assert.equal(p.vol,vol);assert.equal(p.deck.length+hand,27);assert.equal(p.chips,id==='homura'?1:0);assert.equal(s.row.length+s.audience.length,53);assert(!s.audience.some(f=>f.type==='dream'));}
+ for(const [id,hand,vol] of [['haru',5,30],['hakka',5,30],['homura',4,20]]){const s=make(id),p=s.players[0];assert.equal(p.hand.length,hand);assert.equal(p.vol,vol);assert.equal(p.deck.length+hand,27);assert.equal(p.chips,id==='homura'?1:0);assert.equal(s.row.length+s.audience.length,53);assert(!s.audience.some(f=>f.type==='dream'));}
  const s=make(),p=s.players[0],c=p.deck.shift();p.discard.push(c);G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end'});assert.equal(s.pending.kind,'recover');const view=G.publicView(s,0);assert(view.pending.options.includes(c.uid));G.dispatch(s,{type:'choose',value:c.uid});assert(p.hand.includes(c));assert.equal(p.discard.length,0);
 }
 {
