@@ -26,6 +26,6 @@ assert(!cpuConfigOK({team:['kayo','hana','shio'],leader:'kayo',events:['machi','
 // A non-leader Shio's event still motivates voltage at/above 100%.
 state=IDOL.create(['kayo','hana','shio'],'kayo',['rai','machi','natsume'],'rai',0,123,['shio','hana','kayo']);const p=state.players[0];p.vol=100;p.hand=[{uid:'vol-shio',owner:'shio',n:1}];p.ready=[false,false,true];state.row=state.row.map(f=>({...f,type:'trouble'}));const a=IDOL.ai(state);assert.equal(a.type,'play');assert.equal(a.mode,'vol');
 // Event use remains subject to its voltage and exact payment requirements.
-p.memory=Array.from({length:6},(_,n)=>({uid:'pay'+n,owner:n<4?'shio':'kayo',n:1}));assert(!IDOL.eventOK(state,0,'shio'));p.vol=180;assert(IDOL.eventOK(state,0,'shio'));p.fanChips=13;const event=IDOL.ai(state);assert.equal(event.type,'event');assert.equal(event.id,'shio');assert.equal(event.memory.length,6);assert(IDOL.paymentOK(p,event.id,event.memory));
+p.memory=Array.from({length:6},(_,n)=>({uid:'pay'+n,owner:n<4?'shio':'kayo',n:1}));assert(IDOL.eventOK(state,0,'shio'));p.vol=180;assert(IDOL.eventOK(state,0,'shio'));p.fanChips=13;const event=IDOL.ai(state);assert.equal(event.type,'event');assert.equal(event.id,'shio');assert.equal(event.memory.length,6);assert(IDOL.paymentOK(p,event.id,event.memory));
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert,listeners);
 console.log('CPU setup: valid random events, draft editing, member/leader/event selection, start confirmation, same-opponent rematch and Shio voltage passed');

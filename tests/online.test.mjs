@@ -21,7 +21,7 @@ const make=()=>G.create(['kayo','machi','natsume'],'kayo',['rai','shio','hana'],
 {
  const s=make();s.row[0].lock=0;const v=G.publicView(s,1);assert.equal(v.active,1);assert.equal(v.players[0].leader,'rai');assert.equal(v.row[0].lock,1);assert(!('seed'in v));assert(!('serial'in v));assert.deepEqual(v.queue,[]);assert(v.players[1].hand.every(c=>!('owner'in c)));assert(v.players.every(p=>p.deck.every(c=>!('owner'in c))));assert(v.players[1].events.every(e=>e.id===null));assert(v.audience.every(f=>f.type===null));assert.deepEqual(v.players[0].hand,s.players[1].hand);
  s.pending={kind:'raiPick',p:1,options:s.audience.slice(0,2).map(f=>f.uid),text:'選択'};const peek=G.publicView(s,1);assert(peek.audience.slice(0,2).every(f=>f.type));assert(peek.audience.slice(2).every(f=>f.type===null));assert.deepEqual(G.publicView(s,0).pending.options,[],'Opponent does not receive private options');
- const kayo=G.publicView(s,0);assert(kayo.audience[0].type);assert.equal(kayo.audience[1].type,null);
+ const kayo=G.publicView(s,0);assert.equal(kayo.audience[0].type,null);assert.equal(kayo.audience[1].type,null);
 }
 // Exercise authoritative revision and real deadline boundaries through the UI adapter.
 const nodes=new Map(),document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};

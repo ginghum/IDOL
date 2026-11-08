@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {IDOL as server} from '../room-server/idol-engine.mjs';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=html.match(/<script>([\s\S]*?)<\/script>/)[1],browser=new Function(code.split('const $=s=>')[0]+';return IDOL')();
+for(const G of [browser,server]){
+ const make=(first=0)=>G.create(['kayo','shio','akina'],'kayo',['kayo','natsume','hana'],'kayo',first,121,['shio','akina','switch']);
+ // Pre-draw threshold and both seats; items never count as song hand cards.
+ for(const seat of [0,1])for(const h of [0,1,2,3])for(const deck of [0,1,5]){const s=make(1-seat),p=s.players[seat];p.discard.push(...p.hand.splice(h));if(deck<p.deck.length)p.discard.push(...p.deck.splice(deck));const before=p.hand.length;p.items=[{uid:'test-bear',item:'teddy'},{uid:'test-meat',item:'meat'}];G.dispatch(s,{type:'end'});assert.equal(p.hand.length,before+Math.min(deck,h<=2?2:1));}
+ {const s=make(),p=s.players[0];assert.equal(p.hand.length,6);assert.equal(s.players[1].hand.length,6);p.discard.push(...p.hand.splice(2));p.chips=2;G.dispatch(s,{type:'support',effect:'draw'});assert.equal(p.hand.length,3);assert(G.publicView(s,0).audience.every(f=>f.type===null));}
+ {const s=G.create(['natsume','hana','kayo'],'natsume',['shio','rai','machi'],'shio',0,12);assert.equal(s.players[0].vol,40);assert.equal(s.players[1].vol,40);}
+ for(const vol of [0,179,180,200]){const s=make(),p=s.players[0];p.vol=vol;const cards=[...p.deck,...p.hand].filter(c=>c.owner==='shio').slice(0,4);cards.push([...p.deck,...p.hand].find(c=>c.owner==='kayo'),[...p.deck,...p.hand].find(c=>c.owner==='akina'));for(const c of cards){p.deck=p.deck.filter(x=>x.uid!==c.uid);p.hand=p.hand.filter(x=>x.uid!==c.uid);p.memory.push(c);}assert(G.eventOK(s,0,'shio'));const before=p.vol;G.dispatch(s,{type:'event',id:'shio',memory:G.autoPay(p,'shio')});assert.equal(p.temp,vol>=180?7:3);assert.equal(p.vol,before);assert(!G.eventOK(s,0,'shio'));G.dispatch(s,{type:'end'});assert.equal(p.temp,0);}
+ {const s=make(),p=s.players[0];const c=[...p.hand,...p.deck].find(c=>c.owner==='akina');p.hand=p.hand.filter(x=>x.uid!==c.uid);p.deck=p.deck.filter(x=>x.uid!==c.uid);p.memory.push(c);assert.deepEqual(G.EVENTS.akina.cost,[1,1]);const targets=p.hand.slice(0,2).map(c=>c.uid);G.dispatch(s,{type:'event',id:'akina',memory:[c.uid],targets});assert.equal(p.discard.length,1);assert.equal(p.memory.length,2);assert.equal(p.events.find(e=>e.id==='akina').used,false);}
+ // Wrong character and two-card overpayment reject without changing authoritative state.
+ {const s=make(),p=s.players[0];const take=owner=>{const c=[...p.hand,...p.deck].find(c=>c.owner===owner);p.hand=p.hand.filter(x=>x.uid!==c.uid);p.deck=p.deck.filter(x=>x.uid!==c.uid);p.memory.push(c);return c.uid;};const a=take('akina'),b=take('kayo');for(const memory of [[b],[a,b]]){const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,{type:'event',id:'akina',memory,targets:[]},0));assert.equal(JSON.stringify(s),before);}}
+}
+const nodes=new Map(),document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
+new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
+for(const collection of ['original','extra'])for(let n=0;n<1000;n++){const c=randomCpuConfig(collection);assert(cpuConfigOK(c));assert(c.events.filter(id=>c.team.includes(id)).length>=2);assert.equal(new Set(c.events).size,3);if(collection==='original')assert(c.events.every(id=>cardSeries('event',id)==='original'));}
+state=IDOL.create(['kayo','shio','akina'],'kayo',['rai','hana','natsume'],'rai',0,3);screen='match';modal=null;assert(!matchHTML().includes('data-action="peek"'));assert(!matchHTML().includes('次を見る'));assert.match(CHAR.kayo.skill,/2枚以下/);assert.match(CHAR.shio.effect,/3ポイント/);assert.match(CHAR.akina.effect,/秋奈1メモリー/);
+`)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
+console.log('November 8 balance: both engines, pre-draw 0/1/2/3 hands and short decks/both seats/items, no Kayo peek, Natsume 40%, Shio 179/180 temporary points, Akina one-memory atomic payments, 2000 random rosters with 2+ compatible dedicated events passed');
