@@ -911,7 +911,7 @@ function renderModalContent(){
  if(!modal){root.innerHTML='';return;}
  const p=state?.players[0];
  let body='',title='',large=false;
- if(modal.kind==='ayame-end'){title=CHAR.ayame.skillName;body='<p>応援チップ1枚を捨てて、くじ引き券を1枚得ますか？ 得た券は次の自分のターンから使用できます。</p><div class="dialog-footer">'+btn('戻る','close')+btn('使わず終了','ayame-end-skip')+btn('応援1枚 → くじ引き券','ayame-end-confirm','primary',!humanTurn()||p.leader!=='ayame'||p.chips<1)+'</div>';}
+ if(modal.kind==='ayame-end'){title=CHAR.ayame.skillName;body='<p>応援チップ1枚を捨てて、くじ引き券を1枚得ますか？ 得た券は次の自分のターンから使用できます。</p><div class="dialog-footer" style="flex-wrap:wrap">'+btn('戻る','close')+btn('使わず終了','ayame-end-skip')+btn('応援1枚 → くじ引き券','ayame-end-confirm','primary',!humanTurn()||p.leader!=='ayame'||p.chips<1)+'</div>';}
  if(modal.kind==='lottery-result'){const d=modal.draw;title=(d.p?'相手':'自分')+'のくじ：'+IDOL.LOTTERY[d.result].name;body='<div class="lottery-result">'+art('lottery-'+d.result)+'</div><p>'+esc(d.detail)+'</p><p class="setup-note">くじを山札に戻し、15枚でシャッフルしました。</p>'+btn('OK','lottery-ok','primary wide');}
  if(modal.kind==='song'){
  const c=p.hand.find(c=>c.uid===modal.id);if(!c){modal=null;root.innerHTML='';return;}const d=IDOL.detail(c);title=d.name;
