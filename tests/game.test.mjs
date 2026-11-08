@@ -28,13 +28,13 @@ console.log('UI render smoke checks:',ui);
 // Regression: re-rendering one selection session preserves scroll and focus.
 const wrapper = script.slice(script.indexOf('let renderedModal = null;'),script.indexOf('function renderModalContent(){'));
 const modalCheck = new Function(wrapper + `
-const a={kind:'event'}, b={kind:'song'};
-let modal=a, current={scrollTop:380,scrollLeft:0,contains:()=>true,querySelectorAll:()=>[]};
+const a={kind:'unit-random-confirm'}, b={kind:'song'};
+let modal=a, current={content:{scrollTop:210},querySelector(){return this.content;},scrollTop:380,scrollLeft:0,contains:()=>true,querySelectorAll:()=>[]};
 const document={activeElement:null};
 const root={querySelector:()=>current};const $=()=>root;
-function renderModalContent(){current={scrollTop:0,scrollLeft:0,querySelectorAll:()=>[],contains:()=>false};}
-renderedModal=a;renderModal();if(current.scrollTop!==380)throw Error('Selection lost scroll');
-modal=b;renderModal();if(current.scrollTop!==0)throw Error('New dialog retained old scroll');
+function renderModalContent(){current={content:{scrollTop:0},querySelector(){return this.content;},scrollTop:0,scrollLeft:0,querySelectorAll:()=>[],contains:()=>false};}
+renderedModal=a;renderModal();if(current.scrollTop!==380)throw Error('Selection lost scroll');if(current.content.scrollTop!==210)throw Error('Random preview lost content scroll');
+modal=b;renderModal();if(current.scrollTop!==0)throw Error('New dialog retained old scroll');if(current.content.scrollTop!==0)throw Error('New dialog retained random content scroll');
 return true;
 `)();
 console.log('Dialog scroll regression:',modalCheck);
