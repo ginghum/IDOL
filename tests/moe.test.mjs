@@ -43,6 +43,7 @@ state=IDOL.create(['moe','hana','akina'],'moe',['hakka','rai','aya'],'hakka',0,9
 modal={kind:'moe-hold',free:true};renderModal();assert.equal(($('#modal').innerHTML.match(/data-action="hold-target"/g)||[]).length,3);assert.match($('#modal').innerHTML,/次の相手ターン開始時だけ/);
 modal={kind:'free-support'};renderModal();assert.match($('#modal').innerHTML,/data-action="free-draw"/);assert.match($('#modal').innerHTML,/data-action="free-hold"/);
 modal=null;state.pending={kind:'moeReady',p:0,options:['0','1','2']};renderModal();assert.equal(($('#modal').innerHTML.match(/data-action="choose"/g)||[]).length,3);state.pending=null;
+for(const viewing of [false,true]){const p=state.players[0];p.liveViewing=viewing;p.moeDouble=true;p.ready=[true,true,true];p.service=0;modal={kind:'member-info',p:0,j:1};renderModal();assert($('#modal').innerHTML.includes('ファンサービス · '+(viewing?'ファンチップ':'応援チップ')+'+2'));IDOL.dispatch(state,{type:'service',actor:1});modal={kind:'member-info',p:0,j:2};renderModal();assert($('#modal').innerHTML.includes('ファンサービス · '+(viewing?'ファンチップ':'応援チップ')+'+1'));}
 modal={kind:'catalog',tab:'moe'};renderModal();assert.match($('#modal').innerHTML,/各メンバーのメモリー2枚ずつ/);assert.match($('#modal').innerHTML,/Between Us/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Moe: both engines, exact per-member/wildcard payment, free/paid support, start-only holds/counterplay, nonstacking service/Shio/viewing, mandatory post-use refresh/service, privacy/invalid inputs/timeouts, Extra/UI and 300 CPU games passed');
