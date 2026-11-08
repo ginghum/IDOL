@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const front=new Function(code.split('const $=s=>')[0]+';return IDOL;')();
 assert.deepEqual(front.COMMON,G.COMMON,'Browser and online server use identical event definitions');
-assert.equal(Object.keys(G.COMMON).length,7);assert.equal(G.COMMON.wit.cost[1],4);
+assert.equal(Object.keys(G.COMMON).length,11);assert.equal(G.COMMON.wit.cost[1],4);
 const make=(events=['overcome','viewing','mc'],seed=91)=>G.create(['shio','kayo','machi'],'kayo',['machi','haru','hana'],'hana',0,seed,events,['trouble','haru','wit']);
 function move(p,owner,n){for(const zone of ['deck','hand']){const at=p[zone].findIndex(c=>(!owner||c.owner===owner)&&(!n||c.n===n));if(at>=0)return p[zone].splice(at,1)[0];}throw Error('fixture card unavailable');}
 function prepare(s,i,id){const p=s.players[i],d=G.EVENTS[id];while(p.memory.filter(c=>c.owner===id).length<d.cost[0])p.memory.push(move(p,id));while(p.memory.length<d.cost[1])p.memory.push(move(p));return G.autoPay(p,id);}
