@@ -21,7 +21,7 @@ for(const G of [browser,server]){
  assert.equal(s.pending.kind,'hikariOffer');const skip=G.peerAction(s,{type:'choose',value:'skip'},0);assert.equal(skip.players[0].hand.length,h-1);assert.equal(skip.players[0].deck.length,d);
  G.dispatch(s,{type:'choose',value:'accept'});const count=n===3?2:1,ids=p.hand.slice(0,count).map(c=>c.uid),handBefore=p.hand.length;
  for(const id of ids){G.dispatch(s,{type:'choose',value:id});if(s.pending){assert.equal(p.hand.length,handBefore);assert(!s.pending.options.includes(id));const v=G.publicView(s,1);assert.deepEqual(v.pending.options,[]);assert.deepEqual(v.pending.selected,[]);}}
- assert.equal(s.pending,null);assert.equal(p.hand.length,h-(n===3?0:1));assert.equal(p.deck.length,d-(n===3?3:1));assert.equal(p.discard.length,count);assert(ids.every(id=>p.discard.some(c=>c.uid===id)));
+ assert.equal(s.pending,null);assert.equal(p.hand.length,h-1);assert.equal(p.deck.length,d-(n===3?2:1));assert.equal(p.discard.length,count);assert(ids.every(id=>p.discard.some(c=>c.uid===id)));
  }
  // Not enough cards to pay: no prompt. Short draws never recycle discarded cards.
  {const s=make(),p=s.players[0],c=give(s,3);p.deck.push(...p.hand.filter(x=>x!==c));p.hand=[c];G.dispatch(s,{type:'play',card:c.uid,actors:[0,1,2],mode:'vol'});assert.equal(s.pending,null);}

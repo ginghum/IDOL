@@ -15,13 +15,13 @@ for(const G of [browser,server]){
  const skip=G.peerAction(s,{type:'choose',value:'skip'},0);assert.equal(skip.players[0].vol,p.vol);assert.equal(skip.pending,null);
  const snapshot=JSON.stringify(s);assert.throws(()=>G.peerAction(s,{type:'choose',value:'0'},0));assert.equal(JSON.stringify(s),snapshot);assert.throws(()=>G.peerAction(s,{type:'choose',value:s.pending.options[1]},1));
  const v=G.publicView(s,1);assert.deepEqual(v.pending.options,[]);
- G.dispatch(s,{type:'choose',value:n===2?'1':'all'});assert.equal(p.vol,n===2?60:70);assert.deepEqual(p.ready,[false,true,true]);assert.equal(s.pending,null);
+ G.dispatch(s,{type:'choose',value:n===2?'1':'all'});assert.equal(p.vol,n===2?50:60);assert.deepEqual(p.ready,[false,true,true]);assert.equal(s.pending,null);
  }
  // 2-person skill can revive an already exhausted other member, not only an actor of this song.
  {const s=make(),p=s.players[0];quiet(s);p.vol=80;p.ready[2]=false;const c=give(s,'aya',2);G.dispatch(s,{type:'play',card:c.uid,actors:[0,1],mode:'fan'});assert(s.pending.options.includes('2'));G.dispatch(s,{type:'choose',value:'2'});assert.deepEqual(p.ready,[false,false,true]);}
  // VOL mode never offers refresh. Heavy-fan voltage loss happens before the optional payment.
  {const s=make(),p=s.players[0];quiet(s);const c=give(s,'aya',3);G.dispatch(s,{type:'play',card:c.uid,actors:[0,1,2],mode:'vol'});assert.equal(p.vol,60);assert.equal(s.pending,null);}
- {const s=make(),p=s.players[0];quiet(s);s.row[0].type='heavy';p.vol=80;const c=give(s,'aya',2);G.dispatch(s,{type:'play',card:c.uid,actors:[0,1],mode:'fan'});assert.equal(p.vol,70);G.dispatch(s,{type:'choose',value:'1'});assert.equal(p.vol,50);}
+ {const s=make(),p=s.players[0];quiet(s);s.row[0].type='heavy';p.vol=80;const c=give(s,'aya',2);G.dispatch(s,{type:'play',card:c.uid,actors:[0,1],mode:'fan'});assert.equal(p.vol,70);G.dispatch(s,{type:'choose',value:'1'});assert.equal(p.vol,40);}
  // Successful uses of hand songs, both modes, count; no bonus until END, and exactly two chips.
  {const s=make(),p=s.players[0];quiet(s);for(const [j,owner] of p.team.entries()){const c=give(s,owner,1);G.dispatch(s,{type:'play',card:c.uid,actors:[j],mode:'vol'});}assert.equal(p.songsPlayed,3);assert.equal(p.fanChips,0);G.dispatch(s,{type:'end'});assert.equal(p.fanChips,2);assert.equal(p.songsPlayed,0);assert.equal(s.active,1);G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end'});assert.equal(p.fanChips,2);}
  {const s=make(),p=s.players[0];quiet(s);p.songsPlayed=3;p.fanChips=18;G.dispatch(s,{type:'end'});assert.equal(s.winner,0);assert.equal(s.active,0);assert.equal(G.score(p),20);assert.throws(()=>G.dispatch(s,{type:'end'}));}
