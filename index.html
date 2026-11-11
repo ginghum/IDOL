@@ -168,6 +168,27 @@ body.in-setup{background:radial-gradient(ellipse at 80% 0,#55354e60,transparent 
 }
 .lottery-result{max-width:360px;margin:0 auto}.lottery-result .art{aspect-ratio:1}.lottery-result img{object-fit:contain}
 .dialog.random-dialog{height:min(90dvh,840px);display:flex;flex-direction:column;overflow:hidden}.random-dialog .dialog-head{flex:none}.random-confirm-content{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}.random-dialog .random-confirm-actions{flex:none;padding-top:14px}
+
+/* Desktop spectators must stay inside their own row, even on short laptop screens. */
+@media(min-width:721px){
+ .center-zone{padding:20px 0 6px;min-height:0}
+ .audience-line{height:100%;max-height:200px;min-height:0;align-items:stretch;gap:14px}
+ .audience-card{width:clamp(112px,11vw,158px);height:100%;min-height:0;display:flex;flex-direction:column}
+ .audience-card .audience-title{flex:none}
+ .audience-card .art.has-art.album{flex:1;min-height:0;max-height:none;height:auto;aspect-ratio:auto;overflow:hidden}
+ .audience-card p{flex:none;min-height:24px}
+ .audience-deck{align-self:center;flex:none}
+}
+@media(min-width:721px) and (min-height:501px){
+ .duel-table{grid-template-rows:clamp(30px,4.5dvh,44px) clamp(88px,15dvh,142px) minmax(120px,1fr) clamp(100px,16dvh,148px) clamp(156px,27dvh,250px);gap:clamp(3px,.8dvh,8px)}
+ .member-card{height:clamp(70px,11.8dvh,116px);width:clamp(55px,9dvh,90px)}
+ .member-card .art.has-art.portrait{height:calc(100% - 22px)}
+ .opponent-zone .member-card{height:clamp(60px,10dvh,93px);width:clamp(46px,7.7dvh,72px)}
+ .opponent-zone .member-card .art.has-art.portrait{height:calc(100% - 22px)}
+ .hand-window .playing-card{height:calc(100% - 6px);display:flex;flex-direction:column}
+ .hand-window .playing-card .art.has-art.album{flex:1;min-height:0;height:auto;aspect-ratio:auto}
+ .hand-window .playing-card .card-title,.hand-window .playing-card .card-modes,.hand-window .playing-card .card-effect{flex:none}
+}
 </style></head>
 <body><header class="app-header"><div class="brand"><span class="brand-icon">✦</span><div><strong>IDOL</strong><small>LIVE DUEL / 対バンカードゲーム</small></div></div><nav class="nav" aria-label="メインメニュー"><button data-action="catalog">カード一覧</button><button data-action="rules">遊び方</button></nav></header><main class="shell" id="app"></main><div id="modal"></div>
 <script>/* IDOL rules engine. Browser-independent; commands and state are JSON serializable. */
