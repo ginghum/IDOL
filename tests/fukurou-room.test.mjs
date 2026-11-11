@@ -7,7 +7,7 @@ async function req(path='',body,seat=0){const r=await handle(new Request('https:
 const made=await req('',{ticket:tickets[0],config,protocol:PROTOCOL,flow:'selection'}),code=made.code;
 assert.equal(made.phase,'waiting');assert.equal(made.state,null);await req('/'+code+'/join',{ticket:tickets[1],config,protocol:PROTOCOL,flow:'selection'},1);await req('/'+code+'/prepare',{round:1,config});await req('/'+code+'/prepare',{round:1,config},1);await req('/'+code+'/ready',{});let live=await req('/'+code+'/ready',{},1);assert.equal(live.phase,'playing');
 
-assert.equal(live.state.players[0].vol,20);assert.equal(live.state.players[0].hand.length,5);
+assert.equal(live.state.players[0].vol,30);assert.equal(live.state.players[0].hand.length,5);
 let serial=0,seals=0,destroys=0;
 for(let step=0;step<1000;step++){
  const raw=await req('/'+code),seat=(raw.state.pending?.p??raw.state.active),view=await req('/'+code,undefined,seat);if(view.state.winner!==null)break;

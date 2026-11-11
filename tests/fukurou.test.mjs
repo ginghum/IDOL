@@ -8,7 +8,7 @@ for(const G of [browser,server]){
  const bad=(s,a,i=s.active)=>{const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,a,i));assert.equal(JSON.stringify(s),before);};
  const settle=s=>{let guard=0;while(s.pending&&guard++<100)G.dispatch(s,G.ai(s));assert(!s.pending);};
  const pay=(s,i)=>{const p=s.players[i],all=[...p.hand,...p.deck],cs=[...all.filter(c=>c.owner==='fukurou').slice(0,2),...all.filter(c=>c.owner!=='fukurou').slice(0,4)],ids=cs.map(c=>c.uid);p.hand=p.hand.filter(c=>!ids.includes(c.uid));p.deck=p.deck.filter(c=>!ids.includes(c.uid));p.memory.push(...cs);return ids;};
- assert.equal(G.CHAR.fukurou.name,'月田フクロウ');assert.equal(make().players[0].vol,20);assert.equal(make().players[0].hand.length,5);
+ assert.equal(G.CHAR.fukurou.name,'月田フクロウ');assert.equal(make().players[0].vol,30);assert.equal(make().players[0].hand.length,5);
  for(const who of [0,1])for(const n of [1,2,3])for(const mode of ['vol','fan'])for(const target of ['none','teddy','meat','ticket','fanChip']){
   const s=make(who),p=s.players[who],q=s.players[1-who],c=give(s,who,n);p.vol=[60,80,100][n-1];s.row.forEach(f=>f.type='light');s.audience.forEach(f=>f.type='light');q.chips=7;
   if(target==='fanChip')q.fanChips=1;else if(target!=='none')q.items.push({uid:'victim',item:target});
