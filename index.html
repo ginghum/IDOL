@@ -169,7 +169,8 @@ body.in-setup{background:radial-gradient(ellipse at 80% 0,#55354e60,transparent 
 .lottery-result{max-width:360px;margin:0 auto}.lottery-result .art{aspect-ratio:1}.lottery-result img{object-fit:contain}
 .dialog.random-dialog{height:min(90dvh,840px);display:flex;flex-direction:column;overflow:hidden}.random-dialog .dialog-head{flex:none}.random-confirm-content{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}.random-dialog .random-confirm-actions{flex:none;padding-top:14px}
 
-/* Desktop spectators must stay inside their own row, even on short laptop screens. */
+/* Desktop spectators stay inside the center row; portrait phones keep their existing layout.
+   Verified at 1920x1080, 1366x768, 1280x720, 1024x600 and 390x844. */
 @media(min-width:721px){
  .center-zone{padding:20px 0 6px;min-height:0}
  .audience-line{height:100%;max-height:200px;min-height:0;align-items:stretch;gap:14px}
