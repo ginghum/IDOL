@@ -13,7 +13,7 @@ for(const G of [browser,server]){
  // Recheck payment atomically, and do not advance after winning by exhaustion.
  {const s=make();s.players[0].chips=1;G.dispatch(s,{type:'end'});s.players[0].chips=0;bad(s,{type:'choose',value:'use'});G.dispatch(s,{type:'choose',value:'skip'});assert.equal(s.turn,2);}
  {const s=make(),q=s.players[1];s.players[0].chips=1;q.discard.push(...q.deck,...q.hand.splice(1));q.deck=[];q.events.forEach(e=>e.used=true);G.dispatch(s,{type:'end'});G.dispatch(s,{type:'choose',value:'use'});G.dispatch(s,{type:'choose',value:q.hand[0].uid});assert.equal(s.winner,0);assert.equal(s.turn,1);}
- // The reverted request leaves Moe unchanged: 3-chip support, free support allowed, own-turn shared cap.
+ // Moe remains a 3-chip support effect; its later unlimited-use adjustment is covered separately.
  {const s=make(),p=s.players[0],q=s.players[1];p.leader='moe';p.chips=3;q.ready=[false,false,false];G.dispatch(s,{type:'support',effect:'hold',target:q.team[0]});assert.equal(p.chips,0);G.dispatch(s,{type:'end'});assert.equal(s.pending,null);assert.equal(q.ready[0],false);assert.match(G.CHAR.moe.skill,/応援効果を追加/);}
 }
 // Akina's decision has compact art rather than the full card, with both choices retained.
