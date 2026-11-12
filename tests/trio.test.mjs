@@ -54,7 +54,7 @@ function event(s,id){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.players[0]
 const ids=Object.keys(G.CHAR);
 for(let seed=1;seed<=180;seed++){
  const a=['haru','hakka','homura'],b=[ids[seed%9],ids[(seed+3)%9],ids[(seed+6)%9]],s=G.create(a,a[seed%3],b,b[(seed+1)%3],seed%2,seed);
- let n=0;while(s.winner===null&&n++<2000){try{G.dispatch(s,G.ai(s));}catch(e){throw Error('seed '+seed+' step '+n+': '+e.message,{cause:e});}const fs=[...s.row,...s.audience,...s.players.flatMap(p=>p.fans)];assert.equal(fs.filter(f=>f.type!=='dream'&&f.type!=='influencer').length,53);assert.equal(new Set(fs.map(f=>f.uid)).size,fs.length);for(const p of s.players){assert.equal(p.hand.length+p.deck.length+p.memory.length+p.discard.length,27);assert(p.vol>=0&&p.vol<=200&&p.chips>=0);}}
+ let n=0;while(s.winner===null&&n++<2000){try{G.dispatch(s,G.ai(s));}catch(e){throw Error('seed '+seed+' step '+n+': '+e.message,{cause:e});}const fs=[...s.row,...s.audience,...s.players.flatMap(p=>p.fans)];assert.equal(fs.filter(f=>f.type!=='dream'&&f.type!=='influencer').length,53);assert.equal(new Set(fs.map(f=>f.uid)).size,fs.length);for(const p of s.players){assert.equal([...p.hand,...p.deck,...p.memory,...p.discard].filter(c=>!c.special).length,27);assert(p.vol>=0&&p.vol<=(p.leader==='hibiki'?400:200)&&p.chips>=0);}}
  assert.notEqual(s.winner,null,'CPU match terminates seed '+seed);
 }
 // Render payment, recovery, items, scores, ordering and all new art without DOM dependencies.

@@ -41,7 +41,7 @@ for(const G of [browser,server]){
  {const s=make(),p=s.players[0];quiet(s);const mem=eventPrep(s,6),locked=s.row[0];locked.lock=1;G.dispatch(s,{type:'event',id:'aya',memory:mem});assert(s.row.includes(locked));assert.equal(p.fans.length,6);assert(!p.fans.includes(locked));}
  // Both seats, legal CPU choices and card conservation with Aya/Extra teams.
  const ids=Object.keys(G.CHAR).filter(x=>x!=='aya');
- for(let seed=1;seed<=150;seed++){const a=['aya',ids[seed%ids.length],ids[(seed+3)%ids.length]],b=['aya',ids[(seed+2)%ids.length],ids[(seed+5)%ids.length]],s=G.create(a,a[seed%3],b,b[(seed+1)%3],seed%2,seed);let moves=0;while(s.winner===null&&moves++<2000){G.dispatch(s,G.ai(s));for(const p of s.players){assert.equal(p.hand.length+p.deck.length+p.memory.length+p.discard.length,27);assert(p.vol>=0&&p.vol<=200&&p.chips>=0);}}assert.notEqual(s.winner,null,'CPU terminates');}
+ for(let seed=1;seed<=150;seed++){const a=['aya',ids[seed%ids.length],ids[(seed+3)%ids.length]],b=['aya',ids[(seed+2)%ids.length],ids[(seed+5)%ids.length]],s=G.create(a,a[seed%3],b,b[(seed+1)%3],seed%2,seed);let moves=0;while(s.winner===null&&moves++<2000){G.dispatch(s,G.ai(s));for(const p of s.players){assert.equal([...p.hand,...p.deck,...p.memory,...p.discard].filter(c=>!c.special).length,27);assert(p.vol>=0&&p.vol<=(p.leader==='hibiki'?400:200)&&p.chips>=0);}}assert.notEqual(s.winner,null,'CPU terminates');}
 }
 const nodes=new Map(),document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
 new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
