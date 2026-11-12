@@ -14,7 +14,7 @@ hikari:{skillName:'怖いからこそ、全速力！',name:'轍光',short:'光',
 aya:{skillName:'私にできること、全部',name:'宝槻彩',reading:'ほうつきあや',short:'彩',color:'#a83d4e',vol:30,hand:5,skill:'自分のターン終了時、このターンに手札から楽曲カードを3枚以上使用していたら、ファンチップを2枚得る。',songs:['SAI','彩から、あなたへ。','誰かのための天才'],event:'名もなき才に、喝采を。',cost:[3,5],effect:'使用前の自分のメモリーと捨て札にある1人用楽曲の合計枚数だけ、観客を1人ずつ獲得する（最大6回）。毎回、観客効果と補充を処理する。獲得枚数の増加は適用しない。'},
 emi:{skillName:'あなたも、救われる。',name:'黒曜恵美',reading:'こくようえみ',short:'恵美',color:'#786b88',vol:30,hand:5,skill:'自分のターン開始時、応援チップ2枚を支払ってもよい。そうした場合、自分の獲得済みの厄介なファン1枚を信者（3ポイント）と入れ替える。',songs:['唯一神','使命至上主義','愛憎奉納IDOLSTAGE'],event:'BLACK×MISSIONS',cost:[3,5],effect:'相手の獲得済みの1ポイントの観客1枚を選び、アンチ（－3ポイント）と入れ替える。交換元はゲーム外に置く。ファンチップは対象外。'} ,
 akina:{skillName:'私なりの最適解',name:'弓城秋奈',reading:'ゆみしろあきな',short:'秋奈',color:'#e99747',vol:30,hand:5,skill:'ターン開始時のドローは、山札の上から最大3枚を見て1枚選ぶ。残りを山札に戻し、山札全体をシャッフルする。初期手札や他のドローには適用しない。',songs:['白chu夢','可愛いの論証','幸福追求エクスキューズ'],event:'真実は嘘より奇なり',cost:[1,1],repeat:true,unlimited:true,effect:'手札の楽曲カードを好きな枚数（0枚も可）、メモリーに置く。支払いは秋奈1メモリー。使用するたびに支払い、同じターンでも何度でも使える。'},
-moe:{skillName:'どうぞ、ごゆっくり。',name:'西藤萌',reading:'にしふじもえ',short:'萌',color:'#8052ab',vol:30,hand:5,skill:'応援効果を追加：自分の各ターン1回、応援チップ3枚で、相手の行動済みアイドル1人を選ぶ。次の相手ターン開始時、そのアイドルは未行動に戻らない。カード効果による未行動化は可能。無料使用も回数制限を共有する。',songs:['Dear Friends','In My Care','Between Us'],event:'信じてくれるなら',cost:[2,4],costEach:1,costSelf:2,effect:'萌のメモリー2枚と他の編成メンバーのメモリー各1枚、合計4枚を支払う。このターン、必要な応援チップが3枚以下の応援効果を、コストを支払わずに合計3回まで使ってもよい。'},
+moe:{skillName:'どうぞ、ごゆっくり。',name:'西藤萌',reading:'にしふじもえ',short:'萌',color:'#8052ab',vol:30,hand:5,skill:'応援効果を追加：応援チップ3枚で、相手の行動済みアイドル1人を選ぶ。次の相手ターン開始時、そのアイドルは未行動に戻らない。自分のターン中、回数制限なし。同じアイドルへの重複指定はできず、カード効果による未行動化は可能。',songs:['Dear Friends','In My Care','Between Us'],event:'信じてくれるなら',cost:[2,5],effect:'萌のメモリー2枚以上を含む、合計5枚を支払う。このターン、必要な応援チップが3枚以下の応援効果を、コストを支払わずに合計3回まで使ってもよい。'},
 nina:{skillName:'ライトファンと一緒に',name:'街角仁奈',reading:'まちかどにな',short:'仁奈',color:'#c12e73',vol:30,hand:5,skill:'自分がライトファンを1枚獲得するたび、応援チップを1つ得る。',songs:['等身大リアル','今イズマイ頂点','世界は私のお気に入り'],event:'枕の横のテディベア',cost:[2,4],effect:'手札のアイテム「くまのぬいぐるみ」1つにつき、ファンチップを1つ得る（最大2つ）。ぬいぐるみは消費しない。'},
 fukurou:{skillName:'お静かに、患者様',name:'月田フクロウ',reading:'つきたふくろう',short:'フクロウ',color:'#92b6ce',vol:30,hand:5,skill:'相手が観客カードを獲得したとき、そのターン終了時まで、相手のファンサービスと応援効果を封印する。応援チップの獲得は封印しない。',songs:['執刀開始','魔神改造','人間卒業記念日'],event:'摘出カーテンコール',cost:[2,6],effect:'相手の応援チップを最大6枚奪う。ゲーム中1回。'},
 ayame:{skillName:'退屈以外は大歓迎！',name:'美澄あやめ',reading:'みすみあやめ',short:'あやめ',color:'#70a787',vol:30,hand:5,skill:'自分のターン終了時、応援チップ2枚を捨ててもよい。そうしたら、くじ引き券を1枚得る。',songs:["C'mon！",'王冠だって遊び道具','筋書きどおりはつまんない！'],event:'Freeeeeedom!!',cost:[4,7],effect:'アイテム「くじ引き券」を5枚得る。'},
@@ -113,7 +113,7 @@ function gain(s,i,list,effects=true){
 }
 function normal(s,i,n){const list=unlocked(s,i).slice(0,n);let left=n-list.length;for(let j=0;j<left&&j<s.audience.length;j++)list.push(s.audience[j]);gain(s,i,list);}
 function choice(s,kind,p,options,text,extra={}){s.pending={kind,p,options,text,...extra};}
-function moeTargets(s,i){if(s.players[i].moeHoldTurn===s.turn)return [];const q=s.players[1-i];return q.team.filter((id,j)=>!q.ready[j]&&!(q.moeHeld||[]).includes(id));}
+function moeTargets(s,i){const q=s.players[1-i];return q.team.filter((id,j)=>!q.ready[j]&&!(q.moeHeld||[]).includes(id));}
 function supportFree(p,effect){return (p.moeFreeSupport||0)>0&&['draw','lock','hold'].includes(effect);}
 function service(s,i,j){if(supportSealed(s,i))throw Error('このターン、ファンサービスは封印されています');const p=s.players[i];if(!Number.isInteger(j)||j<0||j>=p.team.length||p.service>=2||!p.ready[j])throw Error('ファンサービスは未行動の1人で各ターン2回までです');const count=p.moeDouble?2:1;p.moeDouble=false;p.ready[j]=false;p.service++;if(p.liveViewing){p.fanChips=(p.fanChips||0)+count;log(s,'ライブビューイング：ファンチップ＋'+count);}else for(let n=0;n<count;n++)s.queue.unshift({kind:'chip',p:i});log(s,'ファンサービス：'+CHAR[p.team[j]].short+(count===2?'（効果2倍）':''));}
 function chipEffect(s,p){if(s.players[p].leader==='hana'){s.players[p].buff++;log(s,'華：次のファン獲得＋'+s.players[p].buff);}}
@@ -235,7 +235,7 @@ function dispatch(s,a){
  if(a.effect==='hold'&&(p.leader!=='moe'||!moeTargets(s,i).includes(a.target)))throw Error('相手の行動済みで、まだ行動封じがないアイドルを選んでください');
  if(free)p.moeFreeSupport--;else p.chips-=cost;chipEffect(s,i);
  if(a.effect==='draw')draw(s,i);
- if(a.effect==='hold'){p.moeHoldTurn=s.turn;const q=s.players[1-i];q.moeHeld=[...(q.moeHeld||[]),a.target];log(s,CHAR[a.target].short+'は次のターン開始時に未行動に戻らない');}
+ if(a.effect==='hold'){const q=s.players[1-i];q.moeHeld=[...(q.moeHeld||[]),a.target];log(s,CHAR[a.target].short+'は次のターン開始時に未行動に戻らない');}
  if(a.effect==='refresh')p.ready=[true,true,true];
  if(a.effect==='lock')s.row.find(f=>f.uid===a.target).lock=i;
  log(s,'応援チップ効果：'+({draw:'1枚ドロー',refresh:'全員を未行動に',lock:'独占チップを配置',hold:'相手の行動封じ'}[a.effect])+(free?'（無料・残り'+p.moeFreeSupport+'回）':''));finish(s);return s;
