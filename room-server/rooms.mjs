@@ -21,15 +21,15 @@ function expireTurn(r,now){
  if(choice){const z=r.state.pending;r.state=IDOL.peerAction(r.state,{type:'choose',value:z.options[0]},z.p);syncClock(r,now,turn);r.move={actor:z.p,title:'選択時間切れ',detail:'30秒経過 · 先頭の候補を選択',art:null};}
  else{
   let guard=0;
-  while(r.state.pending&&r.state.pending.p===r.state.active&&r.state.winner===null){if(++guard>512)throw Error('選択処理の上限');const z=r.state.pending;r.state=IDOL.peerAction(r.state,{type:'choose',value:z.options[0]},z.p);}
+  while(r.state.pending&&r.state.turn===turn&&r.state.pending.p===r.state.active&&r.state.winner===null){if(++guard>512)throw Error('選択処理の上限');const z=r.state.pending;r.state=IDOL.peerAction(r.state,{type:'choose',value:z.options[0]},z.p);}
   if(r.state.pending&&r.state.pending.p!==r.state.active){r.turnRemaining=0;r.clockMode='choice';r.deadline=now+CHOICE;}
-  else if(r.state.winner===null){const actor=r.state.active;r.state=IDOL.peerAction(r.state,{type:'end'},actor);syncClock(r,now,turn);r.move={actor,title:'時間切れ · ターン終了',detail:'99秒経過',art:null};}
+  else if(r.state.winner===null&&r.state.turn===turn){const actor=r.state.active;r.state=IDOL.peerAction(r.state,{type:'end',skipEndSkill:true},actor);syncClock(r,now,turn);r.move={actor,title:'時間切れ · ターン終了',detail:'99秒経過',art:null};}
   else syncClock(r,now,turn);
  }
  bump(r,now);return true;
 }
 function view(r,seat,now){return {protocol:PROTOCOL,code:r.code,rev:r.rev,round:r.round||1,phase:r.phase,deadline:r.deadline||0,clockMode:r.clockMode||'turn',clockOwner:r.clockMode==='choice'?(r.state.pending.p===seat?0:1):(r.state?.active===seat?0:1),turnRemaining:r.clockMode==='choice'?(r.turnRemaining??0):Math.max(0,(r.deadline||0)-now),now,ready:r.ready,readyLocal:!!r.ready[seat],configLocal:r.seats[seat].config,rematchLocal:!!r.rematchReady?.[seat],rematchOther:!!r.rematchReady?.[1-seat],opponentLeft:!!r.departed?.[1-seat],joined:!!r.seats[1],expires:r.expires,state:r.state?IDOL.publicView(r.state,seat):null,move:r.move?{...r.move,who:r.move.actor===seat?'YOU':'相手'}:null};}
-function notice(s,a,seat){const c=s.players[seat].hand.find(c=>c.uid===a.card);return {actor:seat,title:c?IDOL.song(c).name:a.type==='event'?IDOL.EVENTS[a.id].event:({end:'ターン交代',service:'ファンサービス',support:'応援チップ効果',leaderSkill:'怖いからこそ、全速力！',choose:'効果を選択'})[a.type]||'',art:c?'song-'+c.owner+'-'+c.n:a.type==='event'?'event-'+a.id:null,detail:a.mode==='vol'?'VOLモード':a.mode==='fan'?'FANモード':''};}
+function notice(s,a,seat){const c=s.players[seat].hand.find(c=>c.uid===a.card);return {actor:seat,title:c?IDOL.song(c).name:a.type==='event'?IDOL.EVENTS[a.id].event:({end:'ターン交代',service:'ファンサービス',support:'応援チップ効果',leaderSkill:'怖いからこそ、全速力！',choose:'効果を選択'})[a.type]||'',art:c?IDOL.songArt(c):a.type==='event'?'event-'+a.id:null,detail:a.mode==='vol'?'VOLモード':a.mode==='fan'?'FANモード':''};}
 async function body(request){const raw=await request.text();if(raw.length>16000)throw new Problem('操作データが大きすぎます');try{return JSON.parse(raw||'{}');}catch{throw new Problem('操作を読み取れませんでした');}}
 async function transaction(bucket,code,fn,now){const key='rooms/'+code+'.json';for(let attempt=0;attempt<8;attempt++){const obj=await bucket.get(key);if(!obj)throw new Problem('その部屋は見つかりません。番号を確認してください',404);const r=await obj.json();if(r.expires<now)throw new Problem('部屋の有効期限が切れました。新しい部屋を作ってください',410);const result=fn(r);if(!result.changed)return result.response;const saved=await bucket.put(key,JSON.stringify(r),{onlyIf:{etagMatches:obj.etag},httpMetadata:{contentType:'application/json'}});if(saved)return result.response;}throw new Problem('同時に操作がありました。もう一度お試しください',409);}
 export async function handle(request,env){
