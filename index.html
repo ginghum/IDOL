@@ -246,7 +246,7 @@ ayame:{skillName:'退屈以外は大歓迎！',name:'美澄あやめ',reading:'�
 mimizuku:{skillName:'任務を遂行します！',name:'月田ミミズク',reading:'つきたみみずく',short:'ミミズク',color:'#a58ac5',vol:20,hand:5,skill:'自分のターン終了時、応援チップ1枚を捨ててもよい。そうしたら、相手は自身の手札の楽曲を1枚選んで捨てる。相手の楽曲手札がない場合は使用できない。応援効果ではない。',songs:['霧影','SHADOW CHASER','未踏前夜'],event:'ざこどもちゃれんじ！',cost:[4,6],effect:'観客山札の上から最大5枚を見て、その中にある自分にとって1ポイントの観客を全てまとめて獲得する。この獲得では観客効果は発動しない。残りを観客山札に戻し、山札全体をシャッフルする。ゲーム中1回。'},
 shiro:{skillName:'色が音になる時',name:'五百瀬しろ',reading:'いもせしろ',short:'しろ',color:'#e9a069',vol:30,hand:5,skill:'自分のターン開始時、相手の手札を確認する。「塗りつぶされたカード」が2枚以上あれば、ファンチップを1枚得る。',songs:['ひとしずくの音色','シナスタジア','画布の裏の月'],event:'Chroma & Crescent',cost:[2,4],effect:'相手の手札の「塗りつぶされたカード」を全て自分の手札に移し、「鳴り響く世界」に変化させる。ゲーム中1回。'},
 hibiki:{skillName:'鼓膜を揺らせ、夜を燃やせ',name:'足立響',reading:'あだちひびき',short:'響',color:'#d84c58',vol:30,hand:2,skill:'自分のターン開始時、VOL＋20％。響がリーダーの間、自分のVOL上限は400％になる。',songs:['爆響アンセム','フロアごと跳べ！','限界突破の大合唱'],event:'MAXIMUM!!!',cost:[6,8],effect:'自分のVOLが300％以上ならファンチップ15枚を得る。そうでなければ応援チップ10枚を得る。VOLは消費しない。ゲーム中1回。'},
-misa:{skillName:'貴方に相応しい一杯',name:'大谷美沙',reading:'おおやみさ',short:'美沙',color:'#9c6bbe',vol:20,hand:5,skill:'自分のターン開始時、応援チップ1枚を支払ってもよい。そうしたら「青のドリンク」「赤のドリンク」から1つ選び、得る。',songs:['お好みは、甘め？','Twilight Blend','―完璧なる夜の過ごし方―'],event:'ヴェルベット＆ヴァイオレット',cost:[3,7],effect:'自分の得点が相手より少なければ、その差と同じポイントをこのターン中得る。そうでなければ「青のドリンク」「赤のドリンク」「紫のドリンク」を1つずつ得る。その後、自分のターンを終了する。今得たドリンクも終了時に使用できる。ゲーム中1回。'}
+misa:{skillName:'貴方に相応しい一杯',name:'大谷美沙',reading:'おおやみさ',short:'美沙',color:'#9c6bbe',vol:20,hand:5,skill:'自分のターン開始時、応援チップ1枚を支払ってもよい。そうしたら「青のドリンク」「赤のドリンク」から1つ選び、得る。',songs:['お好みは、甘め？','Twilight Blend','―完璧なる夜の過ごし方―'],event:'ヴェルベット＆ヴァイオレット',cost:[3,7],effect:'「青のドリンク」「赤のドリンク」「紫のドリンク」を1つずつ得る。自分の得点が相手より少なければ、さらにその差と同じポイントをこのターン中得る。その後、自分のターンを終了する。今得たドリンクも終了時に使用できる。ゲーム中1回。'}
 };
 const COMMON = {
 collection:{event:'プライベートコレクション',short:'共通',color:'#a96a83',cost:[0,3],effect:'アイテム「くまのぬいぐるみ」を2つ得る。'},
@@ -578,7 +578,7 @@ function dispatch(s,a){
  if(id==='rai'){const at=s.row.findIndex(f=>f.uid===a.target),old=s.row[at],core=s.audience.find(f=>f.type==='core');s.audience=s.audience.filter(f=>f.uid!==core.uid);old.lock=null;s.audience.push(old);s.row[at]=core;shuffle(s,s.audience);}
  if(id==='shiro'){const q=s.players[1-i],cards=q.hand.filter(c=>c.special==='painted');q.hand=q.hand.filter(c=>c.special!=='painted');p.hand.push(...cards.map(c=>({...c,owner:'shiro',n:1,special:'world'})));log(s,'Chroma & Crescent：'+cards.length+'枚を奪い、鳴り響く世界に変化');}
  if(id==='hibiki'){if(p.vol>=300){p.fanChips=(p.fanChips||0)+15;log(s,'MAXIMUM!!!：ファンチップ＋15');}else{for(let j=0;j<10;j++)s.queue.push({kind:'chip',p:i});log(s,'MAXIMUM!!!：応援チップ10枚を獲得');}}
- if(id==='misa'){const n=score(s.players[1-i])-score(p);if(n>0){p.temp+=n;log(s,'美沙：このターン＋'+n+'ポイント');}else{for(const type of Object.keys(DRINKS))addDrink(s,p,type);}s.ending=true;log(s,'美沙：ターン終了、ドリンクを使用できます');}
+ if(id==='misa'){for(const type of Object.keys(DRINKS))addDrink(s,p,type);const n=score(s.players[1-i])-score(p);if(n>0){p.temp+=n;log(s,'美沙：このターン＋'+n+'ポイント');}s.ending=true;log(s,'美沙：ターン終了、ドリンクを使用できます');}
  if(whiteTrigger)s.queue.push({kind:'hakkaReady',p:i});
  if(id==='misa')s.queue.push({kind:'endDrinks',p:i});
  process(s);return s;
@@ -631,7 +631,7 @@ function ai(s){
  const ev=(id,extra={})=>({type:'event',id,memory:autoPay(p,id),...extra});
  if(eventOK(s,i,'shiro')&&s.players[1-i].hand.some(c=>c.special==='painted'))return ev('shiro');
  if(eventOK(s,i,'hibiki')&&(p.vol>=300||!p.deck.length))return ev('hibiki');
- if(eventOK(s,i,'misa')){const own=score(p),opp=score(s.players[1-i]),drinks=drinkItems(p).reduce((n,c)=>n+DRINKS[c.item].fan,0);if(opp>own?opp+drinks>=20:own+drinks+2>=20||ready===0)return ev('misa');}
+ if(eventOK(s,i,'misa')){const own=score(p),opp=score(s.players[1-i]),drinks=drinkItems(p).reduce((n,c)=>n+DRINKS[c.item].fan,0);if(opp>own?opp+drinks+2>=20:own+drinks+2>=20||ready===0)return ev('misa');}
  if(eventOK(s,i,'mimizuku'))return ev('mimizuku');
  if(eventOK(s,i,'fukurou')&&(s.players[1-i].chips>=3||!p.deck.length&&!p.hand.length))return ev('fukurou');
  if(eventOK(s,i,'ayame'))return ev('ayame');
