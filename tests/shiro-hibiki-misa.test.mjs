@@ -71,10 +71,10 @@ for(const G of [browser,server]){
   G.dispatch(s,{type:'end'});assert(s.ending);assert.equal(s.pending.kind,'endDrinks');bad(s,{type:'play',card:p.hand[0].uid,actors:[0],mode:'vol'});bad(s,{type:'choose',value:'fake'});
   G.dispatch(s,{type:'choose',value:'v'});assert.equal(p.vol,110);assert.equal(p.fans.length,1);assert.equal(s.row.length,3);G.dispatch(s,{type:'choose',value:'r2'});assert.equal(p.fans.length,2);assert.equal(p.items.length,2);G.dispatch(s,{type:'choose',value:'skip'});assert.equal(s.active,1);assert(!s.ending);assert.equal(p.items.length,2);
  }
- // Event temporary scoring persists through the closing drinks, vanishes on pass, never creates fan chips.
- for(const win of [false,true]){
-  const s=make('misa'),p=s.players[0],q=s.players[1];p.fanChips=5;q.fanChips=19;lightRow(s);const memory=pay(s,0,'misa');if(win)addDrink(p,'drinkRed','last');else addDrink(p,'drinkBlue','last');
-  G.dispatch(s,{type:'event',id:'misa',memory});assert.equal(p.fanChips,5);assert.equal(p.temp,14);assert.equal(G.score(p),19);assert.equal(s.pending.kind,'endDrinks');G.dispatch(s,{type:'choose',value:'last'});assert.equal(p.fanChips,5);if(win){assert.equal(s.winner,0);assert.equal(G.score(p),20);}else{assert.equal(s.winner,null);assert.equal(s.pending.kind,'endDrinks');G.dispatch(s,{type:'choose',value:'skip'});assert.equal(s.active,1);assert.equal(p.temp,0);assert.equal(G.score(p),5);}
+ // Event grants drinks regardless of score and never grants catch-up points.
+ for(const red of [false,true]){
+  const s=make('misa'),p=s.players[0],q=s.players[1];p.fanChips=5;q.fanChips=19;lightRow(s);const memory=pay(s,0,'misa');addDrink(p,red?'drinkRed':'drinkBlue','last');
+  G.dispatch(s,{type:'event',id:'misa',memory});assert.equal(p.fanChips,5);assert.equal(p.temp,0);assert.equal(G.score(p),5);assert.equal(G.drinkItems(p).length,4);assert.equal(s.pending.kind,'endDrinks');G.dispatch(s,{type:'choose',value:'last'});assert.equal(s.winner,null);assert.equal(p.fanChips,5);G.dispatch(s,{type:'choose',value:'skip'});assert.equal(s.active,1);assert.equal(G.score(p),red?6:5);assert.equal(G.drinkItems(p).length,3);
  }
  // Opponent effects can pause closing drinks; clock timeout skips all remaining optional drinks.
  {
