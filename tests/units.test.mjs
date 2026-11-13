@@ -30,6 +30,19 @@ rosterQuery='黄金冒険譚';assert.deepEqual(rosterIDs(),['hakka']);rosterQuer
 unitName='<img src=x onerror=alert(1)>';unitTarget=14;click('unit-save');assert(savedUnitsHTML().includes('&lt;img'));assert(!savedUnitsHTML().includes('<img src=x'));
 `);
 run(`assert.equal(unitSlots.length,15);assert.equal(unitSlots[0].leader,'machi');assert(unitSlots[14].name.startsWith('<img'));click('unit-load',14);assert.equal(unitName,unitSlots[14].name);team.pop();assert.equal(unitSlots[14].team.length,3);`);
+run(`
+// Team membership, empty future groups and combined classification/search filters.
+const expected=[['LapisLazuli',['kayo','hikari','aya','emi']],['カラフルドリーム',['haru','akina','moe','nina']],['Anastasia',['machi','ayame','fukurou','mimizuku']],['jukebox',['natsume','shiro','hibiki','misa']],['幽玄物語',['shio']],['極楽天',['hakka']],['RedSprite',['rai']],['FunkFanfare',['hana']],['ジャスティ3Z',['homura']],['PRISM',[]],['forbidoom!',[]],['我らの声はあの宇宙に届く。',[]]];
+assert.deepEqual(IDOL_GROUPS.map(g=>[g.name,g.members]),expected);
+const members=IDOL_GROUPS.flatMap(g=>g.members);assert.equal(new Set(members).size,IDS.length);assert.deepEqual([...members].sort(),[...IDS].sort());
+rosterFilter='all';rosterQuery='';
+for(const g of IDOL_GROUPS){rosterGroup=g.id;assert.deepEqual(rosterIDs().sort(),[...g.members].sort());if(!g.members.length)assert.match(rosterResultsHTML(),/今後追加予定/);}
+rosterGroup='jukebox';rosterFilter='series-original';assert.deepEqual(rosterIDs(),['natsume']);rosterFilter='series-extra';assert.deepEqual(rosterIDs().sort(),['hibiki','misa','shiro']);
+rosterQuery='響';assert.deepEqual(rosterIDs(),['hibiki']);rosterQuery='';rosterGroup='all';rosterFilter='all';rosterQuery='JUKEBOX';assert.deepEqual(rosterIDs().sort(),['hibiki','misa','natsume','shiro']);
+rosterQuery='';setupTab='members';const markup=setupHTML();for(const [name] of expected)assert(markup.includes(name));assert(markup.includes('id="roster-group"'));assert(!markup.includes('<option value="手札展開"'));
+rosterPage=3;listeners.change({target:{id:'roster-group',value:'lapislazuli',dataset:{}}});assert.equal(rosterPage,0);assert.equal(rosterGroup,'lapislazuli');assert.match($('#app').innerHTML,/LapisLazuli/);
+rosterFilter='series-extra';listeners.change({target:{id:'roster-group',value:'colorful-dream',dataset:{}}});assert.equal(rosterFilter,'series-extra');assert.deepEqual(rosterIDs().sort(),['akina','moe','nina']);
+`);
 blockWrites=true;
 run(`click('unit-load',0);const original=JSON.stringify(unitSlots);unitName='保存不可';click('unit-save');click('unit-overwrite-confirm');assert.equal(JSON.stringify(unitSlots),original);assert.equal(modal.kind,'unit-overwrite');`);
 blockWrites=false;store.set('idol-live-duel-units-v1','broken JSON');run(`assert.equal(unitSlots.length,15);assert(unitStorageWarning);assert(unitOK(unitConfig()));`);
