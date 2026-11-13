@@ -74,7 +74,7 @@ for(const G of [browser,server]){
  // Event grants drinks regardless of score and never grants catch-up points.
  for(const red of [false,true]){
   const s=make('misa'),p=s.players[0],q=s.players[1];p.fanChips=5;q.fanChips=19;lightRow(s);const memory=pay(s,0,'misa');addDrink(p,red?'drinkRed':'drinkBlue','last');
-  G.dispatch(s,{type:'event',id:'misa',memory});assert.equal(p.fanChips,5);assert.equal(p.temp,0);assert.equal(G.score(p),5);assert.equal(G.drinkItems(p).length,4);assert.equal(s.pending.kind,'endDrinks');G.dispatch(s,{type:'choose',value:'last'});assert.equal(s.winner,null);assert.equal(p.fanChips,5);G.dispatch(s,{type:'choose',value:'skip'});assert.equal(s.active,1);assert.equal(G.score(p),red?6:5);assert.equal(G.drinkItems(p).length,3);
+  G.dispatch(s,{type:'event',id:'misa',memory});assert.equal(s.active,0);assert.equal(s.pending,null);assert(!s.ending);G.dispatch(s,{type:'end'});assert.equal(p.fanChips,5);assert.equal(p.temp,0);assert.equal(G.score(p),5);assert.equal(G.drinkItems(p).length,4);assert.equal(s.pending.kind,'endDrinks');G.dispatch(s,{type:'choose',value:'last'});assert.equal(s.winner,null);assert.equal(p.fanChips,5);G.dispatch(s,{type:'choose',value:'skip'});assert.equal(s.active,1);assert.equal(G.score(p),red?6:5);assert.equal(G.drinkItems(p).length,3);
  }
  // Opponent effects can pause closing drinks; clock timeout skips all remaining optional drinks.
  {
