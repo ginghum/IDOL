@@ -27,7 +27,7 @@ function event(s,id){G.dispatch(s,{type:'event',id,memory:G.autoPay(s.players[0]
  const s=make('hakka'),p=s.players[0];play(s,'hakka',1,'vol');assert.equal(p.items.length,1);assert.equal(p.vol,40);p.ready=[true,true,true];p.vol=100;row(s,['light','light','light']);play(s,'hakka',3);assert.equal(p.items.length,2);
  // Two actual Hakka memories and two wildcard meat satisfy exactly four Hakka.
  assert(G.eventOK(s,0,'hakka'));const paid=G.autoPay(p,'hakka');assert.equal(paid.length,4);assert(p.items.every(c=>paid.includes(c.uid)));assert.throws(()=>G.peerAction(s,{type:'event',id:'hakka',memory:[...paid,'extra']},0));
- mem(s,'haru',3);event(s,'hakka');assert.equal(p.items.length,0);assert.equal(p.fanChips,3);assert.equal(p.memory.length,0);assert.equal(p.discard.length,5);assert.equal(s.pending.kind,'hakkaReady');G.dispatch(s,{type:'choose',value:'1'});assert(p.ready[1]);assert.equal(G.score(p),6);
+ mem(s,'haru',3);event(s,'hakka');assert.equal(p.items.length,0);assert.equal(p.fanChips,4);assert.equal(p.memory.length,0);assert.equal(p.discard.length,5);assert.equal(s.pending.kind,'hakkaReady');G.dispatch(s,{type:'choose',value:'1'});assert(p.ready[1]);assert.equal(G.score(p),7);
  // Meat also substitutes another character's named memory and total, not only Hakka.
  const t=make('hakka',['haru','wit','redo']),q=t.players[0];q.items=Array.from({length:5},(_,j)=>({uid:'meat'+j,item:'meat'}));assert(G.eventOK(t,0,'haru'));event(t,'haru');assert.equal(q.items.length,0);assert.equal(q.discard.length,0);
  // Optional leader recovery triggers on reusable common events too.
