@@ -6,7 +6,9 @@ const browser=new Function(code.split('const $=s=>')[0]+';return IDOL')();
 for(const G of [browser,server])for(const seat of [0,1]){
  const make=()=>{const s=G.create(['misa','hakka','kayo'],'kayo',['misa','hakka','kayo'],'kayo',seat,42,['misa','hakka','kayo'],['misa','hakka','kayo']);for(const f of [...s.row,...s.audience]){f.type='light';f.lock=null;}return s;};
  const pay=(s,id)=>{const p=s.players[seat],pool=[...p.hand,...p.deck];const required=pool.filter(c=>c.owner===id).slice(0,G.EVENTS[id].cost[0]);const chosen=[...required,...pool.filter(c=>!required.includes(c)).slice(0,G.EVENTS[id].cost[1]-required.length)];p.hand=p.hand.filter(c=>!chosen.includes(c));p.deck=p.deck.filter(c=>!chosen.includes(c));p.memory.push(...chosen);return chosen.map(c=>c.uid);};
- assert.deepEqual(G.CHAR.kayo.cost,[3,5]);assert.deepEqual(G.CHAR.misa.cost,[3,7]);
+ assert.deepEqual(G.CHAR.kayo.cost,[3,5]);assert.deepEqual(G.CHAR.misa.cost,[4,8]);
+ // New cost: eight total, at least four Misa memories; meat remains a wildcard.
+ {const s=make(),p=s.players[seat],memory=pay(s,'misa');assert.equal(memory.length,8);assert.equal(p.memory.filter(c=>c.owner==='misa').length,4);assert(G.eventOK(s,seat,'misa'));assert(!G.paymentOK(p,'misa',memory.slice(0,7)));const own=p.memory.find(c=>c.owner==='misa'),other=p.deck.find(c=>c.owner!=='misa');p.deck=p.deck.filter(c=>c.uid!==other.uid);p.memory=p.memory.filter(c=>c.uid!==own.uid);p.deck.push(own);p.memory.push(other);assert(!G.eventOK(s,seat,'misa'));assert(!G.paymentOK(p,'misa',p.memory.map(c=>c.uid)));p.memory=p.memory.filter(c=>c.uid!==other.uid);p.deck.push(other);p.items.push({uid:'misa-cost-meat',item:'meat'});assert(G.eventOK(s,seat,'misa'));assert(G.paymentOK(p,'misa',G.autoPay(p,'misa')));}
  for(const [own,opp] of [[5,10],[10,10],[12,10]]){
  const s=make(),p=s.players[seat],q=s.players[1-seat];p.fanChips=own;q.fanChips=opp;
  G.dispatch(s,{type:'event',id:'misa',memory:pay(s,'misa')});
