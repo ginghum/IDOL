@@ -10,8 +10,8 @@ for(const G of [browser,server]){
  function eventPrep(s,count){const p=s.players[0],pool=[...p.hand,...p.deck,...p.memory,...p.discard];p.hand=[];p.deck=[];p.memory=[];p.discard=[];for(let j=0;j<4;j++){const at=pool.findIndex(c=>c.owner==='aya'&&c.n>1);p.memory.push(pool.splice(at,1)[0]);}for(let j=0;j<2;j++){const at=pool.findIndex(c=>c.n>1);p.memory.push(pool.splice(at,1)[0]);}for(let j=0;j<count;j++){const at=pool.findIndex(c=>c.n===1);p.discard.push(pool.splice(at,1)[0]);}p.hand=pool;return G.autoPay(p,'aya');}
  {const s=make(),p=s.players[0];assert.equal(p.vol,30);assert.equal(p.hand.length,5);assert.equal(p.deck.length,22);assert.equal(G.detail({owner:'aya',n:1}).vol,20);assert.equal(G.detail({owner:'aya',n:1}).fan,1);}
  for(const n of [2,3]){
- const s=make(),p=s.players[0];quiet(s);p.vol=n===2?80:100;const c=give(s,'aya',n);G.dispatch(s,{type:'play',card:c.uid,actors:Array.from({length:n},(_,j)=>j),mode:'fan'});
- assert.equal(p.fans.length,n);assert.equal(p.vol,n===2?80:100);assert.equal(s.pending.kind,'ayaReady');assert.equal(p.songsPlayed,1);assert(!s.pending.options.includes('0'));
+ const s=make(),p=s.players[0];quiet(s);p.vol=n===2?80:100;const next=s.audience[0].uid;const c=give(s,'aya',n);G.dispatch(s,{type:'play',card:c.uid,actors:Array.from({length:n},(_,j)=>j),mode:'fan'});
+ assert.equal(p.fans.length,n);assert.equal(p.vol,n===2?80:100);assert.equal(s.pending.kind,'ayaReady');assert.equal(s.row.length,3,'audience refills before refresh choice');assert(s.row.some(f=>f.uid===next),'new audience is available during choice');assert.equal(p.songsPlayed,1);assert(!s.pending.options.includes('0'));
  const skip=G.peerAction(s,{type:'choose',value:'skip'},0);assert.equal(skip.players[0].vol,p.vol);assert.equal(skip.pending,null);
  const snapshot=JSON.stringify(s);assert.throws(()=>G.peerAction(s,{type:'choose',value:'0'},0));assert.equal(JSON.stringify(s),snapshot);assert.throws(()=>G.peerAction(s,{type:'choose',value:s.pending.options[1]},1));
  const v=G.publicView(s,1);assert.deepEqual(v.pending.options,[]);
@@ -47,7 +47,7 @@ const nodes=new Map(),document={querySelector(k){if(!nodes.has(k))nodes.set(k,{i
 new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
 assert.equal(cardSeries('character','aya'),'extra');assert.equal(cardSeries('event','aya'),'extra');rosterQuery='ほうつきあや';assert.deepEqual(rosterIDs(),['aya']);
 state=IDOL.create(['aya','hikari','hana'],'aya',['shio','rai','homura'],'shio',0,9);screen='match';modal=null;state.players[0].songsPlayed=3;assert.match(tableHUD(state.players[0],0),/終了時★2/);
-state.pending={kind:'ayaReady',p:0,options:['skip','1'],cost:20,all:false,text:'彩の追加効果'};renderModal();assert.match($('#modal').innerHTML,/今回は使わない/);assert.match($('#modal').innerHTML,/轍光を未行動に/);
+state.pending={kind:'ayaReady',p:0,options:['skip','1'],cost:20,all:false,text:'彩の追加効果'};renderModal();assert.match($('#modal').innerHTML,/今回は使わない/);assert.match($('#modal').innerHTML,/轍光を未行動に/);assert.match($('#modal').innerHTML,/補充後の観客ゾーン/);assert.match($('#modal').innerHTML,/現在の手札/);for(const f of state.row)assert($('#modal').innerHTML.includes(FAN[f.type].name));
 state.pending={kind:'ayaReady',p:0,options:['skip','all'],cost:30,all:true,text:'彩の追加効果'};renderModal();assert.match($('#modal').innerHTML,/仲間全員を未行動に/);
 modal={kind:'catalog',tab:'aya'};renderModal();assert.match($('#modal').innerHTML,/名もなき才に、喝采を。/);assert.match($('#modal').innerHTML,/私にできること、全部/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);

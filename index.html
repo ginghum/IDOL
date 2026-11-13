@@ -208,6 +208,14 @@ body.in-setup{background:radial-gradient(ellipse at 80% 0,#55354e60,transparent 
 .choice-hand-track .song-card h3{font-size:12px;min-height:36px}
 .choice-hand-track .song-card p{font-size:10px}
 @media(max-width:600px){.choice-hand-track .song-card{flex-basis:132px}.choice-hand-track .song-card .art{height:58px}}
+.choice-board-reference{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.choice-board-reference>p{font-size:11px;color:var(--muted);margin:4px 0 8px}
+.choice-board-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.choice-board-track .fan-card{min-height:0;padding:10px}
+.choice-board-track .fan-card .art{min-height:0;height:55px}
+.choice-board-track .fan-card h3{font-size:12px}
+.choice-board-track .fan-card .points{font-size:20px}
+@media(max-width:600px){.choice-board-track .fan-card{padding:7px}.choice-board-track .fan-card .art{height:42px}.choice-board-track .fan-card h3{font-size:10px}.choice-board-track .fan-card p{font-size:10px}}
 </style></head>
 <body><header class="app-header"><div class="brand"><span class="brand-icon">✦</span><div><strong>IDOL</strong><small>LIVE DUEL / 対バンカードゲーム</small></div></div><nav class="nav" aria-label="メインメニュー"><button data-action="catalog">カード一覧</button><button data-action="rules">遊び方</button></nav></header><main class="shell" id="app"></main><div id="modal"></div>
 <script>/* IDOL rules engine. Browser-independent; commands and state are JSON serializable. */
@@ -1063,7 +1071,7 @@ function renderModalContent(){
  else if(z.kind==='hakkaReady')body='<div class="actor-select">'+z.options.filter(x=>x!=='skip').map(x=>btn(CHAR[state.players[0].team[Number(x)]].name,'choose','primary',false,'data-id="'+x+'"')).join('')+btn('今回は戻さない','choose','',false,'data-id="skip"')+'</div>';
  else {const fs=[...state.players[0].fans,...state.row,...state.audience.slice(0,2)].filter(f=>z.options.includes(f.uid));body='<div class="choice-grid">'+fs.map(f=>choiceFan(f,'choose')).join('')+'</div>'+(z.options.includes('skip')?btn('選択を終える','choose','primary wide',false,'data-id="skip"'):'');}
  if(z.kind==='raiPick'&&z.selected?.length){const selected=[...state.row,...state.audience.slice(0,2)].filter(f=>z.selected.includes(f.uid));body='<p class="setup-note">選択済み：'+selected.map(f=>FAN[f.type].name).join('・')+'（まとめて獲得します）</p>'+body;}
- if(net?.mode==='room'&&net.clockMode==='choice')body='<div class="decision-time"><strong id="decision-clock" role="timer">選択残り 30秒</strong><small>手番側の残り'+Math.ceil(net.turnRemaining/1000)+'秒は停止中。時間切れは先頭の候補を選択します。</small></div>'+body;if(z.kind!=='akinaReturn')body+='<details class="choice-hand-reference" open><summary>現在の手札 · '+p.hand.length+'枚</summary><p>確認用です。左右にスワイプして、選択候補と見比べられます。</p><div class="choice-hand-track" aria-label="現在の手札（確認用）">'+(p.hand.length?p.hand.map(c=>songHTML(c,false)).join(''):'<p>手札はありません。</p>')+'</div></details>';root.innerHTML=dialog(z.text,body,false,false,z.kind==='akinaReturn'?'akina-return-dialog':'');return;
+ if(net?.mode==='room'&&net.clockMode==='choice')body='<div class="decision-time"><strong id="decision-clock" role="timer">選択残り 30秒</strong><small>手番側の残り'+Math.ceil(net.turnRemaining/1000)+'秒は停止中。時間切れは先頭の候補を選択します。</small></div>'+body;if(z.kind==='ayaReady')body+='<section class="choice-board-reference" aria-label="補充後の観客ゾーン"><h3>補充後の観客ゾーン</h3><p>左が先頭です。独占中の観客も確認できます。</p><div class="choice-board-track">'+state.row.map((f,j)=>fanHTML(f,j,p)).join('')+'</div></section>';if(z.kind!=='akinaReturn')body+='<details class="choice-hand-reference" open><summary>現在の手札 · '+p.hand.length+'枚</summary><p>確認用です。左右にスワイプして、選択候補と見比べられます。</p><div class="choice-hand-track" aria-label="現在の手札（確認用）">'+(p.hand.length?p.hand.map(c=>songHTML(c,false)).join(''):'<p>手札はありません。</p>')+'</div></details>';root.innerHTML=dialog(z.text,body,false,false,z.kind==='akinaReturn'?'akina-return-dialog':'');return;
  }
  if(!modal){root.innerHTML='';return;}
  const p=state?.players[0];
