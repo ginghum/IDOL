@@ -48,8 +48,8 @@ for(const G of [browser,server]){
  // Hibiki: own starts only, first start, mode values, cap and switches, event boundary.
  for(const i of [0,1]){
   const s=make('hibiki',i),p=s.players[i];assert.equal(p.hand.length,2); // Both seats receive the same first-start bonus.
-  assert.equal(p.vol,50);
-  p.vol=250;G.dispatch(s,{type:'end'});assert.equal(p.vol,250);settle(s);G.dispatch(s,{type:'end'});assert.equal(p.vol,270);settle(s);
+  assert.equal(p.vol,40);
+  p.vol=250;G.dispatch(s,{type:'end'});assert.equal(p.vol,250);settle(s);G.dispatch(s,{type:'end'});assert.equal(p.vol,260);settle(s);
  }
  for(const n of [1,2,3]){const s=make('hibiki'),p=s.players[0];p.vol=390;play(s,0,'hibiki',n,'vol');settle(s);assert.equal(p.vol,400);assert.equal(G.song({owner:'hibiki',n}).vol,10*n+10);}
  for(const v of [299,300,400]){
