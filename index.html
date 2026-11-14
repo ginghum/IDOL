@@ -960,6 +960,7 @@ function render(){
  const setupScroll=screen==='setup'&&document.body?document.documentElement.scrollTop:0;
  const handOffset=$('.hand-track')?.scrollLeft||0;
  $('#app').innerHTML=screen==='setup'?setupHTML():matchHTML();
+ renderedSongId=screen==='match'&&modal?.kind==='song'?modal.id:null;
  for(const cls of openSetupDetails){const el=$('.'+cls);if(el)el.open=true;}
  const track=$('.hand-track');if(track)track.scrollLeft=handOffset;updateHandScroll();
  renderModal();updateClockLabel();
@@ -1042,7 +1043,10 @@ function choiceFan(f,action,on=false){return '<button class="choice-card '+(on?'
 function memChoice(c,action,on){return '<button class="choice-card memory-choice '+(on?'on':'')+'" data-action="'+action+'" data-id="'+c.uid+'" style="border-top:3px solid '+CHAR[c.owner].color+'">'+art(IDOL.songArt(c))+'<span><small>'+CHAR[c.owner].short+' / '+c.n+'人用</small><h3>'+IDOL.song(c).name+'</h3></span></button>';}
 // Retain dialog scroll/focus only while editing the same selection session.
 let renderedModal = null;
+let renderedSongId = null;
 function renderModal(){
+ // Song controls live on the board: remove them when opening any other dialog.
+ if(renderedSongId&&screen==='match'&&modal?.kind!=='song'){render();return;}
  const root=$('#modal'), previous=root.querySelector('.dialog');
  const preserve=!!modal&&modal===renderedModal&&!!previous;
  const top=previous?.scrollTop||0, left=previous?.scrollLeft||0;
