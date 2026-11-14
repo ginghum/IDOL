@@ -1,0 +1,8 @@
+import assert from'node:assert/strict';import{readFileSync}from'node:fs';
+const code=readFileSync(new URL('../index.html',import.meta.url),'utf8').match(/<script>([\s\S]*?)<\/script>/)[1],nodes=new Map(),document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
+new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
+state=IDOL.create(['hibiki','rai','kayo'],'hibiki',['hana','hakka','machi'],'hana',0,123);screen='match';const p=state.players[0];p.vol=300;const c=[...p.hand,...p.deck].find(c=>c.owner==='hibiki'&&c.n===1);p.deck=p.deck.filter(x=>x.uid!==c.uid);p.hand=p.hand.filter(x=>x.uid!==c.uid);p.hand.push(c);modal={kind:'song',id:c.uid};selection={actors:[0],boost:false,pick:false};assert.match(tableSong(c),/FAN \\+0/);assert.match(songDock(),/FAN ＋0/);assert.match(songDock(),/最低0枚/);screen='setup';renderModalContent();assert.match($('#modal').innerHTML,/観客0枚を獲得/);screen='match';
+const r=[...p.hand,...p.deck].find(c=>c.owner==='rai'&&c.n===3);p.deck=p.deck.filter(x=>x.uid!==r.uid);p.hand=p.hand.filter(x=>x.uid!==r.uid);p.hand.push(r);modal={kind:'song',id:r.uid};selection={actors:[0,1,2],boost:false,pick:true};assert.match(songDock(),/通常獲得を1枚選択に変更/);assert.match(songDock(),/FAN ＋1/);
+modal={kind:'event',id:'hibiki'};selection={memory:[]};renderModalContent();const event=$('#modal').innerHTML;assert.match(event,/このターン15ポイント/);assert.match(event,/4枚以上を含む、合計ちょうど6メモリー/);assert(!event.includes('ファンチップ15枚'));
+`)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
+console.log('Hibiki UI: actual zero-FAN hand/dock/dialog, reduced Rai selection, temporary event points and exact 4-of-6 cost passed');

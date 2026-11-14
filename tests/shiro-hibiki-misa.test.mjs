@@ -53,7 +53,7 @@ for(const G of [browser,server]){
  }
  for(const n of [1,2,3]){const s=make('hibiki'),p=s.players[0];p.vol=390;play(s,0,'hibiki',n,'vol');settle(s);assert.equal(p.vol,400);assert.equal(G.song({owner:'hibiki',n}).vol,10*n+10);}
  for(const v of [299,300,400]){
-  const s=make('hibiki'),p=s.players[0],memory=pay(s,0,'hibiki');p.vol=v;G.dispatch(s,{type:'event',id:'hibiki',memory});settle(s);assert.equal(p.vol,v);assert.equal(p.fanChips,v>=300?15:0);assert.equal(p.chips,v>=300?0:10);bad(s,{type:'event',id:'hibiki',memory});
+  const s=make('hibiki'),p=s.players[0],memory=pay(s,0,'hibiki');p.vol=v;G.dispatch(s,{type:'event',id:'hibiki',memory});settle(s);assert.equal(p.vol,v);assert.equal(p.fanChips,0);assert.equal(p.temp,v>=300?15:0);assert.equal(p.chips,v>=300?0:10);bad(s,{type:'event',id:'hibiki',memory});
  }
  {
   const s=make('hibiki',0,['hibiki','shiro','misa'],['switch','hibiki','misa']),p=s.players[0];p.vol=375;p.items.push(...[0,1,2].map(n=>({uid:'sw'+n,item:'meat'})));G.dispatch(s,{type:'event',id:'switch',memory:['sw0','sw1','sw2'],leader:'shiro'});assert.equal(p.vol,200);assert.equal(G.maxVoltage(p),200);

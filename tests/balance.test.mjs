@@ -29,7 +29,7 @@ for(const [id,cost,owned] of [['wit',4,0],['viewing',5,0],['rai',3,2]]){const s=
 {
  const s=make(),p=s.players[0];p.items=[{uid:'meat-a',item:'meat'},{uid:'meat-b',item:'meat'},{uid:'meat-c',item:'meat'}];assert(G.eventOK(s,0,'rai'));G.dispatch(s,{type:'event',id:'rai',memory:p.items.map(c=>c.uid),target:s.row[0].uid});assert.equal(p.items.length,0);assert.equal(p.discard.length,0);
 }
-const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert(html.includes('通常獲得を${c.n===3?2:1}枚選択に変更'));assert(html.includes('選択済み：'));assert(!html.includes('機転は3メモリーで'));
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert(html.includes('通常獲得を${IDOL.acquisitionCount(p,c.n===3?2:1)}枚選択に変更'));assert(html.includes('選択済み：'));assert(!html.includes('機転は3メモリーで'));
 // Exercise both player's CPU choices with the new paired acquisition and costs.
 for(let seed=1;seed<=120;seed++){const s=G.create(['rai','hana','hakka'],'hakka',['rai','machi','haru'],'haru',seed%2,seed,['rai','wit','viewing'],['rai','wit','viewing']);let guard=0;while(s.winner===null&&guard++<2000)G.dispatch(s,G.ai(s));assert.notEqual(s.winner,null);}
 console.log('Balance: new exact costs, two-card simultaneous Rai picks, selection privacy, locks, batch penalties, timeout, normal mode and CPU matches passed');
