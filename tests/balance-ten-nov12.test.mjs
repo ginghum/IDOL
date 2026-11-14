@@ -8,7 +8,15 @@ for(const G of [browser,server]){
  const memory=(s,owner,n)=>{const p=s.players[0];for(let j=0;j<n;j++){const c=give(s,owner,1);p.hand.splice(p.hand.indexOf(c),1);p.memory.push(c);}};
  const bad=(s,a,i=s.active)=>{const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,a,i));assert.equal(JSON.stringify(s),before);};
  const settle=s=>{let n=0;while(s.pending&&n++<30)G.dispatch(s,G.ai(s));assert(!s.pending);};
- assert.deepEqual([1,2,3].map(n=>G.song({owner:'shio',n}).vol),[10,30,40]);
+ assert.deepEqual([1,2,3].map(n=>G.song({owner:'shio',n}).vol),[20,30,40]);
+ // Tabibito: both seats, leader/member, one actor, unchanged FAN and immediate teammate follow-up.
+ for(const seat of [0,1])for(const leader of ['shio','hana']){
+ const team=['shio','hana','aya'],opponent=['kayo','rai','natsume'];const pair=seat?[opponent,team]:[team,opponent],leaders=seat?['kayo',leader]:[leader,'kayo'];const t=G.create(pair[0],leaders[0],pair[1],leaders[1],seat,1411),p=t.players[seat];
+ const giveOwn=(owner)=>{for(const zone of ['hand','deck']){const at=p[zone].findIndex(c=>c.owner===owner&&c.n===1);if(at>=0){const c=p[zone].splice(at,1)[0];p.hand.push(c);return c;}}throw Error('missing song');};
+ const c=giveOwn('shio'),d=G.detail(c),before=p.vol;assert.equal(d.vol,20);assert.equal(d.fan,1);assert.equal(d.need,60);G.dispatch(t,{type:'play',card:c.uid,actors:[0],mode:'vol'});assert.equal(p.vol,before+20);assert.deepEqual(p.ready,[false,true,true]);assert.equal(G.actors(p,c),null);assert.equal(p.chips,0);
+ if(leader==='shio'){assert.equal(p.vol,60);const next=giveOwn('hana');assert(G.playOK(t,seat,next,[1],'fan'));for(const f of [...t.row,...t.audience])f.type='light';G.dispatch(t,{type:'play',card:next.uid,actors:[1],mode:'fan'});assert.equal(p.fans.length,1);assert.equal(p.vol,60);}
+ }
+
  assert.deepEqual([1,2,3].map(n=>G.song({owner:'akina',n}).vol),[10,20,30]);
  // Actual VOL use for changed songs, including Akina's optional return.
  for(const owner of ['akina','shio'])for(const n of [1,2,3]){const s=make([owner,'hakka','aya']),p=s.players[0],c=give(s,owner,n),before=p.vol;G.dispatch(s,{type:'play',card:c.uid,actors:Array.from({length:n},(_,j)=>j),mode:'vol'});settle(s);assert.equal(p.vol,before+G.song(c).vol);}
