@@ -10,5 +10,5 @@ for(const G of [browser,server]){
  for(const reason of ['chips','ready','leader','seal']){const s=make(),p=s.players[0],q=s.players[1];p.chips=3;q.ready[0]=false;if(reason==='chips')p.chips=2;if(reason==='ready')q.ready[0]=true;if(reason==='leader')p.leader='hana';if(reason==='seal')p.supportSealTurn=s.turn;bad(s,{type:'support',effect:'hold',target:q.team[0]});}
  assert.deepEqual(G.CHAR.moe.cost,[2,5]);assert(!G.CHAR.moe.costEach);assert.match(G.CHAR.moe.skill,/回数制限なし/);
 }
-assert(!html.includes('応援チップ3枚を支払う（自分の各ターン1回）'));assert.match(html,/応援チップ3枚を支払う（回数制限なし）/);
+assert(!html.includes('声援チップ3枚を支払う（自分の各ターン1回）'));assert.match(html,/声援チップ3枚を支払う（回数制限なし）/);
 console.log('Moe unlimited: both engines/seats, paid/free/mixed triple holds, legacy turn-marker ignored, duplicates, recovery, exact five/two-Moe/meat payment, event once and atomic invalid actions passed');

@@ -45,7 +45,7 @@ new Function('document','localStorage','setTimeout','clearTimeout','assert',code
 state=IDOL.create(['hikari','kayo','hana'],'hikari',['rai','shio','machi'],'rai',0,5);screen='match';modal=null;
 state.pending={p:0,kind:'hikariOffer',count:2,options:['skip','accept'],text:'手札交換'};renderModal();assert.match($('#modal').innerHTML,/今回は使わない/);
 state.pending={p:0,kind:'hikariDiscard',count:2,selected:[],options:state.players[0].hand.map(c=>c.uid),text:'手札選択'};renderModal();assert.match($('#modal').innerHTML,/data-action="choose"/);
-state.players[0].vol=100;state.pending=null;modal={kind:'hikari-skill'};selection={discard:state.players[0].hand.slice(0,3).map(c=>c.uid)};renderModal();assert.match($('#modal').innerHTML,/3枚捨てて応援＋6/);assert.match($('#modal').innerHTML,/キャンセル/);
-assert.match(matchHTML(),/光 · 手札3枚→応援6/);assert.match($('#modal').innerHTML,/VOL100％以上/);state.players[0].vol=99;assert.match(matchHTML(),/光 · VOL100%以上で解禁/);renderModal();assert.match($('#modal').innerHTML,/data-action="hikari-skill-confirm" disabled/);
+state.players[0].vol=100;state.pending=null;modal={kind:'hikari-skill'};selection={discard:state.players[0].hand.slice(0,3).map(c=>c.uid)};renderModal();assert.match($('#modal').innerHTML,/3枚捨てて声援＋6/);assert.match($('#modal').innerHTML,/キャンセル/);
+assert.match(matchHTML(),/光 · 手札3枚→声援6/);assert.match($('#modal').innerHTML,/VOL100％以上/);state.players[0].vol=99;assert.match(matchHTML(),/光 · VOL100%以上で解禁/);renderModal();assert.match($('#modal').innerHTML,/data-action="hikari-skill-confirm" disabled/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Hikari: both engines, exact/optional discard, privacy, skill reuse/switch, WHITEOUT pre-payment count, timeout, UI and 200 CPU matches passed');

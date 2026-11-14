@@ -44,7 +44,7 @@ for(const G of [browser,server]){
 const nodes=new Map(),document={querySelectorAll:()=>[],querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
 new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
 assert.equal(cardSeries('character','fukurou'),'extra');assert.equal(cardSeries('event','fukurou'),'extra');rosterQuery='つきたふくろう';assert.deepEqual(rosterIDs(),['fukurou']);
-state=IDOL.create(['fukurou','moe','hakka'],'fukurou',['nina','ayame','hana'],'nina',0,3);screen='match';const p=state.players[0];p.supportSealTurn=state.turn;p.chips=9;p.moeFreeSupport=3;render();assert.match($('#app').innerHTML,/ファンサ・応援封印中/);for(const a of ['draw','refresh','free-support'])assert.match($('#app').innerHTML,new RegExp('data-action="'+a+'" disabled'));
+state=IDOL.create(['fukurou','moe','hakka'],'fukurou',['nina','ayame','hana'],'nina',0,3);screen='match';const p=state.players[0];p.supportSealTurn=state.turn;p.chips=9;p.moeFreeSupport=3;render();assert.match($('#app').innerHTML,/ファンサ・声援封印中/);for(const a of ['draw','refresh','free-support'])assert.match($('#app').innerHTML,new RegExp('data-action="'+a+'" disabled'));
 modal={kind:'member-info',p:0,j:0};renderModal();assert.match($('#modal').innerHTML,/data-action="service" disabled/);assert.match($('#modal').innerHTML,/お静かに、患者様/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Fukurou: both engines/seats, combined resource pool, all modes, seals/payments/privacy/expiry, Moe automatic service, once-only event, Extra/UI and 400 CPU games passed');
