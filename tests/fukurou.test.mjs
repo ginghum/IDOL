@@ -22,7 +22,7 @@ for(const G of [browser,server]){
  for(const who of [0,1]){
   const s=make(who),p=s.players[who],c=give(s,who,1);p.vol=60;p.chips=10;p.moeFreeSupport=3;p.moeDouble=true;s.row[0].type='cheer';
   G.dispatch(s,{type:'play',card:c.uid,actors:[0],mode:'fan'});assert(G.supportSealed(s,who));assert.equal(p.chips,11,'chip gain stays legal');
-  for(const a of [{type:'service',actor:1},...['draw','refresh','lock','hold'].flatMap(effect=>[false,true].map(free=>({type:'support',effect,free,target:'x'})))])bad(s,a);
+  for(const a of ['draw','refresh','lock','hold'].flatMap(effect=>[false,true].map(free=>({type:'support',effect,free,target:'x'}))))bad(s,a);
   assert.equal(p.moeFreeSupport,3);assert(p.moeDouble);
   for(const seat of [0,1]){const v=G.publicView(s,seat);assert.equal(G.supportSealed(v,who===seat?0:1),true);assert(!('seed'in v));assert(v.players[1].hand.every(c=>!c.owner));}
   // Sealed ticket use and further song are legal; no token-based trigger against a newly changed leader.
@@ -33,8 +33,10 @@ for(const G of [browser,server]){
  for(const who of [0,1])for(const chips of [0,1,5,6,10]){const s=make(who),p=s.players[who],q=s.players[1-who],memory=pay(s,who);q.chips=chips;p.chips=2;p.supportSealTurn=s.turn;assert(G.eventOK(s,who,'fukurou'));G.dispatch(s,{type:'event',id:'fukurou',memory});assert.equal(p.chips,2+Math.min(6,chips));assert.equal(q.chips,Math.max(0,chips-6));assert.equal(p.discard.length,6);assert(p.events.find(e=>e.id==='fukurou').used);bad(s,{type:'event',id:'fukurou',memory});}
  {const s=make(),paid=pay(s,0);bad(s,{type:'event',id:'fukurou',memory:paid.slice(0,5)});bad(s,{type:'event',id:'fukurou',memory:[...paid.slice(0,5),paid[0]]});const wrong=s.players[0].deck.find(c=>c.owner!=='fukurou');bad(s,{type:'event',id:'fukurou',memory:[...paid.slice(1),wrong.uid]});}
  {const s=make(),p=s.players[0];pay(s,0);p.discard.push(...p.hand,...p.deck);p.hand=[];p.deck=[];p.events.forEach(e=>e.used=e.id!=='fukurou');const a=G.ai(s);assert.equal(a.type,'event');assert.equal(a.id,'fukurou');G.dispatch(s,a);assert.equal(s.winner,1,'CPU uses its last event even when no chips remain');}
- // Moe 3 readies even when its FAN has sealed automatic service. No resource or action is consumed by the skipped service.
- {const s=make(),p=s.players[0],c=give(s,0,3,'moe');p.vol=100;s.row.forEach(f=>f.type='light');G.dispatch(s,{type:'play',card:c.uid,actors:[0,1,2],mode:'fan'});assert.equal(s.pending.kind,'moeReady');G.dispatch(s,{type:'choose',value:'0'});assert(p.ready[0]);assert.equal(p.service,0);assert.equal(p.chips,0);}
+ // Moe 3 gains chips under a support seal and does not refresh any actor.
+ {const s=make(),p=s.players[0],c=give(s,0,3,'moe');p.vol=100;s.row.forEach(f=>f.type='light');G.dispatch(s,{type:'play',card:c.uid,actors:[0,1,2],mode:'fan'});assert.equal(s.pending,null);assert.deepEqual(p.ready,[false,false,false]);assert.equal(p.service,0);assert.equal(p.chips,2);assert(G.supportSealed(s,0));}
+ // Services remain legal after FAN, including tripling, while all support actions remain sealed.
+ for(const who of [0,1]){const s=make(who),p=s.players[who],c=give(s,who,1);p.vol=60;p.chips=10;s.row.forEach(f=>f.type='light');G.dispatch(s,{type:'play',card:c.uid,actors:[0],mode:'fan'});p.moeDouble=true;G.dispatch(s,{type:'service',actor:1});assert.equal(p.chips,13);assert.equal(p.service,1);assert.equal(p.moeDouble,false);bad(s,{type:'support',effect:'draw'});}
  // A single fan chip does not seal; first gain can happen during the leader's own turn and expires at its end.
  {const s=make();const p=s.players[0];p.items.push({uid:'ticket',item:'ticket'});s.lottery=['small',...Object.entries(G.LOTTERY).flatMap(([id,d])=>Array(d.count-(id==='small'?1:0)).fill(id))];G.dispatch(s,{type:'ticket',id:'ticket'});assert(!G.supportSealed(s,0));G.dispatch(s,{type:'service',actor:0});settle(s);}
  {const s=make();s.players[0].supportSealTurn=s.turn;G.timeout(s);assert.equal(s.active,1);assert(!G.supportSealed(s,0));}
@@ -44,7 +46,7 @@ for(const G of [browser,server]){
 const nodes=new Map(),document={querySelectorAll:()=>[],querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
 new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
 assert.equal(cardSeries('character','fukurou'),'extra');assert.equal(cardSeries('event','fukurou'),'extra');rosterQuery='つきたふくろう';assert.deepEqual(rosterIDs(),['fukurou']);
-state=IDOL.create(['fukurou','moe','hakka'],'fukurou',['nina','ayame','hana'],'nina',0,3);screen='match';const p=state.players[0];p.supportSealTurn=state.turn;p.chips=9;p.moeFreeSupport=3;render();assert.match($('#app').innerHTML,/ファンサ・声援封印中/);for(const a of ['draw','refresh','free-support'])assert.match($('#app').innerHTML,new RegExp('data-action="'+a+'" disabled'));
-modal={kind:'member-info',p:0,j:0};renderModal();assert.match($('#modal').innerHTML,/data-action="service" disabled/);assert.match($('#modal').innerHTML,/お静かに、患者様/);
+state=IDOL.create(['fukurou','moe','hakka'],'fukurou',['nina','ayame','hana'],'nina',0,3);screen='match';const p=state.players[0];p.supportSealTurn=state.turn;p.chips=9;p.moeFreeSupport=3;render();assert.match($('#app').innerHTML,/声援効果封印中/);for(const a of ['draw','refresh','free-support'])assert.match($('#app').innerHTML,new RegExp('data-action="'+a+'" disabled'));
+modal={kind:'member-info',p:0,j:0};renderModal();assert(!$('#modal').innerHTML.includes('data-action="service" disabled'));assert.match($('#modal').innerHTML,/お静かに、患者様/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Fukurou: both engines/seats, combined resource pool, all modes, seals/payments/privacy/expiry, Moe automatic service, once-only event, Extra/UI and 400 CPU games passed');

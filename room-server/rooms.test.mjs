@@ -38,10 +38,10 @@ await req('/'+room+'/ready',{});await req('/'+room+'/ready',{},guest);
 const key='rooms/'+room+'.json',originalNow=Date.now;let clock=originalNow();Date.now=()=>clock;
 try{
  const record=JSON.parse(bucket.map.get(key).value),s=record.state,p=s.players[0],q=s.players[1];
- let song=p.hand.find(c=>c.owner==='machi'&&c.n===1);if(!song){const at=p.deck.findIndex(c=>c.owner==='machi'&&c.n===1);song=p.deck.splice(at,1)[0];p.hand.push(song);}p.vol=60;s.row[0].type='light';q.fans.push(...s.audience.splice(0,2));
+ let song=p.hand.find(c=>c.owner==='machi'&&c.n===2);if(!song){const at=p.deck.findIndex(c=>c.owner==='machi'&&c.n===2);song=p.deck.splice(at,1)[0];p.hand.push(song);}p.vol=80;s.row[0].type='light';q.fans.push(...s.audience.splice(0,2));
  record.deadline=clock+79000;record.clockMode='turn';record.turnRemaining=99000;
  const fixture=JSON.stringify(record);bucket.map.get(key).value=fixture;
- const use=()=>req('/'+room+'/action',{rev:record.rev,requestId:'machi-opponent-choice',action:{type:'play',card:song.uid,actors:[0],mode:'fan'}});
+ const use=()=>req('/'+room+'/action',{rev:record.rev,requestId:'machi-opponent-choice',action:{type:'play',card:song.uid,actors:[0,1],mode:'fan'}});
  let paused=await use();assert.equal(paused.status,200);assert.equal(paused.data.clockMode,'choice');assert.equal(paused.data.turnRemaining,79000);assert.equal(paused.data.deadline-clock,30000);assert.equal(paused.data.clockOwner,1);
  const guestChoice=await req('/'+room,undefined,guest);assert.equal(guestChoice.data.clockOwner,0);assert.equal(guestChoice.data.state.pending.p,0);
  clock+=15000;const selected=await req('/'+room+'/action',{rev:paused.data.rev,requestId:'guest-selects-before-time',action:{type:'choose',value:guestChoice.data.state.pending.options[1]}},guest);

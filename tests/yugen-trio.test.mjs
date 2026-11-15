@@ -16,7 +16,7 @@ for(const G of [server,browser]){
   const s=make('miyabi',i),p=s.players[i],q=s.players[1-i];const c=give(s,i,owner,n);p.vol=G.requiredVoltage(p,c);p.chips=2;s.row.forEach(f=>f.type='light');s.audience.forEach(f=>f.type='light');const mem=p.memory.length,deck=p.deck.length,v=p.vol;
   if(mode==='fan'){p.vol--;bad(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode},i);p.vol++;}
   G.dispatch(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode});settle(s);
-  assert.equal(p.vol,v+(mode==='vol'?10*n:0));assert.equal(p.memory.length,mem+1+(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(p.deck.length,deck-(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(G.cashCount(p),owner==='kono'?1:0);if(owner==='miyabi'&&n>1&&mode==='fan'){assert.equal(p.chips,0);assert.equal(q.vol,Math.max(0,G.CHAR[q.leader].vol-10));}
+  assert.equal(p.vol,v+(mode==='vol'?10*n:0));assert.equal(p.memory.length,mem+1+(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(p.deck.length,deck-(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(G.cashCount(p),owner==='kono'&&mode==='vol'?1:0);if(owner==='miyabi'&&n>1&&mode==='fan'){assert.equal(p.chips,0);assert.equal(q.vol,Math.max(0,G.CHAR[q.leader].vol-20));}
  }
  // Discount is on all own songs and follows leader, including zero-floor specials.
  {const s=make(),p=s.players[0];assert.equal(G.requiredVoltage(p,{owner:'kono',n:1}),40);p.leader='kono';assert.equal(G.requiredVoltage(p,{owner:'miyabi',n:1}),60);p.leader='miyabi';assert.equal(G.requiredVoltage(p,{owner:'shiro',n:3,special:'painted'}),0);}
@@ -25,10 +25,10 @@ for(const G of [server,browser]){
  for(const item of Object.keys(G.SHOP)){
   const s=make('kono'),p=s.players[0];bad(s,{type:'buy',item:'unknown'});G.dispatch(s,{type:'buy',item});settle(s);assert.equal(G.cashCount(p),0);bad(s,{type:'buy',item});if(item==='support')assert.equal(p.chips,2);else if(item==='fanChip')assert.equal(p.fanChips,1);else assert.equal(p.items.filter(c=>c.item===item).length,1);
  }
- {const s=make('kono'),p=s.players[0];G.dispatch(s,{type:'event',id:'kono',memory:cost(s,0,'kono')});assert.equal(G.cashCount(p),10);assert.equal(p.events.find(e=>e.id==='kono').used,true);}
+ {const s=make('kono'),p=s.players[0];G.dispatch(s,{type:'event',id:'kono',memory:cost(s,0,'kono')});assert.equal(G.cashCount(p),8);assert.equal(p.events.find(e=>e.id==='kono').used,true);}
  // Optional one-time rearm; both invocations must pay independently.
  {const s=make('chie'),p=s.players[0];G.dispatch(s,{type:'event',id:'miyabi',memory:cost(s,0,'miyabi')});assert.equal(s.pending.kind,'chieReset');G.dispatch(s,{type:'choose',value:'use'});assert(p.chieResetUsed);assert(!p.events.find(e=>e.id==='miyabi').used);bad(s,{type:'event',id:'miyabi',memory:[]});G.dispatch(s,{type:'event',id:'miyabi',memory:cost(s,0,'miyabi')});assert(!s.pending);assert(p.events.find(e=>e.id==='miyabi').used);}
- // Rescue uses the losing player's seat, mandatory 4-card payment before defeat, preserves privacy.
+ // Rescue uses the losing player's seat, mandatory 3-card payment before defeat, preserves privacy.
  for(const i of [0,1])for(const protect of ['none','teddy','mc']){
   const s=make('miyabi',i),p=s.players[i],q=s.players[1-i];q.fans.push({uid:'saved',type:'light',lock:null});q.fanChips=18;if(protect==='teddy')q.items.push({uid:'bear',item:'teddy'});if(protect==='mc')q.fanShield=true;
   const paid=cost(s,i,'chie');q.fanChips=19;G.dispatch(s,{type:'service',actor:0}); // finish after a normal action, before defeat
