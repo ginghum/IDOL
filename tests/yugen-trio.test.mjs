@@ -15,8 +15,8 @@ for(const G of [server,browser]){
  for(const i of [0,1])for(const owner of ['miyabi','kono','chie'])for(const n of [1,2,3])for(const mode of ['vol','fan']){
   const s=make('miyabi',i),p=s.players[i],q=s.players[1-i];const c=give(s,i,owner,n);p.vol=G.requiredVoltage(p,c);p.chips=2;s.row.forEach(f=>f.type='light');s.audience.forEach(f=>f.type='light');const mem=p.memory.length,deck=p.deck.length,v=p.vol;
   if(mode==='fan'){p.vol--;bad(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode},i);p.vol++;}
-  G.dispatch(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode});settle(s);
-  assert.equal(p.vol,v+(mode==='vol'?10*n:0));assert.equal(p.memory.length,mem+1+(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(p.deck.length,deck-(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(G.cashCount(p),owner==='kono'&&mode==='vol'?1:0);if(owner==='miyabi'&&n>1&&mode==='fan'){assert.equal(p.chips,0);assert.equal(q.vol,Math.max(0,G.CHAR[q.leader].vol-20));}
+  G.dispatch(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode,...(G.canMiyabiDebuff(c,mode)?{debuff:true}:{})});settle(s);
+  assert.equal(p.vol,v+(mode==='vol'?10*n:0));assert.equal(p.memory.length,mem+1+(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(p.deck.length,deck-(owner==='chie'&&mode==='vol'?(n===3?2:1):0));assert.equal(G.cashCount(p),owner==='kono'&&mode==='vol'?1:0);if(owner==='miyabi'&&G.canMiyabiDebuff(c,mode)){assert.equal(p.chips,0);assert.equal(q.vol,Math.max(0,G.CHAR[q.leader].vol-20));}
  }
  // Discount is on all own songs and follows leader, including zero-floor specials.
  {const s=make(),p=s.players[0];assert.equal(G.requiredVoltage(p,{owner:'kono',n:1}),40);p.leader='kono';assert.equal(G.requiredVoltage(p,{owner:'miyabi',n:1}),60);p.leader='miyabi';assert.equal(G.requiredVoltage(p,{owner:'shiro',n:3,special:'painted'}),0);}
