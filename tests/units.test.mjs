@@ -32,7 +32,7 @@ unitName='<img src=x onerror=alert(1)>';unitTarget=14;click('unit-save');assert(
 run(`assert.equal(unitSlots.length,15);assert.equal(unitSlots[0].leader,'machi');assert(unitSlots[14].name.startsWith('<img'));click('unit-load',14);assert.equal(unitName,unitSlots[14].name);team.pop();assert.equal(unitSlots[14].team.length,3);`);
 run(`
 // Team membership, empty future groups and combined classification/search filters.
-const expected=[['LapisLazuli',['kayo','hikari','aya','emi']],['カラフルドリーム',['haru','akina','moe','nina']],['Anastasia',['machi','ayame','fukurou','mimizuku']],['jukebox',['natsume','shiro','hibiki','misa']],['幽玄物語',['shio']],['極楽天',['hakka']],['RedSprite',['rai']],['FunkFanfare',['hana']],['ジャスティ3Z',['homura']],['PRISM',[]],['forbidoom!',[]],['我らの声はあの宇宙に届く。',[]]];
+const expected=[['LapisLazuli',['kayo','hikari','aya','emi']],['カラフルドリーム',['haru','akina','moe','nina']],['Anastasia',['machi','ayame','fukurou','mimizuku']],['jukebox',['natsume','shiro','hibiki','misa']],['幽玄物語',['shio','miyabi','kono','chie']],['極楽天',['hakka']],['RedSprite',['rai']],['FunkFanfare',['hana']],['ジャスティ3Z',['homura']],['PRISM',[]],['forbidoom!',[]],['我らの声はあの宇宙に届く。',[]]];
 assert.deepEqual(IDOL_GROUPS.map(g=>[g.name,g.members]),expected);
 const members=IDOL_GROUPS.flatMap(g=>g.members);assert.equal(new Set(members).size,IDS.length);assert.deepEqual([...members].sort(),[...IDS].sort());
 rosterFilter='all';rosterQuery='';
