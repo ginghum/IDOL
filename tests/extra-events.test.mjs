@@ -25,11 +25,11 @@ function play(s,i,owner,n,mode='fan'){const p=s.players[i],card=move(p,owner,n);
 }
 {
  const s=make(),p=s.players[0],q=s.players[1];p.fans.push(...s.audience.splice(0,3));p.fans[0].type='dream';const protectedIds=p.fans.map(f=>f.uid);use(s,0,'mc');assert(p.fanShield);G.dispatch(s,{type:'end'});assert(p.fanShield,'Shield lasts throughout the opponent turn');q.vol=100;s.row[0].type='light';
- play(s,1,'machi',1);assert.equal(s.pending,null,'Protected fans do not create an opponent decision');assert.deepEqual(p.fans.map(f=>f.uid),protectedIds);
+ play(s,1,'machi',2);assert.equal(s.pending,null,'Protected fans do not create an opponent decision');assert.deepEqual(p.fans.map(f=>f.uid),protectedIds);
  q.ready=[true,true,true];play(s,1,'machi',3);while(s.pending)G.dispatch(s,G.ai(s));assert.deepEqual(p.fans.map(f=>f.uid),protectedIds,'Random removal is blocked');
  const qCount=q.fans.length;use(s,1,'trouble');assert.equal(q.fans.length,qCount-1,'The caster still returns their own fan');assert.deepEqual(p.fans.map(f=>f.uid),protectedIds);
  s.row[0].type='dream';const rowDream=s.row[0].uid;use(s,1,'haru');assert(q.fans.some(f=>f.uid===rowDream),'Unprotected audience seats can still move');assert.deepEqual(p.fans.map(f=>f.uid),protectedIds,'Haru cannot steal protected acquired fans');
- G.dispatch(s,{type:'end'});assert.equal(p.fanShield,false,'Shield expires before the next own turn');G.dispatch(s,{type:'end'});q.vol=100;play(s,1,'machi',1);assert.equal(s.pending.kind,'machiRemove');const gone=s.pending.options[0];G.dispatch(s,{type:'choose',value:gone});assert(!p.fans.some(f=>f.uid===gone),'Effects work again after expiry');
+ G.dispatch(s,{type:'end'});assert.equal(p.fanShield,false,'Shield expires before the next own turn');G.dispatch(s,{type:'end'});q.vol=100;play(s,1,'machi',2);assert.equal(s.pending.kind,'machiRemove');const gone=s.pending.options[0];G.dispatch(s,{type:'choose',value:gone});assert(!p.fans.some(f=>f.uid===gone),'Effects work again after expiry');
 }
 {
  const s=make(['mc','trouble','viewing']),p=s.players[0];p.fans.push(...s.audience.splice(0,3));s.players[1].fans.push(...s.audience.splice(0,3));use(s,0,'mc');use(s,0,'trouble');assert.equal(p.fans.length,2,'Shield does not prevent own event penalties');assert.equal(s.players[1].fans.length,1);

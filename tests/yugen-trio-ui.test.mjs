@@ -16,6 +16,6 @@ click('zones',null,'0');assert.match($('#modal').innerHTML,/自分のカード�
 // Event payment selections survive viewing other dialogs and returning to the board.
 state.pending=null;modal={kind:'event',id:'miyabi'};selection={memory:[p.hand[0].uid],discard:[],targets:[],target:null,actor:null};snapshot=JSON.stringify(state);const paid=[...selection.memory];renderModal();click('board-view');click('table-log');click('close');click('board-resume');assert.equal(modal.kind,'event');assert.deepEqual(selection.memory,paid);assert.equal(JSON.stringify(state),snapshot);
 // A server update or timeout discards the suspended view instead of resurrecting stale choices.
-modal=null;state.pending={kind:'misaPurple',p:0,options:['skip','use'],text:'old'};renderModal();click('board-view');state.pending={kind:'miyabiDebuff',p:0,options:['skip','use'],text:'new'};render();assert.equal(boardView,null);assert.match($('#modal').innerHTML,/VOL－10/);assert(!$('#app').innerHTML.includes('選択画面へ戻る'));
+modal=null;state.pending={kind:'misaPurple',p:0,options:['skip','use'],text:'old'};renderModal();click('board-view');state.pending={kind:'miyabiDebuff',p:0,options:['skip','use'],text:'new'};render();assert.equal(boardView,null);assert.match($('#modal').innerHTML,/VOL－20/);assert(!$('#app').innerHTML.includes('選択画面へ戻る'));
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert,listeners,p=>existsSync(new URL('../'+p,import.meta.url)));
 console.log('Yugen trio UI: approved assets, extra/team filters, actual leader cost, cash shop and reversible/stale-safe board viewing passed');

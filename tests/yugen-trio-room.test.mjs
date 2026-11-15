@@ -10,16 +10,16 @@ function patch(code,fn){const [key,obj]=[...env.BUCKET.map.entries()].find(([,v]
 for(const seat of [0,1]){
  const code=await create(),other=1-seat;
  // Fixture storage setup reaches pre-defeat boundary without adding a production debug route.
- patch(code,r=>{const s=r.state,p=s.players[seat],q=s.players[other];s.active=other;s.pending=null;s.queue=[];q.fanChips=19;const f=s.audience.shift();f.type='light';q.fans.push(f);const cards=[...p.hand,...p.deck].filter(c=>c.owner==='chie').slice(0,4),ids=new Set(cards.map(c=>c.uid));p.hand=p.hand.filter(c=>!ids.has(c.uid));p.deck=p.deck.filter(c=>!ids.has(c.uid));p.memory.push(...cards);r.clockMode='turn';r.turnRemaining=99000;r.deadline=Date.now()+99000;});
+ patch(code,r=>{const s=r.state,p=s.players[seat],q=s.players[other];s.active=other;s.pending=null;s.queue=[];q.fanChips=19;const f=s.audience.shift();f.type='light';q.fans.push(f);const cards=[...p.hand,...p.deck].filter(c=>c.owner==='chie').slice(0,3),ids=new Set(cards.map(c=>c.uid));p.hand=p.hand.filter(c=>!ids.has(c.uid));p.deck=p.deck.filter(c=>!ids.has(c.uid));p.memory.push(...cards);r.clockMode='turn';r.turnRemaining=99000;r.deadline=Date.now()+99000;});
  const started=await action(code,{type:'service',actor:0},other);assert.equal(started.status,200);assert.equal(started.state.winner,null);assert.equal(started.clockMode,'choice');assert.equal(started.clockOwner,1);assert.deepEqual(started.state.pending.options,[]);assert.deepEqual(started.state.pending.selected,[]);
- let own=await req('/'+code,undefined,seat);assert.equal(own.state.pending.kind,'chiePayment');assert.equal(own.state.pending.p,0);assert.equal(own.state.pending.options.length,4);assert.equal(own.clockOwner,0);assert(own.turnRemaining>90000);const turn=own.state.turn,rev=own.rev;
+ let own=await req('/'+code,undefined,seat);assert.equal(own.state.pending.kind,'chiePayment');assert.equal(own.state.pending.p,0);assert.equal(own.state.pending.options.length,3);assert.equal(own.clockOwner,0);assert(own.turnRemaining>90000);const turn=own.state.turn,rev=own.rev;
  const rejected=await action(code,{type:'choose',value:own.state.pending.options[0]},other);assert.equal(rejected.status,400);assert.equal((await req('/'+code,undefined,seat)).rev,rev);
  // Every opponent-choice timeout spends just the next selected memory, with no unpaid rescue or skipped turn.
- for(let n=0;n<4;n++){
+ for(let n=0;n<3;n++){
   patch(code,r=>r.deadline=Date.now()-1);own=await req('/'+code,undefined,seat);assert.equal(own.status,200);
-  if(n<3){assert.equal(own.state.winner,null);assert.equal(own.state.turn,turn);assert.equal(own.state.pending.selected.length,n+1);assert.equal(own.clockMode,'choice');const hidden=await req('/'+code,undefined,other);assert.deepEqual(hidden.state.pending.options,[]);assert.deepEqual(hidden.state.pending.selected,[]);}
+  if(n<2){assert.equal(own.state.winner,null);assert.equal(own.state.turn,turn);assert.equal(own.state.pending.selected.length,n+1);assert.equal(own.clockMode,'choice');const hidden=await req('/'+code,undefined,other);assert.deepEqual(hidden.state.pending.options,[]);assert.deepEqual(hidden.state.pending.selected,[]);}
  }
- assert.equal(own.state.turn,turn+1);assert.equal(own.state.active,0);assert.equal(own.state.winner,null);assert.equal(own.state.pending,null);assert.equal(own.state.players[0].discard.filter(c=>c.owner==='chie').length,4);assert(own.state.players[0].events.find(e=>e.id==='chie').used);assert.equal(own.state.players[1].fanChips,19);assert.equal(own.state.players[1].fans.length,0);assert(own.turnRemaining>90000);
+ assert.equal(own.state.turn,turn+1);assert.equal(own.state.active,0);assert.equal(own.state.winner,null);assert.equal(own.state.pending,null);assert.equal(own.state.players[0].discard.filter(c=>c.owner==='chie').length,3);assert(own.state.players[0].events.find(e=>e.id==='chie').used);assert.equal(own.state.players[1].fanChips,19);assert.equal(own.state.players[1].fans.length,0);assert(own.turnRemaining>90000);
  await req('/'+code+'/leave',{});await req('/'+code+'/leave',{},1);
 }
-console.log('Yugen room API: both-seat inactive pre-defeat rescue, mandatory payment, hidden choices, authority/revision and four choice timeouts advance exactly one turn passed');
+console.log('Yugen room API: both-seat inactive pre-defeat rescue, mandatory payment, hidden choices, authority/revision and three choice timeouts advance exactly one turn passed');

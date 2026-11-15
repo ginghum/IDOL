@@ -13,7 +13,7 @@ for(let step=0;step<1000;step++){
  const raw=await req('/'+code),seat=(raw.state.pending?.p??raw.state.active),view=await req('/'+code,undefined,seat);if(view.state.winner!==null)break;
  const s=view.state,a=G.ai(s);
  if(G.supportSealed(s,0)){
-  seals++;assert(!['support','service'].includes(a.type));const before=view.rev;
+  seals++;assert(a.type!=='support');const before=view.rev;
   const rejected=await req('/'+code+'/action',{rev:before,requestId:'blocked-'+String(++serial).padStart(6,'0'),action:{type:'support',effect:'draw'}},seat);assert.equal(rejected.status,400);assert.equal((await req('/'+code,undefined,seat)).rev,before);
  }
  const result=await req('/'+code+'/action',{rev:view.rev,requestId:'fukurou-'+String(++serial).padStart(6,'0'),action:a},seat);assert.equal(result.status,200,JSON.stringify(result));assert(!('seed'in result.state));assert(result.state.players[1].hand.every(c=>!c.owner));if(result.state.log.some(x=>x.includes('相手の')&&x.includes('1枚を破壊')))destroys++;
