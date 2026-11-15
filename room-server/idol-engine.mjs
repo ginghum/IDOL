@@ -22,9 +22,9 @@ mimizuku:{skillName:'任務を遂行します！',name:'月田ミミズク',read
 shiro:{skillName:'色が音になる時',name:'五百瀬しろ',reading:'いもせしろ',short:'しろ',color:'#e9a069',vol:30,hand:5,skill:'自分のターン開始時、相手の手札を確認する。「塗りつぶされたカード」が2枚以上あれば、ファンチップを1枚得る。',songs:['ひとしずくの音色','シナスタジア','画布の裏の月'],event:'Chroma & Crescent',cost:[2,4],effect:'相手の手札の「塗りつぶされたカード」を全て自分の手札に移し、「鳴り響く世界」に変化させる。ゲーム中1回。'},
 hibiki:{skillName:'鼓膜を揺らせ、夜を燃やせ',name:'足立響',reading:'あだちひびき',short:'響',color:'#d84c58',vol:30,hand:2,skill:'自分のターン開始時、VOL＋10％。響がリーダーの間、自分のVOL上限は400％になる。',songs:['爆響アンセム','フロアごと跳べ！','限界突破の大合唱'],event:'MAXIMUM!!!',cost:[4,6],effect:'自分のVOLが300％以上ならこのターン15ポイントを得る。そうでなければ声援チップ10枚を得る。VOLは消費しない。ゲーム中1回。'},
 misa:{skillName:'貴方に相応しい一杯',name:'大谷美沙',reading:'おおやみさ',short:'美沙',color:'#9c6bbe',vol:20,hand:4,skill:'自分のターン開始時、声援チップ1枚を支払ってもよい。そうしたら「青のドリンク」「赤のドリンク」から1つ選び、得る。',songs:['お好みは、甘め？','Twilight Blend','―完璧なる夜の過ごし方―'],event:'ヴェルベット＆ヴァイオレット',cost:[2,7],effect:'「紫のドリンク」を2本得る。ドリンクは自分のターン終了時に使用できる。ゲーム中1回。'},
-miyabi:{skillName:'無双の風となる',name:'不破雅',reading:'ふわみやび',short:'雅',color:'#526ba1',vol:30,hand:4,skill:'自分が楽曲をFANモードで使う際、必要VOLが20％下がる（最低0％）。',songs:['一閃','蒼龍の薙','木霊する刃、目覚めの息吹'],event:'春雷守護神話',cost:[1,3],effect:'残りのゲーム中、相手や観客の効果で自分のVOLは下がらない。自分の支払いとVOL上限の変更には適用しない。'},
-kono:{skillName:'ほれ、これが商いの黄金律よ',name:'橘湖乃',reading:'たちばなこの',short:'湖乃',color:'#58a4aa',vol:30,hand:5,skill:'アイテム「現金」を2個持って始める。',songs:['千両箱','天下の台所','百戦錬磨の舞台帳簿'],event:'踊子えるどらど',cost:[3,8],effect:'アイテム「現金」を6個得る。現金2個で買い物できる。'},
-chie:{skillName:'こんな私でも、変えられるなら',name:'弥生千詠',reading:'やよいちえ',short:'千詠',color:'#85828b',vol:30,hand:6,skill:'自分がイベントを使ったとき、ゲーム中に1度だけ、そのイベントを再使用可能に戻してもよい。再使用には再び支払いが必要。',songs:['責務を編む','名もなき織姫','呪いの経糸、祈りの緯糸'],event:'逆境',cost:[3,3],effect:'相手の獲得済み観客とファンチップを全てゲーム外へ置き、相手にファンチップ19枚を与え、現在のターンを終了する。相手が20点以上になったとき、敗北確定前に自動発動。自動でも支払いが必要。MCタイム・くまのぬいぐるみは有効。'}
+miyabi:{skillName:'無双の風となる',name:'不破雅',reading:'ふわみやび',short:'雅',color:'#526ba1',vol:30,hand:4,skill:'自分が楽曲をFANモードで使う際、必要VOLが20％下がる（最低0％）。',songs:['一閃','蒼龍の薙','花嵐、刃は舞う'],event:'春雷の誓い',cost:[1,3],effect:'残りのゲーム中、相手や観客の効果で自分のVOLは下がらない。自分の支払いとVOL上限の変更には適用しない。'},
+kono:{skillName:'ほれ、これが商いの黄金律よ',name:'橘湖乃',reading:'たちばなこの',short:'湖乃',color:'#58a4aa',vol:30,hand:5,skill:'アイテム「現金」を2個持って始める。',songs:['千両箱','銭と縁','千客万来、夢舞台'],event:'踊子えるどらど',cost:[3,8],effect:'アイテム「現金」を6個得る。現金2個で買い物できる。'},
+chie:{skillName:'こんな私でも、変えられるなら',name:'弥生千詠',reading:'やよいちえ',short:'千詠',color:'#85828b',vol:30,hand:6,skill:'自分がイベントを使ったとき、ゲーム中に1度だけ、そのイベントを再使用可能に戻してもよい。再使用には再び支払いが必要。',songs:['ひとすじの勇気','名もなき織姫','呪いの経糸、祈りの緯糸'],event:'終わりをほどく',cost:[3,3],effect:'相手の獲得済み観客とファンチップを全てゲーム外へ置き、相手にファンチップ19枚を与え、現在のターンを終了する。相手が20点以上になったとき、敗北確定前に自動発動。自動でも支払いが必要。MCタイム・くまのぬいぐるみは有効。'}
 };
 const COMMON = {
 collection:{event:'プライベートコレクション',short:'共通',color:'#a96a83',cost:[0,3],effect:'アイテム「くまのぬいぐるみ」を2つ得る。'},
@@ -78,7 +78,7 @@ function maxVoltage(p){return p.leader==='hibiki'?400:200;}
 function voltage(p,n){p.vol=Math.max(0,Math.min(maxVoltage(p),p.vol+n));}
 function requiredVoltage(p,c){return Math.max(0,song(c).need-(p.leader==='miyabi'?20:0));}
 function canMiyabiDebuff(c,mode){return c.owner==='miyabi'&&!c.special&&(mode==='fan'&&[2,3].includes(c.n)||mode==='vol'&&c.n===3);}
-function lowerVoltage(s,i,n){const p=s.players[i];if(p.volGuard){log(s,'春雷守護神話：VOL低下を防いだ');return;}voltage(p,-n);}
+function lowerVoltage(s,i,n){const p=s.players[i];if(p.volGuard){log(s,'春雷の誓い：VOL低下を防いだ');return;}voltage(p,-n);}
 function discardable(c){return c.special!=='painted';}
 function memoryable(c){return c.special!=='painted';}
 function songArt(c){return c.special==='painted'?'special-painted':c.special==='world'?'special-world':'song-'+c.owner+'-'+c.n;}
@@ -123,7 +123,7 @@ function eventOK(s,i,id){const p=s.players[i],d=EVENTS[id];return !!d&&p.events.
 function finish(s){
  cleanSpecial(s);
  if(s.queue.length||s.pending)return;
- for(let i=0;i<2;i++)if(score(s.players[1-i])>=20&&eventOK(s,i,'chie')){const p=s.players[i],options=paymentCards(p).filter(c=>c.owner==='chie'||c.item==='meat').map(c=>c.uid);choice(s,'chiePayment',i,options,'逆境：敗北判定前に本人3枚分を支払う',{selected:[],count:3});return;}
+ for(let i=0;i<2;i++)if(score(s.players[1-i])>=20&&eventOK(s,i,'chie')){const p=s.players[i],options=paymentCards(p).filter(c=>c.owner==='chie'||c.item==='meat').map(c=>c.uid);choice(s,'chiePayment',i,options,'終わりをほどく：敗北判定前に本人3枚分を支払う',{selected:[],count:3});return;}
  const winners=s.players.map((p,i)=>score(p)>=20?i:-1).filter(i=>i>=0);
  if(winners.length){s.winner=winners.includes(s.active)?s.active:winners[0];log(s,s.winner?'CPUの勝利！':'あなたの勝利！');return;}
  for(let i=0;i<2;i++){const p=s.players[i];if(!p.deck.length&&!p.hand.length&&!ticketCount(p)&&!drinkItems(p).length&&cashCount(p)<2&&!p.events.some(e=>eventOK(s,i,e.id))){s.winner=1-i;log(s,(i?'CPU':'あなた')+'は山札・手札がなく、使用可能なイベントもないため敗北。');return;}}
@@ -152,7 +152,7 @@ function chipEffect(s,p){if(s.players[p].leader==='hana'){s.players[p].buff++;lo
 function ayaEventCount(p){return Math.min(6,[...p.memory,...p.discard].filter(c=>c.n===1).length);}
 function spendEvent(s,i,id,paid){const p=s.players[i],d=EVENTS[id];if(!paymentOK(p,id,paid))throw Error('メモリーの支払い条件を確認してください');const cards=p.memory.filter(c=>paid.includes(c.uid));p.memory=p.memory.filter(c=>!paid.includes(c.uid));p.items=items(p).filter(c=>!paid.includes(c.uid));p.discard.push(...cards);const e=p.events.find(e=>e.id===id);e.used=!d.repeat;e.lastTurn=s.turn;log(s,'EVENT「'+d.event+'」');}
 function resetEvent(s,i,id){const p=s.players[i];if(p.leader==='chie'&&!p.chieResetUsed)s.queue.push({kind:'chieReset',p:i,id});}
-function adversity(s,i){const q=s.players[1-i];if(!fansProtected(s,1-i,i)){for(const f of [...q.fans]){if(teddyProtect(s,1-i,f))continue;q.fans=q.fans.filter(x=>x.uid!==f.uid);s.exiledFans.push({...f,lock:null});}s.exiledFanChips=(s.exiledFanChips||0)+(q.fanChips||0);q.fanChips=0;}else log(s,'MCタイム：逆境による獲得済みエリアの移動を防いだ');q.fanChips=(q.fanChips||0)+19;log(s,'逆境：相手にファンチップ19枚、現在ターン終了');s.queue.push({kind:'chieEnd',p:i});}
+function adversity(s,i){const q=s.players[1-i];if(!fansProtected(s,1-i,i)){for(const f of [...q.fans]){if(teddyProtect(s,1-i,f))continue;q.fans=q.fans.filter(x=>x.uid!==f.uid);s.exiledFans.push({...f,lock:null});}s.exiledFanChips=(s.exiledFanChips||0)+(q.fanChips||0);q.fanChips=0;}else log(s,'MCタイム：終わりをほどくによる獲得済みエリアの移動を防いだ');q.fanChips=(q.fanChips||0)+19;log(s,'終わりをほどく：相手にファンチップ19枚、現在ターン終了');s.queue.push({kind:'chieEnd',p:i});}
 function process(s){
  cleanSpecial(s);
  while(s.queue.length&&!s.pending&&s.winner===null){
@@ -246,7 +246,7 @@ function dispatch(s,a){
  s.pending=null;
  if(z.kind==='miyabiDebuff'&&a.value==='use'){s.players[z.p].chips-=2;lowerVoltage(s,1-z.p,20);}
  if(z.kind==='chieReset'&&a.value==='use'){const p=s.players[z.p],e=p.events.find(e=>e.id===z.eventId);p.chieResetUsed=true;e.used=false;e.lastTurn=null;log(s,'千詠：'+EVENTS[e.id].event+'を再使用可能にした（支払いは必要）');}
- if(z.kind==='chiePayment'){const paid=[...(z.selected||[]),a.value],p=s.players[z.p];if(paid.length<EVENTS.chie.cost[1]){choice(s,'chiePayment',z.p,z.options.filter(x=>x!==a.value),'逆境：本人3枚分を支払う（残り'+(EVENTS.chie.cost[1]-paid.length)+'枚）',{selected:paid,count:EVENTS.chie.cost[1]});return s;}spendEvent(s,z.p,'chie',paid);resetEvent(s,z.p,'chie');adversity(s,z.p);process(s);return s;}
+ if(z.kind==='chiePayment'){const paid=[...(z.selected||[]),a.value],p=s.players[z.p];if(paid.length<EVENTS.chie.cost[1]){choice(s,'chiePayment',z.p,z.options.filter(x=>x!==a.value),'終わりをほどく：本人3枚分を支払う（残り'+(EVENTS.chie.cost[1]-paid.length)+'枚）',{selected:paid,count:EVENTS.chie.cost[1]});return s;}spendEvent(s,z.p,'chie',paid);resetEvent(s,z.p,'chie');adversity(s,z.p);process(s);return s;}
  if(z.kind==='misaStart'&&a.value!=='skip'){s.players[z.p].chips--;addDrink(s,s.players[z.p],a.value);}
  if(z.kind==='misaPurple'&&a.value==='use'){s.players[z.p].chips-=2;addDrink(s,s.players[z.p],'drinkPurple');}
  if(z.kind==='endDrinks'){if(a.value==='skip'){next(s);return s;}const p=s.players[z.p],at=p.items.findIndex(c=>c.uid===a.value),c=p.items.splice(at,1)[0],d=DRINKS[c.item];log(s,d.name+'を1つ使用');if(d.vol)voltage(p,d.vol);if(d.fan){const n=d.fan+(p.buff||0)+(p.cardBuff||0);p.buff=0;s.queue.push({kind:'normal',p:z.p,n});}s.queue.push({kind:'endDrinks',p:z.p});process(s);return s;}
@@ -390,7 +390,7 @@ function dispatch(s,a){
  if(id==='rai'){const at=s.row.findIndex(f=>f.uid===a.target),old=s.row[at],core=s.audience.find(f=>f.type==='core');s.audience=s.audience.filter(f=>f.uid!==core.uid);old.lock=null;s.audience.push(old);s.row[at]=core;shuffle(s,s.audience);}
  if(id==='shiro'){const q=s.players[1-i],cards=q.hand.filter(c=>c.special==='painted');q.hand=q.hand.filter(c=>c.special!=='painted');p.hand.push(...cards.map(c=>({...c,owner:'shiro',n:1,special:'world'})));log(s,'Chroma & Crescent：'+cards.length+'枚を奪い、鳴り響く世界に変化');}
  if(id==='hibiki'){if(p.vol>=300){p.temp+=15;log(s,'MAXIMUM!!!：このターン＋15ポイント');}else{for(let j=0;j<10;j++)s.queue.push({kind:'chip',p:i});log(s,'MAXIMUM!!!：声援チップ10枚を獲得');}}
- if(id==='miyabi'){p.volGuard=true;log(s,'春雷守護神話：残りゲーム中VOL低下を防ぐ');}
+ if(id==='miyabi'){p.volGuard=true;log(s,'春雷の誓い：残りゲーム中VOL低下を防ぐ');}
  if(id==='kono')cash(s,p,6);
  resetEvent(s,i,id);
  if(id==='chie')adversity(s,i);
