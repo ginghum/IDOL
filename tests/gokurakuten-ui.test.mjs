@@ -10,5 +10,7 @@ state.pending={kind:'kanaMemory',p:0,options:['done'],text:'河奈'};modal=null;
 state.pending={kind:'mitsuhaStart',p:0,options:['skip','swap'],text:'三葉'};modal=null;renderModal();assert.match($('#modal').innerHTML,/非公開の山札/);assert.match($('#modal').innerHTML,/入れ替えない/);
 state.pending=null;const p=state.players[0];p.team=['miyabi','natsume','rai'];p.leader='natsume';p.songSeal=true;p.vol=100;p.chips=4;p.ready=[true,true,true];p.hand=[{uid:'sealed',owner:'miyabi',n:3}];modal={kind:'song',id:'sealed'};selection={actors:[0,1,2],boost:false,pick:false,debuff:false};let dock=songDock();assert.match(dock,/追加効果は無効です/);assert(!dock.includes('data-field="debuff"'));p.hand[0]={uid:'sealed',owner:'rai',n:1};assert(!songDock().includes('data-field="pick"'));p.hand[0]={uid:'sealed',owner:'natsume',n:1};assert(!songDock().includes('data-field="boost"'));
 assert.match(fanHTML({uid:'local',type:'local',lock:null}),/地元ファン/);
+for(const type of Object.keys(FAN)){const text=tableFan({uid:'check-'+type,type,lock:null},0);assert(!text.includes('undefined'),type);if(type==='local'){assert.match(text,/地元ファン/);assert.match(text,/三葉がいれば開始時に声援/);}}
+assert.match(tableFan({uid:'muted-local',type:'local',lock:null,muted:true},0),/効果無効/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Gokurakuten UI: five-member group, 20 character assets, all titles, local fan and mobile-friendly Drift choices passed');
