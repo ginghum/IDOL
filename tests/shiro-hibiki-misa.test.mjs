@@ -63,7 +63,7 @@ for(const G of [browser,server]){
   const s=make('misa'),p=s.players[0];p.chips=1;G.dispatch(s,{type:'end'});settle(s);G.dispatch(s,{type:'end'});assert.equal(s.pending.kind,'misaStart');G.dispatch(s,{type:'choose',value:color});assert.equal(p.chips,color==='skip'?1:0);assert.equal(G.drinkItems(p).length,color==='skip'?0:1);if(color!=='skip')assert.equal(p.items[0].item,color);
  }
  for(const i of [0,1])for(const n of [1,2,3]){
-  const s=make('misa',i),p=s.players[i];p.chips=2;p.supportSealTurn=s.turn;p.moeFreeSupport=3;const v=p.vol;play(s,i,'misa',n,'vol');assert.equal(p.vol,v+10*n);assert.equal(s.pending.kind,'misaPurple');G.dispatch(s,{type:'choose',value:'use'});assert.equal(p.chips,0);assert.equal(p.moeFreeSupport,3);assert.equal(G.drinkItems(p)[0].item,'drinkPurple');assert(!G.paymentCards(p).some(c=>c.item==='drinkPurple'));
+  const s=make('misa',i),p=s.players[i];p.chips=2;p.supportSealTurn=s.turn;p.moeFreeSupport=3;const v=p.vol;play(s,i,'misa',n,'vol');assert.equal(p.vol,v+10*n);assert.equal(s.pending.kind,'misaPurple');G.dispatch(s,{type:'choose',value:'use'});assert.equal(p.chips,n===3?1:0);assert.equal(p.moeFreeSupport,3);assert.equal(G.drinkItems(p)[0].item,'drinkPurple');assert(!G.paymentCards(p).some(c=>c.item==='drinkPurple'));
  }
  // Ordered one-at-a-time consumption, queue effects/refill, type stacking, held copies and no return to actions.
  {

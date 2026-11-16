@@ -6,10 +6,10 @@ machi:{skillName:'世界は私の観客席',name:'芥川麻智',short:'麻智',c
 natsume:{skillName:'感動に定員なし！',name:'険崎夏芽',short:'夏芽',color:'#d8993d',vol:40,hand:5,skill:'自分の3人用楽曲のファン獲得枚数＋1。',songs:['ウェイヨ！','ノってけピーポー！','感動はもうすぐソコに！'],event:'求道エモ駆動',cost:[1,3],effect:'このターン中、自分の楽曲のファン獲得枚数＋1。'},
 shio:{skillName:'興が乗っちゃって',name:'雲居時尾',short:'時尾',color:'#4faaa0',vol:30,hand:5,skill:'声援チップを得る時、1枚ごとに、代わりにボルテージ＋10％を選べる。',songs:['旅人','謳歌賛歌','遊楽道中'],event:'常盤戯ノ宴',cost:[3,8],effect:'自分のボルテージが180％以上ならこのターン7ポイント、そうでなければこのターン3ポイントを得る。'},
 rai:{skillName:'欲しけりゃ、奪ってみろ',name:'赤兎雷',short:'雷',color:'#d97382',vol:30,hand:5,skill:'独占チップ1枚を持つ。追加声援効果：声援チップ2枚で観客1枚に独占チップを置く。相手はそれを飛ばして獲得し、相手の効果では移動できない。',songs:['雷鳴','暴れハート','運命命運破壊音'],event:'アイアム・デストロイヤー',cost:[2,3],effect:'観客デッキのコアファン1枚と観客ゾーンの1枚を交換し、観客デッキをシャッフル。'},
-hana:{skillName:'君の拍手で、今日をつなぐ',name:'入間華',short:'華',color:'#e07aa6',vol:30,hand:5,skill:'声援チップ効果を使うたび、このターンの次のファン獲得枚数＋1。累積し、ファン獲得時にまとめて消費。',songs:['招待状','紅いカーテン','君と私の平和条約'],event:'ピース・ピース・サーカスドーム',cost:[2,4],effect:'自分の行動済みアイドル1人を未行動にする。'},
+hana:{skillName:'君の拍手で、今日をつなぐ',name:'入間華',short:'華',color:'#e07aa6',vol:30,hand:5,skill:'声援チップ効果を使うたび、このターンの次のファン獲得枚数＋1。累積し、ファン獲得時にまとめて消費。',songs:['招待状','紅いカーテン','君と私の平和条約'],event:'ピース・ピース・サーカスドーム',cost:[1,3],effect:'自分の行動済みアイドル1人を未行動にする。'},
 haru:{skillName:'夢のつづきを、もう一度',name:'福園春',short:'春',color:'#b488db',vol:30,hand:5,skill:'自分のターン開始時、声援チップ1枚を支払ってもよい。そうしたら、捨て札の楽曲1枚を選び、手札に加える。',songs:['虹空','夢見るだけじゃ足りないの','ふわふわ理想郷へようこそ！'],event:'ゆめかわ★ゆーとぴあ',cost:[2,5],effect:'観客席と相手の獲得済みエリアにある「ゆめかわファン」を全てまとめて獲得する。相手の独占付き観客は除く。'},
 hakka:{skillName:'冒険はこれからだ！',name:'一条白花',short:'白花',color:'#ca9944',vol:30,hand:5,skill:'イベント発動時、行動済みの自分のアイドル1人を未行動にしてもよい。',songs:['八戒','天下御免','黄金冒険譚'],event:'地獄極楽感謝祭',cost:[4,4],effect:'ファンチップを3つ得る。その後、残りの自分のメモリーを全て捨て、こうして捨てた楽曲3枚につきファンチップを1つ得る。'},
-homura:{skillName:'皆の願いが希望だにょ',name:'紅松焔',short:'焔',color:'#df5a4f',vol:20,hand:4,skill:'自分のターン開始時、声援チップを1つ得る。',songs:['駆け抜ける炎','ヒーロー登場だにょ！','希望の翼をブレイブオン'],event:'ジャスティス・Z・ハリケーン',cost:[3,6],effect:'このターン、観客山札のカードは効果を失い、自分のカードの獲得ファン数＋1。既に観客席にあるカードには無効化しない。'},
+homura:{skillName:'皆の願いが希望だにょ',name:'紅松焔',short:'焔',color:'#df5a4f',vol:30,hand:4,skill:'自分のターン開始時、声援チップを1つ得る。',songs:['駆け抜ける炎','ヒーロー登場だにょ！','希望の翼をブレイブオン'],event:'ジャスティス・Z・ハリケーン',cost:[3,6],effect:'このターン、観客山札のカードは効果を失い、自分のカードの獲得ファン数＋1。既に観客席にあるカードには無効化しない。'},
 hikari:{skillName:'怖いからこそ、全速力！',name:'轍光',short:'光',color:'#dfb638',vol:30,hand:6,skill:'ゲーム中に1度、自分のターン中、VOL100％以上のときに手札を3枚選んで捨てると、声援チップを6枚得る。VOLは消費しない。',songs:['とびこめ、未体験！','衝動アクセラレーター','未知数ジャックポット'],event:'WHITEOUT',cost:[3,6],effect:'使用前の自分の捨て札3枚につき、このターン1ポイントを得る。効果の計算後、支払いに使ったメモリーを捨て札に置く。'},
 aya:{skillName:'私にできること、全部',name:'宝槻彩',reading:'ほうつきあや',short:'彩',color:'#a83d4e',vol:30,hand:5,skill:'自分のターン終了時、このターンに手札から楽曲カードを3枚以上使用していたら、ファンチップを2枚得る。',songs:['SAI','彩から、あなたへ。','誰かのための天才'],event:'名もなき才に、喝采を。',cost:[3,5],effect:'使用前の自分のメモリーと捨て札にある1人用楽曲の合計枚数だけ、観客を1人ずつ獲得する（最大6回）。毎回、観客効果と補充を処理する。獲得枚数の増加は適用しない。'},
 emi:{skillName:'あなたも、救われる。',name:'黒曜恵美',reading:'こくようえみ',short:'恵美',color:'#786b88',vol:30,hand:5,skill:'自分のターン開始時、声援チップ2枚を支払ってもよい。そうした場合、自分の獲得済みの厄介なファン1枚を信者（3ポイント）と入れ替える。',songs:['唯一神','使命至上主義','愛憎奉納IDOLSTAGE'],event:'BLACK×MISSIONS',cost:[3,5],effect:'相手の獲得済みの1ポイントの観客1枚を選び、アンチ（－3ポイント）と入れ替える。交換元はゲーム外に置く。ファンチップは対象外。'} ,
@@ -69,7 +69,8 @@ if(c.owner==='shio'&&c.n===3)d.fanText='自分のVOL＋10％。';
 if(c.owner==='kono')d.volText='アイテム「現金」を1個得る。';
 if(c.owner==='chie')d.volText='山札の上から'+(c.n===3?2:1)+'枚をメモリーに置く。';
 if(c.owner==='miyabi'&&c.n>1){d.fanText='声援2枚で相手のVOL－20％（任意）。';if(c.n===3)d.volText=d.fanText;}
-if(c.owner==='misa')d.volText='声援チップ2枚を支払ってもよい。そうしたら「紫のドリンク」を1つ得る。';
+if(c.owner==='misa')d.volText='声援チップ'+(c.n===3?1:2)+'枚を支払ってもよい。そうしたら「紫のドリンク」を1つ得る。';
+if(c.owner==='hibiki'&&c.n===3)d.fanText='声援チップを1枚得る。';
 if(c.owner==='mimizuku')d.fanText='使用時、観客席の先頭が自分にとって1ポイントなら、声援チップを'+(c.n===3?2:1)+'枚得る。観客獲得前に判定する。';
 if(c.owner==='fukurou')d.volText=d.fanText='相手のアイテムとファンチップを合わせ、その中からランダムに1枚を破壊する。';
 if(c.owner==='ayame'){d.volText='アイテム「くじ引き券」を1枚得る。';if(c.n===3)d.fanText=d.volText;}
@@ -181,7 +182,7 @@ function process(s){
  if(e.kind==='fill')fill(s);
  if(e.kind==='shiroPeek'){const cards=JSON.parse(JSON.stringify(s.players[1-e.p].hand));if(cards.filter(c=>c.special==='painted').length>=2){p.fanChips=(p.fanChips||0)+1;log(s,'しろ：相手の手札に塗りつぶされたカードが2枚以上あるためファンチップ＋1');}choice(s,'shiroPeek',e.p,['confirm'],'色が音になる時：相手の手札を確認',{cards});}
  if(e.kind==='misaStart'&&p.chips>=1)choice(s,'misaStart',e.p,['skip','drinkBlue','drinkRed'],'貴方に相応しい一杯：声援1枚でドリンクを選択');
- if(e.kind==='misaPurple'&&p.chips>=2)choice(s,'misaPurple',e.p,['skip','use'],'声援2枚で紫のドリンクを得ますか？');
+ if(e.kind==='misaPurple'&&p.chips>=(e.cost??2))choice(s,'misaPurple',e.p,['skip','use'],'声援'+(e.cost??2)+'枚で紫のドリンクを得ますか？',{cost:e.cost??2});
  if(e.kind==='endDrinks'){finish(s);if(s.winner!==null)continue;const ds=drinkItems(p);if(ds.length)choice(s,'endDrinks',e.p,['skip',...ds.map(c=>c.uid)],'ターン終了：ドリンクを1つずつ使用（順番自由）');else next(s);}
 
  if(e.kind==='mimizukuReveal')choice(s,'mimizukuReveal',e.p,['confirm'],'ざこどもちゃれんじ！：観客山札の上を確認',{cards:JSON.parse(JSON.stringify(s.audience.slice(0,5)))});
@@ -257,7 +258,7 @@ function dispatch(s,a){
  if(z.kind==='emiConvert'&&a.value!=='skip'&&s.players[z.p].chips<2)throw Error('声援チップが足りません');
  if(z.kind==='mimizukuEnd'&&a.value==='use'&&(s.players[z.p].leader!=='mimizuku'||s.players[z.p].chips<1||!s.players[1-z.p].hand.some(discardable)))throw Error('声援チップ1枚と相手の楽曲手札が必要です');
  if(z.kind==='recover'&&a.value!=='skip'&&(s.players[z.p].chips<1||!s.players[z.p].discard.some(c=>c.uid===a.value)))throw Error('回収には声援チップ1枚と捨て札の楽曲が必要です');
- if((z.kind==='misaStart'||z.kind==='misaPurple')&&a.value!=='skip'&&s.players[z.p].chips<(z.kind==='misaStart'?1:2))throw Error('声援チップが足りません');
+ if((z.kind==='misaStart'||z.kind==='misaPurple')&&a.value!=='skip'&&s.players[z.p].chips<(z.kind==='misaStart'?1:(z.cost??2)))throw Error('声援チップが足りません');
  if(z.kind==='endDrinks'&&a.value!=='skip'&&!drinkItems(s.players[z.p]).some(c=>c.uid===a.value))throw Error('ドリンクがありません');
  if(z.kind==='miyabiDebuff'&&a.value==='use'&&s.players[z.p].chips<2)throw Error('声援チップが足りません');
  if(z.kind==='chieReset'&&a.value==='use'&&(s.players[z.p].leader!=='chie'||s.players[z.p].chieResetUsed))throw Error('再使用権は使用済みです');
@@ -266,7 +267,7 @@ function dispatch(s,a){
  if(z.kind==='chieReset'&&a.value==='use'){const p=s.players[z.p],e=p.events.find(e=>e.id===z.eventId);p.chieResetUsed=true;e.used=false;e.lastTurn=null;log(s,'千詠：'+EVENTS[e.id].event+'を再使用可能にした（支払いは必要）');}
  if(z.kind==='chiePayment'){const paid=[...(z.selected||[]),a.value],p=s.players[z.p];if(paid.length<EVENTS.chie.cost[1]){choice(s,'chiePayment',z.p,z.options.filter(x=>x!==a.value),'終わりをほどく：本人3枚分を支払う（残り'+(EVENTS.chie.cost[1]-paid.length)+'枚）',{selected:paid,count:EVENTS.chie.cost[1]});return s;}spendEvent(s,z.p,'chie',paid);resetEvent(s,z.p,'chie');adversity(s,z.p);process(s);return s;}
  if(z.kind==='misaStart'&&a.value!=='skip'){s.players[z.p].chips--;addDrink(s,s.players[z.p],a.value);}
- if(z.kind==='misaPurple'&&a.value==='use'){s.players[z.p].chips-=2;addDrink(s,s.players[z.p],'drinkPurple');}
+ if(z.kind==='misaPurple'&&a.value==='use'){s.players[z.p].chips-=z.cost??2;addDrink(s,s.players[z.p],'drinkPurple');}
  if(z.kind==='endDrinks'){if(a.value==='skip'){next(s);return s;}const p=s.players[z.p],at=p.items.findIndex(c=>c.uid===a.value),c=p.items.splice(at,1)[0],d=DRINKS[c.item];log(s,d.name+'を1つ使用');if(d.vol)voltage(p,d.vol);if(d.fan){const n=d.fan+(p.buff||0)+(p.cardBuff||0);p.buff=0;s.queue.push({kind:'normal',p:z.p,n});}s.queue.push({kind:'endDrinks',p:z.p});process(s);return s;}
  if(z.kind==='mitsuhaStart'&&a.value==='swap'){const old=s.row[0],top=s.audience[0];old.lock=null;top.lock=null;s.row[0]=top;s.audience[0]=old;log(s,'三葉：観客席の先頭と山札の一番上を交換');}
  if(z.kind==='kanaMemory'&&a.value!=='done'){const p=s.players[z.p],at=p.memory.findIndex(c=>c.uid===a.value);p.discard.push(p.memory.splice(at,1)[0]);p.temp++;log(s,'河奈：メモリー1枚を捨て、このターン＋1ポイント');s.queue.unshift({kind:'kanaMemory',p:z.p});}
@@ -415,7 +416,7 @@ function chooseDrift(s,z,value){
  if(value==='use'){a[z.flag]=true;if(z.flag==='debuff')p.chips-=2;}
  s.pending=null;return resolveSong(s,z.p,c,a,source);
 }
-function driftValue(s,i,c,mode){const p=s.players[i],q=s.players[1-i];if(c.owner==='mitama')return -1;if(c.owner==='kayo')return mode==='vol'&&p.deck.length?1:0;if(c.owner==='tenko'||c.owner==='hana')return .7;if(c.owner==='fukurou')return items(q).length+q.fanChips>0?1:0;if(c.owner==='ayame')return .9;if(c.owner==='shiro')return 1;if(c.owner==='chie')return p.deck.length?.8:0;if(c.owner==='akina')return .7;if(c.owner==='machi')return q.fans.length?1:0;if(c.owner==='hikari')return p.hand.length>0?.6:0;if(c.owner==='miyabi')return p.chips>=2&&q.vol>=40?.8:0;if(c.owner==='natsume')return mode==='fan'?.8:0;if(c.owner==='rai')return .7;if(c.owner==='aya')return p.vol>=100?1:0;if(c.owner==='moe')return 1;if(c.owner==='misa')return p.chips>=2?.8:0;if(c.owner==='kono'||c.owner==='hakka'||c.owner==='nina')return .8;if(c.owner==='haru')return .4;if(c.owner==='mitsuha')return p.team.includes('mitsuha')?.6:.1;return .3;}
+function driftValue(s,i,c,mode){const p=s.players[i],q=s.players[1-i];if(c.owner==='mitama')return -1;if(c.owner==='kayo')return mode==='vol'&&p.deck.length?1:0;if(c.owner==='tenko'||c.owner==='hana')return .7;if(c.owner==='fukurou')return items(q).length+q.fanChips>0?1:0;if(c.owner==='ayame')return .9;if(c.owner==='shiro')return 1;if(c.owner==='chie')return p.deck.length?.8:0;if(c.owner==='akina')return .7;if(c.owner==='machi')return q.fans.length?1:0;if(c.owner==='hikari')return p.hand.length>0?.6:0;if(c.owner==='miyabi')return p.chips>=2&&q.vol>=40?.8:0;if(c.owner==='natsume')return mode==='fan'?.8:0;if(c.owner==='rai')return .7;if(c.owner==='aya')return p.vol>=100?1:0;if(c.owner==='moe')return 1;if(c.owner==='misa')return p.chips>=(c.n===3?1:2)?.8:0;if(c.owner==='kono'||c.owner==='hakka'||c.owner==='nina')return .8;if(c.owner==='haru')return .4;if(c.owner==='mitsuha')return p.team.includes('mitsuha')?.6:.1;return .3;}
 function resolveSong(s,i,c,a,ec=c){
  const p=s.players[i],d=song(c),effects=!p.songSeal;
  if(effects&&ec.owner==='mimizuku'&&a.mode==='fan'&&s.row[0]&&fanPoints(p,s.row[0])===1){const n=ec.n===3?2:1;log(s,'ミミズク：使用時の先頭が1ポイント、声援チップ＋'+n);for(let j=0;j<n;j++)s.queue.push({kind:'chip',p:i});}
@@ -433,7 +434,7 @@ function resolveSong(s,i,c,a,ec=c){
  if(effects&&ec.owner==='haru'&&ec.n===3)dream(s);
  if(effects&&ec.owner==='hakka')meat(s,p);
  if(effects&&ec.owner==='nina'&&ec.n>1)teddy(s,p);
- s.queue.push({kind:'vol',p:i,n:d.vol});if(a.debuff)s.queue.push({kind:'miyabiLower',p:i});if(effects&&ec.owner==='misa')s.queue.push({kind:'misaPurple',p:i});
+ s.queue.push({kind:'vol',p:i,n:d.vol});if(a.debuff)s.queue.push({kind:'miyabiLower',p:i});if(effects&&ec.owner==='misa')s.queue.push({kind:'misaPurple',p:i,cost:ec.n===3?1:2});
  }else{
  let n=fanCount(p,c,true)+(c.owner==='kana'&&ec.owner==='haru'&&ec.n===3&&p.fans.filter(f=>f.type==='dream').length>=2?1:0);p.buff=0;
  if(effects&&ec.owner==='shio'&&ec.n===3)s.queue.push({kind:'vol',p:i,n:10});
@@ -445,7 +446,7 @@ function resolveSong(s,i,c,a,ec=c){
  if(effects&&ec.owner==='homura')s.queue.push({kind:'mutePick',p:i,left:ec.n===3?2:1,selected:[]});
  if(effects&&ec.owner==='emi')s.queue.push({kind:'emiBottom',p:i});
  if(effects&&ec.owner==='machi'&&ec.n>1)s.queue.push({kind:'machiRemove',p:1-i,random:ec.n===3});
- if(effects&&ec.owner==='hana'&&ec.n===3)s.queue.push({kind:'chip',p:i});
+ if(effects&&['hana','hibiki'].includes(ec.owner)&&ec.n===3)s.queue.push({kind:'chip',p:i});
  if(a.pick)s.queue.push({kind:'raiPick',p:i,peek:ec.n===3,count:ec.n===3?2:1});else s.queue.push({kind:'normal',p:i,n});
  }
  if(effects&&ec.owner==='moe'&&a.mode==='fan'){if(ec.n<3)p.moeDouble=true;else for(let j=0;j<2;j++)s.queue.push({kind:'chip',p:i});}
@@ -479,7 +480,7 @@ function ai(s){
  if(z.kind==='chiePayment')return {type:'choose',value:z.options[0]};
  if(z.kind==='shiroPeek')return {type:'choose',value:'confirm'};
  if(z.kind==='misaStart')return {type:'choose',value:p.chips>=1?'drinkRed':'skip'};
- if(z.kind==='misaPurple')return {type:'choose',value:p.chips>=2?'use':'skip'};
+ if(z.kind==='misaPurple')return {type:'choose',value:p.chips>=(z.cost??2)?'use':'skip'};
  if(z.kind==='endDrinks'){const ds=drinkItems(p).filter(c=>z.options.includes(c.uid)),c=ds.sort((a,b)=>(DRINKS[b.item].fan-DRINKS[a.item].fan))[0];return {type:'choose',value:c?.uid||'skip'};}
  if(z.kind==='mimizukuEnd')return {type:'choose',value:p.chips>=1&&s.players[1-z.p].hand.some(discardable)?'use':'skip'};
  if(z.kind==='mimizukuReveal')return {type:'choose',value:'confirm'};
@@ -560,8 +561,8 @@ function ai(s){
  let best=null,bestValue=-1;
  for(const c of p.hand){
  const aa=actors(p,c);if(!aa)continue;const d=song(c);
- if(p.vol<requiredVoltage(p,c)||volTarget>=180&&p.vol<volTarget||c.owner==='shiro'&&!c.special&&p.vol<100||c.owner==='misa'&&p.chips>=2&&drinkItems(p).length<3||c.owner==='nina'&&c.n>1&&teddyCount(p)<3&&p.events.some(e=>e.id==='nina'&&!e.used)){
- const value=Math.min(d.vol,Math.max(0,volTarget-p.vol))/d.n*.12+(c.owner==='shiro'&&!c.special?1.1/c.n:c.owner==='misa'&&p.chips>=2?.7/c.n:c.owner==='kayo'?.9:c.owner==='ayame'?1/c.n:c.owner==='hana'?.5:c.owner==='hakka'?.7:c.owner==='nina'&&c.n>1?(teddyCount(p)<3?.75:.25):0);
+ if(p.vol<requiredVoltage(p,c)||volTarget>=180&&p.vol<volTarget||c.owner==='shiro'&&!c.special&&p.vol<100||c.owner==='misa'&&p.chips>=(c.n===3?1:2)&&drinkItems(p).length<3||c.owner==='nina'&&c.n>1&&teddyCount(p)<3&&p.events.some(e=>e.id==='nina'&&!e.used)){
+ const value=Math.min(d.vol,Math.max(0,volTarget-p.vol))/d.n*.12+(c.owner==='shiro'&&!c.special?1.1/c.n:c.owner==='misa'&&p.chips>=(c.n===3?1:2)?.7/c.n:c.owner==='kayo'?.9:c.owner==='ayame'?1/c.n:c.owner==='hana'?.5:c.owner==='hakka'?.7:c.owner==='nina'&&c.n>1?(teddyCount(p)<3?.75:.25):0);
  const resourceBonus=c.owner==='fukurou'&&(items(s.players[1-i]).length+(s.players[1-i].fanChips||0))>0?.6/c.n:0;
  if(value+resourceBonus>bestValue){bestValue=value+resourceBonus;best={type:'play',card:c.uid,actors:aa,mode:'vol',...(canMiyabiDebuff(c,'vol')?{debuff:!p.songSeal&&p.chips>=2&&!s.players[1-i].volGuard&&s.players[1-i].vol>=40}:{})};}
  }
