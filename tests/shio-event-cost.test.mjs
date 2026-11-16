@@ -21,6 +21,6 @@ for(const G of [browser,server])for(const seat of [0,1]){
   const next=G.peerAction(s,{type:'event',id:'shio',memory:paid},seat),q=next.players[seat];
   assert.equal(q.temp,vol===180?7:3);assert.equal(q.vol,vol);assert.equal(q.memory.length,0);assert.equal(q.discard.filter(c=>paid.includes(c.uid)).length,8);assert.equal(q.events.find(e=>e.id==='shio').used,true);assert.equal(G.score(q),vol===180?20:16);assert.equal(next.winner,vol===180?seat:null);
  }
- assert.deepEqual(G.EVENTS.shio.cost,[3,8]);assert.equal(G.CHAR.shio.vol,40);assert.equal(G.CHAR.hibiki.vol,30);
+ assert.deepEqual(G.EVENTS.shio.cost,[3,8]);assert.equal(G.CHAR.shio.vol,30);assert.equal(G.CHAR.hibiki.vol,30);
 }
 console.log('Shio event: both engines/seats, Hibiki leader without MAXIMUM, 5/7-card and 2-self rejection, exact 3-of-8 payment, 179/180 VOL effects and 13-to-20 finisher passed');

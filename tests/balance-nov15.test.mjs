@@ -11,7 +11,7 @@ for(const G of [server,browser])for(const seat of [0,1]){
  {let s=make('moe'),p=s.players[seat];p.supportSealTurn=s.turn;p.moeDouble=true;p.liveViewing=true;G.dispatch(s,{type:'service',actor:0});assert.equal(p.fanChips,3);assert.equal(p.service,1);assert(!p.moeDouble);const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,{type:'support',effect:'draw'},seat));assert.equal(JSON.stringify(s),before);}
  // Two personal memories cannot rescue; three can. One foreign memory cannot replace the third personal memory.
  for(const count of [2,3]){let s=make('chie'),p=s.players[seat],q=s.players[1-seat];for(let n=0;n<count;n++){const c=[...p.hand,...p.deck].find(c=>c.owner==='chie');p.hand=p.hand.filter(x=>x.uid!==c.uid);p.deck=p.deck.filter(x=>x.uid!==c.uid);p.memory.push(c);}q.fanChips=20;G.dispatch(s,{type:'service',actor:0});assert.equal(s.pending?.kind,count===3?'chiePayment':undefined);if(count===3){assert.equal(s.pending.count,3);assert.equal(s.winner,null);settle(s);assert.equal(p.discard.filter(c=>c.owner==='chie').length,3);assert.equal(q.fanChips,19);assert.equal(s.winner,null);}else assert.equal(s.winner,1-seat);}
- assert.deepEqual(G.CHAR.chie.cost,[3,3]);assert.equal(G.CHAR.aya.hand,6);
+ assert.deepEqual(G.CHAR.chie.cost,[3,3]);assert.equal(G.CHAR.aya.hand,5);
 }
 assert.match(html,/idol-misa-v2\.webp/);assert(!html.includes('本人4枚分'));assert(!html.includes('次のファンサ2倍'));assert(!html.includes('ファンサ・声援封印中'));
 console.log('Nov15 balance: both engines/seats, VOL-only cash, Machi 1 vs 2/3, Moe direct vs tripled chips/viewing, support-only seal, three-memory rescue, Aya and portrait passed');

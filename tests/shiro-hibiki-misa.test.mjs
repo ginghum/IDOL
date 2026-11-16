@@ -18,7 +18,7 @@ for(const G of [browser,server]){
  // Both seats: modes, thresholds, generated UIDs and opponent deck shuffle.
  for(const i of [0,1])for(const n of [1,2,3])for(const mode of ['vol','fan']){
   const s=make('shiro',i),p=s.players[i],q=s.players[1-i];p.vol=[60,80,100][n-1];lightRow(s);const deck=q.deck.length,seed=s.seed,c=play(s,i,'shiro',n,mode);settle(s);
-  assert.equal(q.deck.length,deck+(mode==='vol'?2:0));assert.equal(q.deck.filter(c=>c.special==='painted').length,mode==='vol'?2:0);assert.equal(p.vol,[60,80,100][n-1]+(mode==='vol'?n*10:0));assert.equal(p.fans.length,mode==='fan'?n:0);assert(p.memory.some(x=>x.uid===c.uid));if(mode==='vol')assert.notEqual(s.seed,seed);
+  assert.equal(q.deck.length,deck+(mode==='vol'?(n===1?1:2):0));assert.equal(q.deck.filter(c=>c.special==='painted').length,mode==='vol'?(n===1?1:2):0);assert.equal(p.vol,[60,80,100][n-1]+(mode==='vol'?n*10:0));assert.equal(p.fans.length,mode==='fan'?n:0);assert(p.memory.some(x=>x.uid===c.uid));if(mode==='vol')assert.notEqual(s.seed,seed);
  }
  for(const i of [0,1]){
   const s=make('shiro',i),p=s.players[i],q=s.players[1-i];paint(q,'poison1');paint(q,'poison2');const chips=p.fanChips;
@@ -47,7 +47,7 @@ for(const G of [browser,server]){
  }
  // Hibiki: own starts only, first start, mode values, cap and switches, event boundary.
  for(const i of [0,1]){
-  const s=make('hibiki',i),p=s.players[i];assert.equal(p.hand.length,2); // Both seats receive the same first-start bonus.
+  const s=make('hibiki',i),p=s.players[i];assert.equal(p.hand.length,3); // Both seats receive the same first-start bonus.
   assert.equal(p.vol,40);
   p.vol=250;G.dispatch(s,{type:'end'});assert.equal(p.vol,250);settle(s);G.dispatch(s,{type:'end'});assert.equal(p.vol,260);settle(s);
  }
