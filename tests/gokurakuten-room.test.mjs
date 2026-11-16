@@ -10,10 +10,11 @@ function patch(code,fn){const [key,obj]=[...env.BUCKET.map.entries()].find(([,v]
 async function action(code,a,seat=0){const d=await req('/'+code,undefined,seat);return req('/'+code+'/action',{rev:d.rev,requestId:'gokuraku-'+String(++serial).padStart(8,'0'),action:a},seat);}
 for(const seat of [0,1]){
  const code=await create(),other=1-seat;
- patch(code,r=>{r.state.active=seat;const p=r.state.players[seat];p.chips=1;r.clockMode='turn';r.deadline=Date.now()+99000;r.turnRemaining=99000;});
- let d=await action(code,{type:'end'},seat);assert.equal(d.status,200);assert.equal(d.state.pending.kind,'kanaEnd');const denied=await action(code,{type:'choose',value:'use'},other);assert.equal(denied.status,400);assert.deepEqual((await req('/'+code,undefined,other)).state.pending.options,[]);
- d=await action(code,{type:'choose',value:'use'},seat);assert.equal(d.state.players[1].songSeal,true);assert.equal(d.state.active,1);
- d=await action(code,{type:'end',skipEndSkill:true},other);assert.equal(d.status,200);assert.equal((await req('/'+code,undefined,other)).state.players[0].songSeal,false);
+ patch(code,r=>{const s=r.state;s.active=seat;s.pending=null;s.queue=[];const p=s.players[seat];p.chips=0;p.kanaSongsPlayed=0;const at=p.deck.findIndex(c=>c.owner==='kana'&&c.n===1);if(at>=0)p.hand.push(p.deck.splice(at,1)[0]);s.players[other].memory.push({uid:'borrow-tenko',owner:'tenko',n:2},{uid:'borrow-kayo',owner:'kayo',n:1});r.clockMode='turn';r.deadline=Date.now()+99000;r.turnRemaining=99000;});
+ let v=await req('/'+code,undefined,seat),card=v.state.players[0].hand.find(c=>c.owner==='kana'&&c.n===1);
+ let d=await action(code,{type:'play',card:card.uid,actors:[0],mode:'vol'},seat);assert.equal(d.status,200);assert.equal(d.state.pending.kind,'kanaDrift');assert(d.state.pending.free);const denied=await action(code,{type:'choose',value:'borrow-kayo'},other);assert.equal(denied.status,400);assert.deepEqual((await req('/'+code,undefined,other)).state.pending.options,[]);
+ const invalid=await action(code,{type:'choose',value:'borrow-tenko'},seat);assert.equal(invalid.status,400);
+ d=await action(code,{type:'choose',value:'borrow-kayo'},seat);assert.equal(d.status,200);assert.equal(d.state.pending,null);assert.equal(d.state.players[0].chips,0);assert.equal(d.state.players[0].vol,40);assert(d.state.players[1].memory.some(c=>c.uid==='borrow-kayo'));assert(d.state.players[1].hand.every(c=>!c.owner));
  // Extra turns reset the turn clock while keeping the same player active; payload round-trips are authoritative.
  patch(code,r=>{const s=r.state,p=s.players[seat];s.active=seat;s.pending=null;s.queue=[];for(let j=0;j<8;j++)p.items.push({uid:'meat-'+s.serial++,item:'meat'});});
  let view=await req('/'+code,undefined,seat);d=await action(code,{type:'event',id:'tenko',memory:G.autoPay(view.state.players[0],'tenko')},seat);assert.equal(d.status,200);const turn=d.state.turn;
@@ -27,4 +28,4 @@ for(const seat of [0,1]){
  d=await req('/'+code,undefined,seat);assert.equal(d.status,200);assert.equal(d.state.pending,null);assert.equal(d.state.active,1);
  for(const j of [0,1])await req('/'+code+'/leave',{},j);
 }
-console.log('Gokurakuten room: both-seat authority, seal expiration, extra-turn clock, hidden exchange, timeout and reconnection-safe payloads passed');
+console.log('Gokurakuten room: both-seat authority, Drift choices, extra-turn clock, hidden exchange, timeout and reconnection-safe payloads passed');

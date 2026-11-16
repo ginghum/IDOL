@@ -16,7 +16,7 @@ for(const G of [server,browser])for(const i of [0,1]){
    if(mode==='fan'){p.vol--;bad(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode});p.vol++;}
    G.dispatch(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode});settle(s);
    assert.equal(p.vol,v+(mode==='vol'?10*n:0));assert.equal(p.memory.length,1);
-   assert.equal(p.fans.length,mode==='fan'?n+(id==='mitama'?1:0):0);
+   assert.equal(p.fans.length,mode==='fan'?n+(id==='mitama'&&n>1?1:0):0);
    assert.equal(p.chips,id==='tenko'?1+(n>1?1:0)+(n===2?1:0):id==='mitama'&&mode==='fan'?0:1);
    if(id==='mitsuha'&&mode==='vol'){assert.equal(s.audience.length,deck+1);assert.equal(s.audience[0].type,'local');}
   }
@@ -26,10 +26,10 @@ for(const G of [server,browser])for(const i of [0,1]){
   const s=make(id,'tenko'),p=s.players[i],q=s.players[1-i],c=give(s,id,n);p.songSeal=true;p.chips=3;p.vol=100;const hand=p.hand.length,deck=p.deck.length,audience=s.audience.length;const d=G.song(c);
   G.dispatch(s,{type:'play',card:c.uid,actors:G.actors(p,c),mode});assert.equal(s.pending,null,id);assert.equal(p.chips,3+(n===2?1:0),id);assert.equal(p.hand.length,hand-1,id);assert.equal(p.deck.length,deck,id);assert.equal(p.memory.length,1,id);assert.equal(p.items.length,0,id);assert.equal(q.items.length,0,id);assert.equal(p.vol,100+(mode==='vol'?d.vol:0),id);assert.equal(p.fans.length,mode==='fan'?d.fan:0,id);assert.equal(s.audience.length,audience-(mode==='fan'?d.fan:0),id);assert(!p.moeDouble,id);
  }
- {const s=make('kana'),p=s.players[i],q=s.players[1-i];p.chips=1;G.dispatch(s,{type:'end'});assert.equal(s.pending.kind,'kanaEnd');bad(s,{type:'choose',value:'use'},1-i);assert.equal(G.publicView(s,1-i).pending.options.length,0);G.dispatch(s,{type:'choose',value:'use'});assert(q.songSeal);assert.equal(p.chips,0);assert.equal(s.active,1-i);G.dispatch(s,{type:'end',skipEndSkill:true});settle(s);assert.equal(s.active,i);assert.equal(q.songSeal,false);}
+ {const s=make('kana'),p=s.players[i];p.chips=1;G.dispatch(s,{type:'end'});assert.equal(s.pending,null);assert.equal(p.chips,1);assert(!s.players[1-i].songSeal);}
  {const s=make('kana');s.players[i].chips=1;G.timeout(s);assert.equal(s.pending,null);assert(!s.players[1-i].songSeal);}
  {const s=make('kana'),p=s.players[i];p.memory.push(...p.hand,...p.deck);p.hand=[];p.deck=[];const paid=G.autoPay(p,'kana'),remaining=p.memory.filter(c=>c.owner==='kana'&&!paid.includes(c.uid)).length;G.dispatch(s,{type:'event',id:'kana',memory:paid});assert.equal(s.pending.kind,'kanaMemory');assert(s.pending.options.every(x=>!paid.includes(x)));bad(s,{type:'choose',value:paid[0]});settle(s,false);assert.equal(p.temp,remaining);assert(p.events.find(e=>e.id==='kana').used);G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(p.temp,0);}
- {const s=make('mitsuha'),p=s.players[i];s.row[0].lock=1-i;const original=s.row[0].uid;G.dispatch(s,{type:'event',id:'mitsuha',memory:pay(s,'mitsuha')});assert.equal(s.row[0].uid,original);assert.equal(s.row[0].lock,1-i);assert.equal(s.row.filter(f=>f.type==='local').length,2);assert.equal(p.fans.length,0);}
+ {const s=make('mitsuha'),p=s.players[i];s.row[0].lock=1-i;const original=s.row[0].uid;G.dispatch(s,{type:'event',id:'mitsuha',memory:pay(s,'mitsuha')});assert.equal(s.row[0].uid,original);assert.equal(s.row[0].lock,1-i);assert.equal(s.row.filter(f=>f.type==='local').length,1);assert.equal(p.fans.length,1);assert.equal(p.fans[0].type,'local');}
  {const s=make('mitsuha'),p=s.players[i];p.fans.push({uid:'local1',type:'local',lock:null},{uid:'local2',type:'local',lock:null});p.leader='tenko';G.dispatch(s,{type:'end',skipEndSkill:true});G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(p.chips,2);p.leader='mitama';G.dispatch(s,{type:'end',skipEndSkill:true});G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(p.chips,2);}
  {const s=make('mitsuha');G.dispatch(s,{type:'end',skipEndSkill:true});G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(s.pending.kind,'mitsuhaStart');const top=s.audience[0].uid,old=s.row[0].uid;const v=G.publicView(s,i);assert.equal(v.audience[0].type,null);assert(!JSON.stringify(v.pending).includes(top));G.dispatch(s,{type:'choose',value:'swap'});assert.equal(s.row[0].uid,top);assert.equal(s.audience[0].uid,old);}
  // Immunity includes reporter, positive chips, VOL loss and troublesome returns.
@@ -43,4 +43,4 @@ for(const G of [server,browser])for(let seed=1;seed<=70;seed++){
  while(s.winner===null&&steps++<1800)s=G.peerAction(s,G.ai(s),s.pending?.p??s.active);
  assert.notEqual(s.winner,null,'CPU stalled '+seed);for(const p of s.players){assert(p.chips>=0);assert(p.vol>=0&&p.vol<=G.maxVoltage(p));const cards=['hand','deck','memory','discard'].flatMap(z=>p[z]);assert.equal(new Set(cards.map(c=>c.uid)).size,cards.length);}
 }
-console.log('Gokurakuten: both engines/seats, all song modes, all-character seal, exact costs, local fan/locks/privacy, audience immunity, extra turn/reset and 140 CPU games passed');
+console.log('Gokurakuten: both engines/seats, all song modes, legacy saved-effect compatibility, exact costs, local fan/locks/privacy, audience immunity, extra turn/reset and 140 CPU games passed');
