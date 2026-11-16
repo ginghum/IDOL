@@ -43,6 +43,6 @@ for(const G of [server,browser])for(const seat of [0,1]){
  {const s=make(),p=s.players[seat];source(s,'kayo');p.chips=2;play(s,give(s));const turn=s.turn;G.timeout(s);assert.equal(s.turn,turn+1);assert.equal(p.vol,110);assert.equal(p.chips,2);assert.equal(s.pending,null);}
  // Extra turns also renew the first-song discount.
  {const s=make(),p=s.players[seat];source(s,'kayo');play(s,give(s));choose(s,'skip');p.extraTurns=1;G.dispatch(s,{type:'end'});assert.equal(s.active,seat);assert.equal(p.kanaSongsPlayed,0);play(s,give(s));assert(s.pending.free);choose(s,'skip');}
- assert.equal(G.CHAR.tenko.vol,30);assert.equal(G.CHAR.kana.hand,5);assert.equal(G.song({owner:'mitama',n:1}).fan,1);assert.deepEqual(G.EVENTS.mitama.cost,[3,5]);
+ assert.equal(G.CHAR.tenko.vol,30);assert.equal(G.CHAR.kana.hand,5);assert.equal(G.CHAR.mitama.hand,3);assert.equal(G.song({owner:'mitama',n:1}).fan,1);assert.deepEqual(G.EVENTS.mitama.cost,[3,5]);
 }
 console.log('Kana Drift:',cases,'copy combinations; costs, discount/reset, choices/privacy, source conditions, real-card identity, timeout and extra turns passed');
