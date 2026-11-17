@@ -8,6 +8,7 @@ new Function('document','localStorage','setTimeout','clearTimeout','assert','lis
 const click=(action,id)=>listeners.click({target:{closest:()=>({dataset:{action,id},disabled:false})}});
 for(const count of [1,2,3])for(const active of [0,1]){
 state=IDOL.create(['chie','hakka','kayo'],'hakka',['hana','rai','tenko'],'hana',0,17);screen='match';modal=null;boardView=null;net=null;state.active=active;state.pending=null;state.queue=[];let p=state.players[0];p.items=Array.from({length:count},(_,n)=>({uid:'meat-'+n,item:'meat'}));p.memory=Array.from({length:3-count},(_,n)=>({uid:'chie-'+n,owner:'chie',n:1}));state.players[1].fanChips=20;IDOL.dispatch(state,{type:'service',actor:0});render();assert.equal(state.pending.kind,'chiePayment');
+viewBoard();click('item-info','meat-0');assert.equal(state.pending.selected.length,0);assert.equal(modal.kind,'item');resumeBoardChoice();
 for(let n=0;n<count;n++){click('item-info','meat-0');if(n<2){assert.equal(state.pending.kind,'chiePayment');assert.equal(state.pending.selected.length,n+1);assert.equal(modal,null);}}
 if(count<3)for(let n=0;n<3-count;n++)click('choose','chie-'+n);
 assert.equal(state.players[0].items.length,0);assert.equal(state.players[1].fanChips,19);assert(state.players[0].events.find(e=>e.id==='chie').used);assert.equal(state.winner,null);
