@@ -686,6 +686,7 @@ function dispatch(s,a){
 }
 // Drift reads both players' public memory and discard piles and borrows only printed additional effects, never base values or card ownership.
 function driftSources(s,i,n,mode){return [s.players[i],s.players[1-i]].flatMap(p=>[...p.memory,...p.discard]).filter(c=>!c.special&&c.owner!=='kana'&&c.n===n&&detail(c)[mode+'Text']);}
+function driftExtraCost(c,mode){if(canMiyabiDebuff(c,mode))return 1;if(c.owner==='misa'&&mode==='vol')return c.n===3?1:2;if(c.owner==='rai'&&c.n===1&&mode==='fan')return 1;return 0;}
 function driftOption(s,i,source,mode){const p=s.players[i];if(mode==='fan'&&source.owner==='natsume'&&source.n<3)return {flag:'boost',text:p.vol>=130?'VOLを下げずに獲得＋1':'VOLを10％下げて獲得＋1'};if(mode==='fan'&&source.owner==='rai'&&(source.n!==1||p.chips>=1))return {flag:'pick',text:'通常獲得を'+(source.n===3?'上2枚と観客席から2枚':'観客席の1枚を選ぶ獲得')+'に変更'+(source.n===1?'（追加で声援1枚）':'')};if(canMiyabiDebuff(source,mode)&&p.chips>=1)return {flag:'debuff',text:'追加で声援1枚を支払い、相手のVOL－20％'};return null;}
 function chooseDrift(s,z,value){
  const p=s.players[z.p],c=p.memory.find(c=>c.uid===z.card&&c.owner==='kana');if(!c)throw Error('使用中の河奈の楽曲がありません');
@@ -694,6 +695,7 @@ function chooseDrift(s,z,value){
  if(value==='skip'){s.pending=null;return resolveSong(s,z.p,c,a);}
  const source=driftSources(s,z.p,c.n,z.mode).find(c=>c.uid===value);if(!source)throw Error('漂流元がありません');if(!z.free&&p.chips<1)throw Error('漂流には声援チップ1枚が必要です');
  s.pending=null;if(!z.free)p.chips--;log(s,'漂流：'+song(source).name+'の'+z.mode+'追加効果を借りた'+(z.free?'（リーダー効果で無料）':'（声援1枚）'));
+ const extra=driftExtraCost(source,z.mode);if(extra>p.chips)log(s,'漂流：借りた追加効果には声援'+extra+'枚が必要ですが、漂流の支払い後に不足しているため追加効果は使えません');
  const opt=driftOption(s,z.p,source,z.mode);if(opt){choice(s,'kanaDriftOption',z.p,['skip','use'],'漂流：'+opt.text,{card:c.uid,mode:z.mode,source:source.uid,flag:opt.flag,optionText:opt.text});return s;}
  return resolveSong(s,z.p,c,a,source);
  }
@@ -702,7 +704,7 @@ function chooseDrift(s,z,value){
  if(value==='use'){a[z.flag]=true;if(z.flag==='debuff')p.chips-=1;}
  s.pending=null;return resolveSong(s,z.p,c,a,source);
 }
-function driftValue(s,i,c,mode){const p=s.players[i],q=s.players[1-i];if(c.owner==='mitama')return -1;if(c.owner==='kayo')return mode==='vol'&&p.deck.length?1:0;if(c.owner==='tenko'||c.owner==='hana')return .7;if(c.owner==='fukurou')return items(q).length+q.fanChips>0?1:0;if(c.owner==='ayame')return .9;if(c.owner==='shiro')return 1;if(c.owner==='chie')return p.deck.length?.8:0;if(c.owner==='akina')return .7;if(c.owner==='machi')return q.fans.length?1:0;if(c.owner==='hikari')return p.hand.length>0?.6:0;if(c.owner==='miyabi')return p.chips>=1&&q.vol>=40?.8:0;if(c.owner==='natsume')return mode==='fan'?.8:0;if(c.owner==='rai')return .7;if(c.owner==='aya')return p.vol>=100?1:0;if(c.owner==='moe')return 1;if(c.owner==='misa')return p.chips>=(c.n===3?1:2)?.8:0;if(c.owner==='kono'||c.owner==='hakka'||c.owner==='nina')return .8;if(c.owner==='haru')return .4;if(c.owner==='mitsuha')return p.team.includes('mitsuha')?.6:.1;return .3;}
+function driftValue(s,i,c,mode,cost=0){const p={...s.players[i],chips:s.players[i].chips-cost},q=s.players[1-i];if(driftExtraCost(c,mode)>p.chips)return 0;if(c.owner==='mitama')return -1;if(c.owner==='kayo')return mode==='vol'&&p.deck.length?1:0;if(c.owner==='tenko'||c.owner==='hana')return .7;if(c.owner==='fukurou')return items(q).length+q.fanChips>0?1:0;if(c.owner==='ayame')return .9;if(c.owner==='shiro')return 1;if(c.owner==='chie')return p.deck.length?.8:0;if(c.owner==='akina')return .7;if(c.owner==='machi')return q.fans.length?1:0;if(c.owner==='hikari')return p.hand.length>0?.6:0;if(c.owner==='miyabi')return p.chips>=1&&q.vol>=40?.8:0;if(c.owner==='natsume')return mode==='fan'?.8:0;if(c.owner==='rai')return .7;if(c.owner==='aya')return p.vol>=100?1:0;if(c.owner==='moe')return 1;if(c.owner==='misa')return p.chips>=(c.n===3?1:2)?.8:0;if(c.owner==='kono'||c.owner==='hakka'||c.owner==='nina')return .8;if(c.owner==='haru')return .4;if(c.owner==='mitsuha')return p.team.includes('mitsuha')?.6:.1;return .3;}
 function resolveSong(s,i,c,a,ec=c){
  const p=s.players[i],d=song(c),effects=!p.songSeal;
  if(effects&&ec.owner==='mimizuku'&&a.mode==='fan'&&s.row[0]&&fanPoints(p,s.row[0])===1){const n=ec.n===3?2:1;log(s,'ミミズク：使用時の先頭が1ポイント、声援チップ＋'+n);for(let j=0;j<n;j++)s.queue.push({kind:'chip',p:i});}
@@ -757,7 +759,7 @@ function fanCount(p,c,raw=false){if(c.special==='painted')return 0;const n=song(
 function ai(s){
  if(s.pending){const z=s.pending,p=s.players[z.p];
 
- if(z.kind==='kanaDrift'){const xs=driftSources(s,z.p,s.players[z.p].memory.find(c=>c.uid===z.card)?.n,z.mode).sort((a,b)=>driftValue(s,z.p,b,z.mode)-driftValue(s,z.p,a,z.mode));return {type:'choose',value:xs.length&&driftValue(s,z.p,xs[0],z.mode)>(z.free?0:.5)?xs[0].uid:'skip'};}
+ if(z.kind==='kanaDrift'){const xs=driftSources(s,z.p,s.players[z.p].memory.find(c=>c.uid===z.card)?.n,z.mode).sort((a,b)=>driftValue(s,z.p,b,z.mode,z.free?0:1)-driftValue(s,z.p,a,z.mode,z.free?0:1));return {type:'choose',value:xs.length&&driftValue(s,z.p,xs[0],z.mode,z.free?0:1)>(z.free?0:.5)?xs[0].uid:'skip'};}
  if(z.kind==='kanaDriftOption'){const source=driftSources(s,z.p,p.memory.find(c=>c.uid===z.card)?.n,z.mode).find(c=>c.uid===z.source);let use=z.flag==='boost'||z.flag==='debuff'&&s.players[1-z.p].vol>=40;if(z.flag==='pick'){const row=unlocked(s,z.p),n=source?.n===3?2:1;use=source?.n===3||Math.max(0,...row.map(f=>fanPoints(p,f)))>estimate(s,z.p,n);}return {type:'choose',value:use?'use':'skip'};}
  if(z.kind==='miyabiDebuff')return {type:'choose',value:p.chips>=1&&!s.players[1-z.p].volGuard&&s.players[1-z.p].vol>=40?'use':'skip'};
  if(z.kind==='kanaMemory')return {type:'choose',value:score(p)>=20?'done':z.options.find(x=>x!=='done')||'done'};
@@ -900,7 +902,7 @@ function publicView(s,i){const v=JSON.parse(JSON.stringify(s)),remap=x=>x===null
  v.players=[i,1-i].map((who,j)=>{const p=JSON.parse(JSON.stringify(s.players[who]));p.deck=p.deck.map((c,k)=>j===0&&s.pending?.p===i&&s.pending.kind==='akinaDraw'&&k<3?{...c}:{uid:'hidden-d-'+j+'-'+k});if(j){p.hand=p.hand.map((_,k)=>({uid:'hidden-h-'+k}));p.events=p.events.map(e=>e.used?e:{id:null,used:false,lastTurn:null});}for(const f of p.fans)f.lock=remap(f.lock);return p;});
  v.row.forEach(f=>f.lock=remap(f.lock));v.active=remap(s.active);v.first=remap(s.first);v.winner=remap(s.winner);if(v.pending){v.pending.p=remap(s.pending.p);if(s.pending.p!==i){v.pending.options=[];if(v.pending.selected)v.pending.selected=[];if(v.pending.cards)delete v.pending.cards;v.pending.text='相手が効果を選択しています';}}
  v.log=v.log.map(t=>t.replace(/あなた|CPU/g,x=>(x==='あなた'?0:1)===i?'あなた':'相手'));return v;}
-return {driftSources,canMitsuhaSwap,CHAR,COMMON,EVENTS,FAN,LOTTERY,DRINKS,SHOP,cashCount,canMiyabiDebuff,requiredVoltage,drinkItems,maxVoltage,acquisitionCount,discardable,memoryable,songArt,ticketCount,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,teddyCount,fansProtected,ayaEventCount,moeTargets,supportFree,supportSealed,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
+return {driftExtraCost,driftSources,canMitsuhaSwap,CHAR,COMMON,EVENTS,FAN,LOTTERY,DRINKS,SHOP,cashCount,canMiyabiDebuff,requiredVoltage,drinkItems,maxVoltage,acquisitionCount,discardable,memoryable,songArt,ticketCount,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,teddyCount,fansProtected,ayaEventCount,moeTargets,supportFree,supportSealed,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
 })();
 const $=s=>document.querySelector(s);
 const {CHAR,COMMON,EVENTS,FAN}=IDOL;
@@ -1259,6 +1261,7 @@ function recordMove(a,before){const i=before.pending?.p??before.active,p=before.
 
 function dialog(title,body,large=false,close=true,extraClass=''){return '<div class="overlay"><section class="dialog '+(large?'large':'')+' '+extraClass+'" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="dialog-head"><div><h2>'+title+'</h2></div>'+(close?btn('×','close','','', 'aria-label="閉じる"'):'')+'</div>'+body+'</section></div>';}
 function choiceFan(f,action,on=false){return '<button class="choice-card '+(on?'on':'')+'" data-action="'+action+'" data-id="'+f.uid+'" '+(action==='place-lock'&&(!humanTurn()||IDOL.supportSealed(state,0))?'disabled':'')+'><h3>'+FAN[f.type].name+'　'+IDOL.fanPoints(state?.players.find(p=>p.fans.some(x=>x.uid===f.uid)),f)+'pt</h3>'+art('fan-'+f.type)+'<small>'+(f.muted?'効果無効（ターン終了まで）':FAN[f.type].text)+'</small></button>';}
+function driftPaymentNote(p,c,z){const extra=IDOL.driftExtraCost(c,z.mode);if(!extra)return '';const cost=z.free?0:1,total=cost+extra;return '<p class="setup-note">'+(z.free?'漂流は無料':'漂流に声援1枚')+' ＋ 追加効果に声援'+extra+'枚（合計'+total+'枚）。'+(p.chips<total?'現在の声援では追加効果の支払いができません。':'')+'</p>';}
 function memChoice(c,action,on){return '<button class="choice-card memory-choice '+(on?'on':'')+'" data-action="'+action+'" data-id="'+c.uid+'" style="border-top:3px solid '+CHAR[c.owner].color+'">'+art(IDOL.songArt(c))+'<span><small>'+CHAR[c.owner].short+' / '+c.n+'人用</small><h3>'+IDOL.song(c).name+'</h3></span></button>';}
 // Retain dialog scroll/focus only while editing the same selection session.
 let renderedModal = null;
@@ -1303,7 +1306,7 @@ function renderModalContent(){
  if(state&&screen==='match'&&state.pending?.p===0&&!modal&&!boardView){const z=state.pending,p=state.players[0];let body='';
  if(z.kind==='miyabiDebuff')body='<p>声援チップ1枚を支払い、相手のVOLを20％下げます。現在の声援：'+p.chips+'枚。</p><div class="dialog-footer">'+btn('今回は使わない','choose','',false,'data-id="skip"')+btn('声援1枚でVOL－20％','choose','primary',p.chips<1,'data-id="use"')+'</div>';
 
- else if(z.kind==='kanaDrift')body='<p>自分・相手のメモリーと捨て札から'+(z.mode==='vol'?'VOL':'fan')+'側の追加効果を借ります。'+(z.free?'今回の漂流コストは無料です。':'漂流コストは声援1枚です。')+'基本のVOL・fan・必要VOLは河奈のままです。</p>'+btn('漂流せずに使う','choose','wide',false,'data-id="skip"')+[[z.p,'memory','自分のメモリー'],[z.p,'discard','自分の捨て札'],[1-z.p,'memory','相手のメモリー'],[1-z.p,'discard','相手の捨て札']].map(([seat,zone,label])=>{const cards=state.players[seat][zone].filter(c=>z.options.includes(c.uid));return cards.length?'<h4>'+label+'</h4><div class="choice-grid">'+cards.map(c=>'<div>'+memChoice(c,'choose',false)+'<p>'+esc(IDOL.detail(c)[z.mode+'Text'])+'</p></div>').join('')+'</div>':'';}).join('');
+ else if(z.kind==='kanaDrift')body='<p>自分・相手のメモリーと捨て札から'+(z.mode==='vol'?'VOL':'fan')+'側の追加効果を借ります。'+(z.free?'今回の漂流コストは無料です。':'漂流コストは声援1枚です。')+'基本のVOL・fan・必要VOLは河奈のままです。</p>'+btn('漂流せずに使う','choose','wide',false,'data-id="skip"')+[[z.p,'memory','自分のメモリー'],[z.p,'discard','自分の捨て札'],[1-z.p,'memory','相手のメモリー'],[1-z.p,'discard','相手の捨て札']].map(([seat,zone,label])=>{const cards=state.players[seat][zone].filter(c=>z.options.includes(c.uid));return cards.length?'<h4>'+label+'</h4><div class="choice-grid">'+cards.map(c=>'<div>'+memChoice(c,'choose',false)+'<p>'+esc(IDOL.detail(c)[z.mode+'Text'])+'</p>'+driftPaymentNote(p,c,z)+'</div>').join('')+'</div>':'';}).join('');
  else if(z.kind==='kanaDriftOption')body='<p>'+esc(z.optionText)+'。漂流元の追加効果に必要な支払いです。</p><div class="dialog-footer">'+btn('追加の選択を使わない','choose','',false,'data-id="skip"')+btn('使う','choose','primary',false,'data-id="use"')+'</div>';
  else if(z.kind==='kanaMemory')body='<p>残った河奈のメモリーを1枚ずつ捨て、このターンのポイントに変えます。現在の一時得点：'+p.temp+'。</p>'+btn('選択を終える','choose','wide',false,'data-id="done"')+'<div class="choice-grid">'+p.memory.filter(c=>z.options.includes(c.uid)).map(c=>memChoice(c,'choose',false)).join('')+'</div>';
  else if(z.kind==='mitsuhaStart')body='<p>観客席の先頭と、非公開の山札の一番上を入れ替えます。</p><div class="dialog-footer">'+btn('入れ替えない','choose','',false,'data-id="skip"')+btn('入れ替える','choose','primary',false,'data-id="swap"')+'</div>';
