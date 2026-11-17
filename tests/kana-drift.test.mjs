@@ -32,7 +32,7 @@ for(const G of [server,browser])for(const seat of [0,1]){
  {const s=make(),p=s.players[seat];source(s,'kayo');const c=give(s);const before=p.hand.length;play(s,c,'fan');assert.equal(s.pending,null);assert.equal(p.hand.length,before-1);assert.equal(p.fans.length,1);}
  {const s=make(),p=s.players[seat],b=source(s,'mitama',2);p.chips=2;play(s,give(s,2),'fan');choose(s,b.uid);assert.equal(p.fans.length,2);assert.equal(p.chips,1);}
  // Optional source costs and effects are preserved, independently from Drift's own payment.
- {const s=make('tenko'),p=s.players[seat],b=source(s,'miyabi',3);p.chips=3;const enemyVol=s.players[1-seat].vol;play(s,give(s,3));choose(s,b.uid);assert.equal(p.chips,2);assert.equal(s.pending.kind,'kanaDriftOption');choose(s,'use');assert.equal(p.chips,0);assert.equal(s.players[1-seat].vol,enemyVol-20);assert.equal(p.vol,130);}
+ {const s=make('tenko'),p=s.players[seat],b=source(s,'miyabi',3);p.chips=3;const enemyVol=s.players[1-seat].vol;play(s,give(s,3));choose(s,b.uid);assert.equal(p.chips,2);assert.equal(s.pending.kind,'kanaDriftOption');choose(s,'use');assert.equal(p.chips,1);assert.equal(s.players[1-seat].vol,enemyVol-20);assert.equal(p.vol,130);}
  {const s=make(),p=s.players[seat],b=source(s,'natsume');p.vol=60;play(s,give(s),'fan');choose(s,b.uid);choose(s,'use');assert.equal(p.vol,50);assert.equal(p.fans.length,2);}
  {const s=make(),p=s.players[seat],b=source(s,'rai');p.chips=1;s.row[1].type='core';play(s,give(s),'fan');choose(s,b.uid);choose(s,'use');assert.equal(p.chips,0);assert.equal(s.pending.kind,'raiPick');const target=s.row[1].uid;choose(s,target);assert(p.fans.some(f=>f.uid===target));}
  // 'This song' refers to the real Kana card; source ownership is never substituted in memory or hand.
