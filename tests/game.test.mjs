@@ -31,6 +31,7 @@ const modalCheck = new Function(wrapper + `
 const a={kind:'unit-random-confirm'}, b={kind:'song'};
 let modal=a, current={content:{scrollTop:210},querySelector(){return this.content;},scrollTop:380,scrollLeft:0,contains:()=>true,querySelectorAll:()=>[]};
 const document={activeElement:null};
+function syncLotteryTimer(){}
 const root={querySelector:()=>current};const $=()=>root;
 function renderModalContent(){current={content:{scrollTop:0},querySelector(){return this.content;},scrollTop:0,scrollLeft:0,querySelectorAll:()=>[],contains:()=>false};}
 renderedModal=a;renderModal();if(current.scrollTop!==380)throw Error('Selection lost scroll');if(current.content.scrollTop!==210)throw Error('Random preview lost content scroll');

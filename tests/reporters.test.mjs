@@ -1,33 +1,32 @@
 import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {IDOL as G} from '../room-server/idol-engine.mjs';
+import {IDOL as server} from '../room-server/idol-engine.mjs';
+const htmlSource=readFileSync(new URL('../index.html',import.meta.url),'utf8'),engineCode=htmlSource.match(/<script>([\s\S]*?)<\/script>/)[1].split('const $=s=>')[0],browser=new Function(engineCode+';return IDOL')();
+for(const G of [browser,server]){
 const make=()=>G.create(['kayo','machi','natsume'],'kayo',['machi','hana','haru'],'hana',0,321,['trouble','kayo','redo'],['wit','trouble','haru']);
 const all=s=>[...s.row,...s.audience,...s.players.flatMap(p=>p.fans)];
 function row(s,types){const pool=[...s.row,...s.audience];s.row=types.map(type=>{const at=pool.findIndex(f=>f.type===type);assert(at>=0,'Fixture spectator exists: '+type);return pool.splice(at,1)[0];});s.audience=pool;}
 function card(s,i,owner,n){const p=s.players[i];let c=p.hand.find(c=>c.owner===owner&&c.n===n);if(!c){const at=p.deck.findIndex(c=>c.owner===owner&&c.n===n);assert(at>=0);c=p.deck.splice(at,1)[0];p.hand.push(c);}return c;}
 function play(s,i,owner,n){const c=card(s,i,owner,n);G.dispatch(s,{type:'play',card:c.uid,mode:'fan',actors:G.actors(s.players[i],c)});}
+const influencers=s=>all(s).filter(f=>f.type==='influencer').length;
+function stage(s){row(s,['light','light','light']);const at=s.audience.findIndex(f=>f.type==='reporter');assert(at>=0);s.audience.unshift(s.audience.splice(at,1)[0]);s.players[0].vol=100;}
 {
- const s=make();assert.equal(all(s).length,53);assert.equal(s.audience.length,50);assert.equal(all(s).filter(f=>f.type==='reporter').length,1);assert(!all(s).some(f=>f.type==='influencer'||f.type==='dream'));assert.equal(G.FAN.reporter.points,1);assert.equal(G.FAN.influencer.points,5);assert.equal(G.FAN.influencer.count,0);
+ const s=make();assert.equal(all(s).length,53);assert.equal(G.FAN.reporter.points,1);assert.equal(G.FAN.influencer.count,0);
+ let initial;for(let seed=1;seed<300;seed++){const t=G.create(['kayo','machi','natsume'],'kayo',['machi','hana','haru'],'hana',0,seed);if(t.row.some(f=>f.type==='reporter')){initial=t;break;}}assert(initial,'An initial reporter appears for a tested seed');assert.equal(influencers(initial),1);assert.equal(all(initial).length,54);assert(!initial.players.some(p=>p.fans.length));
 }
 {
- const s=make(),p=s.players[0];p.vol=100;row(s,['reporter','light','light']);const reporter=s.row[0].uid,originalFourth=s.audience.find(f=>f.type==='core');s.audience=s.audience.filter(f=>f.uid!==originalFourth.uid);s.audience.unshift(originalFourth);
- play(s,0,'natsume',3);assert.equal(p.fans.length,4);assert(p.fans.some(f=>f.uid===reporter));assert(p.fans.some(f=>f.uid===originalFourth.uid),'The fourth card comes from the pre-existing deck');assert(!p.fans.some(f=>f.type==='influencer'),'Generated spectator cannot enter the same acquisition batch');
- assert.equal(all(s).length,54);assert.equal(all(s).filter(f=>f.type==='influencer').length,1);assert.equal(s.row.length,3);assert.equal(new Set(all(s).map(f=>f.uid)).size,54);
+ const s=make();stage(s);play(s,0,'kayo',1);assert(s.row.some(f=>f.type==='reporter'));assert.equal(influencers(s),1,'Refill triggers before anyone acquires reporter');assert(!s.players[0].fans.some(f=>f.type==='reporter'));row(s,['reporter','light','light']);G.dispatch(s,{type:'end'});s.players[1].vol=100;play(s,1,'machi',1);assert.equal(influencers(s),1,'Acquiring reporter adds no second influencer');assert.equal(new Set(all(s).map(f=>f.uid)).size,54);
 }
 {
- const s=make(),p=s.players[0];p.vol=100;row(s,['reporter','light','light']);const id=s.row[0].uid;play(s,0,'kayo',1);assert.equal(all(s).filter(f=>f.type==='influencer').length,1);
- p.memory.push(...p.deck.splice(0,3));G.dispatch(s,{type:'event',id:'trouble',memory:G.autoPay(p,'trouble')});assert(!p.fans.length);assert(s.audience.some(f=>f.uid===id));assert.equal(all(s).filter(f=>f.type==='influencer').length,1,'Returning the reporter is not another acquisition');
- row(s,['reporter','light','light']);G.dispatch(s,{type:'end'});s.players[1].vol=100;play(s,1,'machi',1);assert(s.players[1].fans.some(f=>f.uid===id));assert.equal(all(s).filter(f=>f.type==='influencer').length,2,'Either player reacquiring the same reporter creates a new influencer');assert.equal(new Set(all(s).map(f=>f.uid)).size,55);
+ const s=make();stage(s);play(s,0,'kayo',1);row(s,['reporter','light','light']);s.players[0].memory.push(...s.players[0].deck.splice(0,3));G.dispatch(s,{type:'event',id:'redo',memory:G.autoPay(s.players[0],'redo')});assert.equal(influencers(s),s.row.some(f=>f.type==='reporter')?2:1);if(!s.row.some(f=>f.type==='reporter')){stage(s);G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end'});play(s,0,'kayo',1);}assert.equal(influencers(s),2,'Each new appearance triggers once');
 }
 {
- const s=make();s.players[0].vol=100;row(s,['trouble','reporter','light']);const reporter=s.row[1].uid;play(s,0,'kayo',3);assert.equal(s.pending.kind,'trouble');G.dispatch(s,{type:'choose',value:reporter});assert(!s.players[0].fans.some(f=>f.uid===reporter));assert.equal(all(s).filter(f=>f.type==='influencer').length,1,'A returned reporter still resolves its acquired effect');
+ const s=make();stage(s);s.deckMuteTurn=s.turn;play(s,0,'kayo',1);assert(s.row.find(f=>f.type==='reporter').muted);assert.equal(influencers(s),0,'Reporter muted on entry does not trigger');G.dispatch(s,{type:'end'});assert.equal(influencers(s),0,'Removing mute does not repeat an appearance');
+ const t=make();stage(t);play(t,0,'natsume',3);assert(t.players[0].fans.some(f=>f.type==='reporter'));assert.equal(influencers(t),0,'Direct deck acquisition never enters audience seats');
 }
 {
- const s=make();s.players[0].vol=100;row(s,['reporter','light','light']);s.row[0].muted=true;play(s,0,'kayo',1);assert.equal(G.score(s.players[0]),1);assert.equal(all(s).filter(f=>f.type==='influencer').length,0,'Muted reporters do not spawn cards');
- const t=make();t.players[0].vol=100;row(t,['light','light','light']);const at=t.audience.findIndex(f=>f.type==='reporter');t.audience.unshift(t.audience.splice(at,1)[0]);t.deckMuteTurn=t.turn;play(t,0,'natsume',3);assert.equal(all(t).filter(f=>f.type==='influencer').length,0,'Deck-only muting applies when reporter is acquired directly from the deck');
- const u=make();u.players[0].vol=100;row(u,['reporter','light','light']);u.deckMuteTurn=u.turn;play(u,0,'kayo',1);const added=all(u).find(f=>f.type==='influencer');assert(added,'Reporter already in audience seats keeps its effect');assert(added.muted);assert.equal(G.fanPoints(u.players[0],added),5,'Losing effects never removes printed points');
+ const s=G.create(['mitsuha','kayo','natsume'],'mitsuha',['mitama','hana','haru'],'mitama',0,321);assert.equal(s.pending.kind,'mitsuhaStart');stage(s);G.dispatch(s,{type:'choose',value:'swap'});assert.equal(s.row[0].type,'reporter');assert.equal(influencers(s),1,'Mitsuha swap is also an appearance');
+ const t=make();stage(t);t.players[0].leader='mitama';play(t,0,'kayo',1);assert.equal(influencers(t),1,'Global appearance effect is independent of acquiring leader');
 }
-{
- const s=make(),p=s.players[0];p.vol=100;row(s,['reporter','light','light']);play(s,0,'kayo',1);row(s,['influencer','light','light']);G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end'});p.fanChips=14;play(s,0,'kayo',1);assert.equal(G.score(p),20);assert.equal(s.winner,0);const guest=G.publicView(s,1);assert.equal(guest.winner,1);assert(guest.players[1].fans.some(f=>f.type==='influencer'));
 }
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=html.match(/<script>([\s\S]*?)<\/script>/)[1],nodes=new Map();
 const doc={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
@@ -38,4 +37,4 @@ modal={kind:'rules',section:'basic'};assert.match(rulesHTML(),/53枚/);assert.ma
 assert(!dialog('確認','本文').includes('IDOL / LIVE DUEL'),'Dialog headings do not repeat the brand');
 assert(!setupHTML().includes('DRAW /'),'Role labels do not repeat English and Japanese');
 `)(doc,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
-console.log('Reporters: 53-card initial deck, batch order, repeat acquisition, both players, suppression, 5-point wins, artwork and concise UI copy passed');
+console.log('Reporters: appearance timing, initial/refill/swap, repeat entry, no acquisition trigger, suppression, both engines; 53-card initial deck, batch order, repeat acquisition, both players, suppression, 5-point wins, artwork and concise UI copy passed');

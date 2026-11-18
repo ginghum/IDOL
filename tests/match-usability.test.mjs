@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=html.match(/<script>([\s\S]*?)<\/script>/)[1],nodes=new Map(),listeners={},timers=new Map();let serial=0;
+const document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(k,f){listeners[k]=f;}};
+new Function('document','localStorage','setTimeout','clearTimeout','assert','listeners','timers',code+String.raw`
+const click=(action,id)=>listeners.click({target:{closest:()=>({dataset:{action,id},disabled:false})}}),content=()=>$('#modal').innerHTML;
+state=IDOL.create(['kono','kayo','natsume'],'kono',['machi','hana','haru'],'hana',0,321);screen='match';modal=null;
+let shop=cashShopHTML(state.players[0]);assert.equal((shop.match(/class="cash-product"/g)||[]).length,5);for(const id of ['meat','teddy','drinkPurple'])assert(new RegExp('<button[^>]+data-id="'+id+'"[^>]*>[\\s\\S]*?<img[\\s\\S]*?</button>').test(shop));assert(!shop.includes('disabled'));state.players[0].items=[];assert.equal((cashShopHTML(state.players[0]).match(/ disabled/g)||[]).length,5);
+state.winner=0;state.log=Array.from({length:160},(_,i)=>'履歴'+i);resultShown=true;modal={kind:'result'};renderModal();assert.match(content(),/result-log/);click('result-log');assert(content().includes('履歴0</p>'));assert(content().includes('履歴159</p>'));assert.match(content(),/結果へ戻る/);click('close');assert.equal(modal.kind,'result');
+net={mode:'room',phase:'ended'};click('result-log');listeners.keydown({key:'Escape'});assert.equal(modal.kind,'result');assert(!content().includes('data-action="close"'));net=null;
+state.winner=null;modal={kind:'lottery-result',draw:{uid:'draw1',p:0,result:'small',detail:'test'}};renderModal();const timer=[...timers.entries()].find(([,t])=>t.ms===1500);assert(timer);renderModal();assert(timers.has(timer[0]),'Rerender does not extend the timeout');timer[1].fn();assert.equal(modal,null);assert(!timers.has(timer[0]));
+modal={kind:'lottery-result',draw:{uid:'draw2',p:0,result:'small',detail:'test'}};renderModal();const stale=[...timers.values()].find(t=>t.ms===1500);modal={kind:'rules'};renderModal();stale.fn();assert.equal(modal.kind,'rules','Stale result timers cannot close another dialog');
+state.winner=0;modal={kind:'lottery-result',draw:{uid:'draw3',p:0,result:'small',detail:'test'}};renderModal();[...timers.values()].find(t=>t.ms===1500).fn();assert.equal(modal.kind,'result','Winning draw returns to results');assert.equal(resultShown,true);
+modal={kind:'lottery-result',draw:{uid:'draw4',p:0,result:'small',detail:'test'}};renderModal();click('lottery-ok');assert.equal(modal.kind,'result');assert(![...timers.values()].some(t=>t.ms===1500));
+const match=IDOL.create(['kayo','machi','natsume'],'kayo',['machi','hana','haru'],'hana',0,321);for(let n=0;n<90;n++)IDOL.dispatch(match,{type:'end'});assert(match.log.length>120);assert(match.log.some(t=>t.includes('先攻でライブ開始')));
+`)(document,{getItem:()=>null,setItem(){}},(fn,ms)=>{const id=++serial;timers.set(id,{fn,ms});return id;},id=>timers.delete(id),assert,listeners,timers);
+assert.match(html,/input\[type="checkbox"\][^}]*width:24px/);
+console.log('Match usability: whole-product buttons, disabled purchases, complete result history/back paths, 1.5-second lottery auto-close without reset/stale interference, winning/manual close, long logs and desktop checkbox sizing passed');
