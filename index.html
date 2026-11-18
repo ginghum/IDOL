@@ -319,7 +319,7 @@ tenko:{skillName:'頁をめくる仲間たち',name:'尊国天子',reading:'み�
 mitsuha:{skillName:'この街を愛する理由',name:'法師三葉',reading:'ほうしみつは',short:'三葉',color:'#c8a441',vol:30,hand:5,skill:'自分のターン開始時、観客席の先頭と観客山札の一番上を入れ替えてもよい。相手の独占付き観客は入れ替えられない。',songs:['風吹く交差点','夕暮れオレンジ','試練の鐘が鳴る街'],event:'この街はやさしさでできている',cost:[3,5],effect:'相手の独占付き観客を除く観客席のカードを山札の下へ置き、移動した枚数分の地元ファンを観客席に配置する。その後、fan＋1をその場で発動する。'},
 mitama:{skillName:'迷いの影を振り払って',name:'十影美珠',reading:'とかげみたま',short:'美珠',color:'#9aa9c5',vol:20,hand:3,skill:'観客カードの追加効果を受けない。',songs:['積灰','袖を振る風になる','The Borrowed Light'],event:'捧ぐこの身に花束を',cost:[3,5],effect:'観客を2人獲得する。'},
 riri:{skillName:'負け分までいただきます',name:'来栖梨里',reading:'くるすりり',short:'梨里',color:'#45935a',vol:30,hand:5,skill:'ゲーム中1度、相手が観客を獲得した直後、相手の獲得済みの厄介なファンが3枚以上なら、声援チップを4枚得る。観客の追加効果より先に判定する。',songs:['JOKER','罪と切り札','POISON PARADE'],event:'最後に笑うのは',cost:[2,6],effect:'相手の獲得済み観客の枚数から3を引いた数だけ、このターンのポイントを得る（最低0）。ファンチップは数えない。'},
-chitose:{skillName:'勝ちどきは昼寝のあとで',name:'早乙女千登勢',reading:'さおとめちとせ',short:'千登勢',color:'#c8a646',vol:30,hand:4,skill:'自分のターン開始時、観客席の3番目に＋1チップを1枚置く。1枚につき1ポイント加算し、累積する。獲得後も残り、観客山札に戻ると取り除く。',songs:['The Gentle Fang','GOLDEN STRIDE','咆哮デッドヒート'],event:'SMILING LIONESS',cost:[3,9],effect:'相手のリーダーでないアイドル1人を選ぶ。そのアイドルは残りのゲーム中、ターン開始時に未行動に戻らない。カードや声援効果で未行動に戻すことはできる。'},
+chitose:{skillName:'勝ちどきは昼寝のあとで',name:'早乙女千登勢',reading:'さおとめちとせ',short:'千登勢',color:'#c8a646',vol:30,hand:5,skill:'自分のターン開始時、観客席の3番目に＋1チップを1枚置く。1枚につき1ポイント加算し、累積する。獲得後も残り、観客山札に戻ると取り除く。',songs:['The Gentle Fang','GOLDEN STRIDE','咆哮デッドヒート'],event:'SMILING LIONESS',cost:[3,9],effect:'相手のリーダーでないアイドル1人を選ぶ。そのアイドルは残りのゲーム中、ターン開始時に未行動に戻らない。カードや声援効果で未行動に戻すことはできる。'},
 kokone:{skillName:'憧れは鳴りやまない',name:'皇狐々音',reading:'すめらぎここね',short:'狐々音',color:'#bb4689',vol:30,hand:4,skill:'自分のターン終了時、空のリハーサルに手札の2人用・3人用楽曲1枚を表向きで置いてもよい。次の自分のターン開始時、必要人数を1人減らしてFANで使用する。指定メンバーと必要VOLは通常どおり。使えなければ残す。',songs:['呼吸する都市','ネオンの脈拍','100万トンのスポットライト'],event:'レインボー・スパーク・シティ',cost:[3,9],effect:'リハーサルに楽曲があれば、そのFANをコストなしで2回発動する。なければ手札の楽曲1枚を置き、1回発動する。必要人数・指定メンバー・必要VOLを無視し、楽曲固有の追加効果は発動しない。使用後はメモリーに置く。'},
 };
 const COMMON = {
@@ -355,7 +355,7 @@ if(c.owner==='kana')d.volText=d.fanText='漂流：声援チップ1枚を支払�
 if(c.owner==='tenko'&&c.n>1)d.volText=d.fanText='声援チップを1枚得る。';
 if(c.owner==='mitsuha')d.volText='地元ファン1枚を観客山札の一番上に置く。';
 if(c.owner==='riri'&&c.n>1)d.fanText='この使用で最初に獲得する厄介なファン1枚を、自分の代わりに相手に渡してもよい。そうしたらファンチップを1枚得る。';
-if(c.owner==='chitose')d.fanText='相手の獲得済みの、現在1ポイントの観客1枚をランダムに観客山札の下に戻す。';
+if(c.owner==='chitose')d.fanText=(c.n===1?'自分のVOLが80％以上なら、':'')+'相手の獲得済みの、現在1ポイントの観客1枚をランダムに観客山札の下に戻す。';
 if(c.owner==='kokone')d.fanText='楽曲カードを1枚引く。';
 if(c.owner==='mitama')d.fanText='声援チップを1枚捨てる。';
 if(c.owner==='shiro')d.volText='相手の山札に「塗りつぶされたカード」'+(c.n===1?1:2)+'枚を加え、シャッフルする。';
@@ -723,7 +723,7 @@ function chooseDrift(s,z,value){
  if(value==='use'){a[z.flag]=true;if(z.flag==='debuff')p.chips-=1;}
  s.pending=null;return resolveSong(s,z.p,c,a,source);
 }
-function driftValue(s,i,c,mode,cost=0){const p={...s.players[i],chips:s.players[i].chips-cost},q=s.players[1-i];if(driftExtraCost(c,mode)>p.chips)return 0;if(c.owner==='mitama')return -1;if(c.owner==='kayo')return mode==='vol'&&p.deck.length?1:0;if(c.owner==='tenko'||c.owner==='hana')return .7;if(c.owner==='fukurou')return items(q).length+q.fanChips>0?1:0;if(c.owner==='ayame')return .9;if(c.owner==='shiro')return 1;if(c.owner==='chie')return p.deck.length?.8:0;if(c.owner==='akina')return .7;if(c.owner==='machi')return q.fans.length?1:0;if(c.owner==='hikari')return p.hand.length>0?.6:0;if(c.owner==='miyabi')return p.chips>=1&&q.vol>=40?.8:0;if(c.owner==='natsume')return mode==='fan'?.8:0;if(c.owner==='rai')return .7;if(c.owner==='aya')return p.vol>=100?1:0;if(c.owner==='moe')return 1;if(c.owner==='misa')return p.chips>=(c.n===3?1:2)?.8:0;if(c.owner==='kono'||c.owner==='hakka'||c.owner==='nina')return .8;if(c.owner==='haru')return .4;if(c.owner==='mitsuha')return p.team.includes('mitsuha')?.6:.1;return .3;}
+function driftValue(s,i,c,mode,cost=0){const p={...s.players[i],chips:s.players[i].chips-cost},q=s.players[1-i];if(driftExtraCost(c,mode)>p.chips)return 0;if(c.owner==='chitose')return (c.n>1||p.vol>=80)&&!fansProtected(s,1-i,i)&&q.fans.some(f=>fanPoints(q,f)===1)?1:0;if(c.owner==='mitama')return -1;if(c.owner==='kayo')return mode==='vol'&&p.deck.length?1:0;if(c.owner==='tenko'||c.owner==='hana')return .7;if(c.owner==='fukurou')return items(q).length+q.fanChips>0?1:0;if(c.owner==='ayame')return .9;if(c.owner==='shiro')return 1;if(c.owner==='chie')return p.deck.length?.8:0;if(c.owner==='akina')return .7;if(c.owner==='machi')return q.fans.length?1:0;if(c.owner==='hikari')return p.hand.length>0?.6:0;if(c.owner==='miyabi')return p.chips>=1&&q.vol>=40?.8:0;if(c.owner==='natsume')return mode==='fan'?.8:0;if(c.owner==='rai')return .7;if(c.owner==='aya')return p.vol>=100?1:0;if(c.owner==='moe')return 1;if(c.owner==='misa')return p.chips>=(c.n===3?1:2)?.8:0;if(c.owner==='kono'||c.owner==='hakka'||c.owner==='nina')return .8;if(c.owner==='haru')return .4;if(c.owner==='mitsuha')return p.team.includes('mitsuha')?.6:.1;return .3;}
 function resolveSong(s,i,c,a,ec=c){
  const p=s.players[i],d=song(c),effects=!p.songSeal;
  if(effects&&ec.owner==='mimizuku'&&a.mode==='fan'&&s.row[0]&&fanPoints(p,s.row[0])===1){const n=ec.n===3?2:1;log(s,'ミミズク：使用時の先頭が1ポイント、声援チップ＋'+n);for(let j=0;j<n;j++)s.queue.push({kind:'chip',p:i});}
@@ -753,7 +753,7 @@ function resolveSong(s,i,c,a,ec=c){
  if(effects&&ec.owner==='homura')s.queue.push({kind:'mutePick',p:i,left:ec.n===3?2:1,selected:[]});
  if(effects&&ec.owner==='emi')s.queue.push({kind:'emiBottom',p:i});
  if(effects&&ec.owner==='machi'&&ec.n>1)s.queue.push({kind:'machiRemove',p:1-i,random:ec.n===3});
- if(effects&&ec.owner==='chitose')s.queue.push({kind:'chitoseRemove',p:i});
+ if(effects&&ec.owner==='chitose'&&(ec.n>1||p.vol>=80))s.queue.push({kind:'chitoseRemove',p:i});
  if(effects&&['hana','hibiki'].includes(ec.owner)&&ec.n===3)s.queue.push({kind:'chip',p:i});
  if(a.pick)s.queue.push({kind:'raiPick',p:i,peek:ec.n===3,count:ec.n===3?2:1});else s.queue.push({kind:'normal',p:i,n,ririPass:effects&&ec.owner==='riri'&&ec.n>1});
  }
@@ -891,7 +891,7 @@ function ai(s){
  }
  if(p.vol>=requiredVoltage(p,c)&&c.special!=='painted'){
  const n=fanCount(p,c),boost=!p.songSeal&&c.owner==='natsume'&&c.n<3&&p.vol>=d.need+10;
- let value=(!p.songSeal&&c.owner==='kokone'&&p.deck.length?.8/d.n:0)+(!p.songSeal&&c.owner==='chitose'&&!fansProtected(s,1-i,i)&&s.players[1-i].fans.some(f=>fanPoints(s.players[1-i],f)===1)?.9/d.n:0)+(c.owner==='mimizuku'&&s.row[0]&&fanPoints(p,s.row[0])===1?(c.n===3?2:1)*.3/d.n:0)+(c.owner==='fukurou'&&(items(s.players[1-i]).length+(s.players[1-i].fanChips||0))>0?.6/d.n:0)+estimate(s,i,n+(boost?1:0))/d.n+(c.owner==='ayame'&&c.n===3?1/d.n:0)+(c.owner==='machi'&&c.n>1&&s.players[1-i].fans.length?.8/d.n:0)+(c.owner==='hana'&&c.n===3?.2:0)+(c.owner==='moe'&&(c.n===3||!p.moeDouble&&p.service<2)?.4:0);
+ let value=(!p.songSeal&&c.owner==='kokone'&&p.deck.length?.8/d.n:0)+(!p.songSeal&&c.owner==='chitose'&&(c.n>1||p.vol>=80)&&!fansProtected(s,1-i,i)&&s.players[1-i].fans.some(f=>fanPoints(s.players[1-i],f)===1)?.9/d.n:0)+(c.owner==='mimizuku'&&s.row[0]&&fanPoints(p,s.row[0])===1?(c.n===3?2:1)*.3/d.n:0)+(c.owner==='fukurou'&&(items(s.players[1-i]).length+(s.players[1-i].fanChips||0))>0?.6/d.n:0)+estimate(s,i,n+(boost?1:0))/d.n+(c.owner==='ayame'&&c.n===3?1/d.n:0)+(c.owner==='machi'&&c.n>1&&s.players[1-i].fans.length?.8/d.n:0)+(c.owner==='hana'&&c.n===3?.2:0)+(c.owner==='moe'&&(c.n===3||!p.moeDouble&&p.service<2)?.4:0);
  if(estimate(s,i,n+(boost?1:0))+score(p)>=20)value+=50;
  let pick=false;
  if(!p.songSeal&&c.owner==='rai'&&(c.n!==1||p.chips>=1)){
@@ -1452,7 +1452,7 @@ function renderModalContent(){
 }
 const RULE_CHARACTER_NOTES={
 riri:['厄介なファン2枚の相手が3枚目を獲得した場合もリーダースキルが発動します。ゲーム中1度です。','譲渡は2・3人用楽曲のFAN中、最初の厄介なファン1枚のみ。相手も通常の獲得効果を受けます。','イベントの得点はターン中のみ。相手の観客の枚数を数え、ファンチップは含めません。'],
-chitose:['＋1チップは観客に累積し、獲得した側の得点になります。相手も獲得できます。山札に戻った時点で全て消えます。','楽曲の妨害はFANのみ。現在の得点が1の相手観客からランダムに選びます。MCタイムやぬいぐるみは有効です。','専用イベントが封じるのはターン開始時の回復だけです。声援やカードでの回復は可能です。'],
+chitose:['＋1チップは観客に累積し、獲得した側の得点になります。相手も獲得できます。山札に戻った時点で全て消えます。','楽曲の妨害はFANのみ。技1の妨害には自分のVOL80％以上が必要です（VOLは消費しません）。現在の得点が1の相手観客からランダムに選びます。MCタイムやぬいぐるみは有効です。','専用イベントが封じるのはターン開始時の回復だけです。声援やカードでの回復は可能です。'],
 kokone:['リハーサルは各プレイヤー1枚まで、表向きです。終了時に2・3人用楽曲を置くか選べます。','通常のリハーサルは必要VOLと指定メンバーを守り、人数だけ1人減らします。条件未達なら残ります。使用後はメモリーへ置きます。','通常のリハーサルでは追加効果が発動します。手札から使った楽曲の枚数には数えません。','専用イベントは人数・指定メンバー・必要VOLを無視します。楽曲固有の追加効果は発動せず、各回の観客効果と補充は通常どおりです。'],
  kana:['漂流は声援1枚で、自分または相手のメモリー・捨て札にある同じ人数用楽曲から使用モードの追加効果を借ります。元の楽曲は消費しません。','基本VOL・fan・必要VOLと指定メンバーは河奈のまま。追加の支払い・条件・デメリットと、効果中のキャラ名は引き継ぎます。漂流自体は借りられません。','リーダー時は各ターン最初の河奈楽曲だけ漂流コストが無料。漂流しなかった場合も、そのターンの無料対象は次の楽曲へ持ち越しません。','イベントは支払い後に残った河奈の楽曲だけを得点に変えます。一時得点はターン終了時に消えます。'],
  tenko:['リーダー効果は自分の全メンバーの2人用楽曲に適用。天子の技2なら楽曲効果と合わせて声援2枚を得ます。','追加ターンも回復・ドロー・開始時効果を通常どおり処理します。現在のターンの一時効果は終了時に消えます。'],
