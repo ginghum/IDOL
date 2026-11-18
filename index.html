@@ -1214,12 +1214,12 @@ const ARTWORK = {
   "event-mc": "assets/art/event-mc.webp",
   "fan-reporter": "assets/art/fan-reporter.webp",
   "fan-influencer": "assets/art/fan-influencer.webp",
-  "event-request": "assets/art/event-request.svg",
-  "event-solo": "assets/art/event-solo.svg",
-  "event-lastOrder": "assets/art/event-lastOrder.svg",
-  "event-finale": "assets/art/event-finale.svg",
-  "event-duo": "assets/art/event-duo.svg",
-  "event-scene": "assets/art/event-scene.svg"
+  "event-request": "assets/art/event-request.webp",
+  "event-solo": "assets/art/event-solo.webp",
+  "event-lastOrder": "assets/art/event-lastOrder.webp",
+  "event-finale": "assets/art/event-finale.webp",
+  "event-duo": "assets/art/event-duo.webp",
+  "event-scene": "assets/art/event-scene.webp"
 };
 function artworkLabel(key){if(key==='special-painted')return '塗りつぶされたカード';if(key==='special-world')return '鳴り響く世界';const drink=Object.values(IDOL.DRINKS).find(d=>d.art===key);if(drink)return drink.name+'のイラスト';const parts=key.split('-'),id=parts[1];if(parts[0]==='idol')return CHAR[id]?.name+'の立ち絵';if(parts[0]==='song')return CHAR[id]?.songs[Number(parts[2])-1]+'のジャケット';if(parts[0]==='event')return EVENTS[id]?.event+'のジャケット';if(parts[0]==='fan')return FAN[id]?.name+'のイラスト';if(parts[0]==='lottery')return IDOL.LOTTERY[id].name+'のイラスト';if(parts[0]==='item')return (id==='cash'?'現金':id==='ticket'?'くじ引き券':id==='teddy'?'くまのぬいぐるみ':'肉')+'のイラスト';return 'イラスト';}
 const art=(key='')=>'<div class="art '+(ARTWORK[key]?'has-art':'')+' '+(key.startsWith('idol-')?'portrait':'album')+'" data-art="'+key+'">'+(ARTWORK[key]?'<img src="'+ARTWORK[key]+'" alt="'+esc(artworkLabel(key))+'" loading="lazy" decoding="async" width="'+(key.startsWith('idol-')?'733':'800')+'" height="'+(key.startsWith('idol-')?'1100':'800')+'">':'')+'</div>';
