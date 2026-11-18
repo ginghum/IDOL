@@ -55,9 +55,9 @@ mc:{event:'MCタイム',short:'共通',color:'#73878b',cost:[0,1],effect:'次の
 };
 const DUETS={
 tempest:{event:'TEMPEST',short:'佳代＆麻智',color:'#8f7eb2',members:['kayo','machi'],cost:[0,6],costMembers:{kayo:2,machi:2},effect:'観客席から好きな観客を2人同時に獲得し、カードを3枚引く。相手の独占付き観客は選べない。獲得枚数の増加は適用しない。'},
-nightmare:{event:'からふる☆まじかる☆ないとめあ',short:'春＆仁奈',color:'#cf7bae',members:['haru','nina'],cost:[0,6],costMembers:{haru:2,nina:2},effect:'ファンチップを4枚、くまのぬいぐるみを3つ得る。'},
+nightmare:{event:'からふる☆まじかる☆ないとめあ',short:'春＆仁奈',color:'#cf7bae',members:['haru','nina'],cost:[0,6],costMembers:{haru:2,nina:2},effect:'ファンチップを3枚、くまのぬいぐるみを3つ得る。'},
 detatoko:{event:'デタトコ勝負!!',short:'光＆あやめ',color:'#b89241',members:['hikari','ayame'],cost:[0,6],costMembers:{hikari:2,ayame:2},effect:'カードを3枚引き、くじ引き券を5枚得る。'},
-vengeance:{event:'Crystalline Vengeance',short:'恵美＆彩',color:'#9d4168',members:['emi','aya'],cost:[0,6],costMembers:{emi:2,aya:2},effect:'恵美と彩を未行動にし、ファンチップを4枚得る。'}
+vengeance:{event:'Crystalline Vengeance',short:'恵美＆彩',color:'#9d4168',members:['emi','aya'],cost:[0,7],costMembers:{emi:2,aya:2},effect:'恵美と彩を未行動にし、ファンチップを4枚得る。'}
 };
 const EVENTS={...CHAR,...COMMON,...DUETS};
 const FAN = {
@@ -422,7 +422,7 @@ function dispatch(s,a){
  if(id==='fukurou'){const q=s.players[1-i],n=Math.min(6,q.chips);q.chips-=n;awardChips(s,i,n);log(s,'摘出カーテンコール：声援チップ'+n+'枚を奪った');}
  if(id==='ayame')ticket(s,p,5);
  if(id==='tempest')s.queue.push({kind:'raiPick',p:i,count:2,exact:true,title:'TEMPEST'},...Array.from({length:3},()=>({kind:'draw',p:i})));
- if(id==='nightmare'){p.fanChips+=4;for(let j=0;j<3;j++)teddy(s,p);log(s,'からふる☆まじかる☆ないとめあ：ファンチップ＋4、くまのぬいぐるみ＋3');}
+ if(id==='nightmare'){p.fanChips+=3;for(let j=0;j<3;j++)teddy(s,p);log(s,'からふる☆まじかる☆ないとめあ：ファンチップ＋3、くまのぬいぐるみ＋3');}
  if(id==='detatoko'){draw(s,i,3);ticket(s,p,5);}
  if(id==='vengeance'){p.team.forEach((id,j)=>{if(id==='emi'||id==='aya')p.ready[j]=true;});p.fanChips+=4;log(s,'Crystalline Vengeance：恵美と彩を未行動に、ファンチップ＋4');}
  if(id==='collection'){teddy(s,p);teddy(s,p);}
