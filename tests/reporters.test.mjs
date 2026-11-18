@@ -32,9 +32,9 @@ function play(s,i,owner,n){const c=card(s,i,owner,n);G.dispatch(s,{type:'play',c
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=html.match(/<script>([\s\S]*?)<\/script>/)[1],nodes=new Map();
 const doc={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(){}};
 new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
-modal={kind:'fan-catalog'};renderModal();assert.match($('#modal').innerHTML,/fan-reporter.webp/);assert.match($('#modal').innerHTML,/fan-influencer.webp/);assert.match($('#modal').innerHTML,/ゲーム中に追加/);
-modal={kind:'common-catalog'};renderModal();for(const id of ['overcome','viewing','mc'])assert($('#modal').innerHTML.includes('event-'+id+'.webp'));assert(!$('#modal').innerHTML.includes('ILLUSTRATION'));
-assert.match(rulesHTML(),/53枚/);assert.match(rulesHTML(),/インフルエンサー/);assert(!rulesHTML().includes('試作'));
+modal={kind:'rules',section:'fans'};renderModal();assert.match($('#modal').innerHTML,/fan-reporter.webp/);assert.match($('#modal').innerHTML,/fan-influencer.webp/);assert.match($('#modal').innerHTML,/ゲーム中に追加/);
+modal={kind:'rules',section:'events'};renderModal();for(const id of ['overcome','viewing','mc'])assert($('#modal').innerHTML.includes('event-'+id+'.webp'));assert(!$('#modal').innerHTML.includes('ILLUSTRATION'));
+modal={kind:'rules',section:'basic'};assert.match(rulesHTML(),/53枚/);assert.match(rulesHTML(),/インフルエンサー/);assert(!rulesHTML().includes('試作'));
 assert(!dialog('確認','本文').includes('IDOL / LIVE DUEL'),'Dialog headings do not repeat the brand');
 assert(!setupHTML().includes('DRAW /'),'Role labels do not repeat English and Japanese');
 `)(doc,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);

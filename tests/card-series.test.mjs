@@ -12,6 +12,6 @@ CHAR.future={...CHAR.kayo,name:'追加テスト'};EVENTS.future={...EVENTS.kayo,
 assert.equal(cardSeries('character','future'),'extra');assert.equal(cardSeries('event','future'),'extra');assert.equal(cardSeries('event','futureCommon'),'extra');assert.equal(ORIGINAL_CARDS.characters.length,9);assert.equal(ORIGINAL_CARDS.events.length,16);
 assert.deepEqual(rosterIDs(),['hikari','aya','emi','akina','moe','nina','fukurou','ayame','mimizuku','shiro','hibiki','misa','miyabi','kono','chie','kana','tenko','mitsuha','mitama','riri','chitose','kokone','future']);assert.equal((eventChoicesHTML().match(/data-action="setup-event"/g)||[]).length,28);assert.match(rosterResultsHTML(),/エクストラ/);
 CHAR.kayo.vol=40;assert.equal(cardSeries('character','kayo'),'original','Balance updates preserve collection');
-modal={kind:'catalog',tab:'future'};renderModal();assert.match($('#modal').innerHTML,/series-badge extra/);modal={kind:'common-catalog'};renderModal();assert.match($('#modal').innerHTML,/エクストラ/);assert.match($('#modal').innerHTML,/オリジナル/);
+modal={kind:'rules',section:'characters',character:'future'};renderModal();assert.match($('#modal').innerHTML,/series-badge extra/);modal={kind:'rules',section:'events'};renderModal();assert.match($('#modal').innerHTML,/エクストラ/);assert.match($('#modal').innerHTML,/オリジナル/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Card series: fixed 9 characters/16 events, automatic future Extra classification, labels, filters and balance-update stability passed');

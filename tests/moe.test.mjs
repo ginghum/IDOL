@@ -44,6 +44,6 @@ modal={kind:'moe-hold',free:true};renderModal();assert.equal(($('#modal').innerH
 modal={kind:'free-support'};renderModal();assert.match($('#modal').innerHTML,/data-action="free-draw"/);assert.match($('#modal').innerHTML,/data-action="free-hold"/);
 modal=null;state.pending={kind:'moeReady',p:0,options:['0','1','2']};renderModal();assert.equal(($('#modal').innerHTML.match(/data-action="choose"/g)||[]).length,3);state.pending=null;
 for(const viewing of [false,true]){const p=state.players[0];p.liveViewing=viewing;p.moeDouble=true;p.ready=[true,true,true];p.service=0;modal={kind:'member-info',p:0,j:1};renderModal();assert($('#modal').innerHTML.includes('ファンサービス · '+(viewing?'ファンチップ':'声援チップ')+'+3'));IDOL.dispatch(state,{type:'service',actor:1});modal={kind:'member-info',p:0,j:2};renderModal();assert($('#modal').innerHTML.includes('ファンサービス · '+(viewing?'ファンチップ':'声援チップ')+'+1'));}
-modal={kind:'catalog',tab:'moe'};renderModal();assert.match($('#modal').innerHTML,/萌 2枚以上を含む、合計ちょうど5メモリー/);assert.match($('#modal').innerHTML,/Between Us/);
+modal={kind:'rules',section:'characters',character:'moe'};renderModal();assert.match($('#modal').innerHTML,/萌 2枚以上を含む、合計ちょうど5メモリー/);assert.match($('#modal').innerHTML,/Between Us/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Moe: both engines, exact per-member/wildcard payment, free/paid support, start-only holds/counterplay, nonstacking service/Shio/viewing, mandatory post-use refresh/service, privacy/invalid inputs/timeouts, Extra/UI and 300 CPU games passed');

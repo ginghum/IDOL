@@ -19,7 +19,7 @@ for (const id of IDS) {
  for(const e of state.players[0].events) {
   modal={kind:'event',id:e.id}; selection={memory:[],discard:[],targets:[],target:null,actor:null}; renderModal(); views++;
  }
- modal={kind:'catalog',tab:id}; renderModal(); views++;
+ modal={kind:'rules',section:'characters',character:id}; renderModal(); views++;
 }
 return views;
 `)(documentStub, storageStub, ()=>0, ()=>{});

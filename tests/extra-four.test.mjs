@@ -32,7 +32,7 @@ const nodes=new Map(),listeners={},document={querySelector(k){if(!nodes.has(k))n
 new Function('document','localStorage','setTimeout','clearTimeout','assert',code+`
 for(const id of ['collection','rampage','scandal','buzz']){assert.equal(cardSeries('event',id),'extra');assert(!ORIGINAL_CARDS.events.includes(id));assert.match(eventChoicesHTML(),new RegExp(EVENTS[id].event));}
 state=IDOL.create(['nina','hana','hakka'],'nina',['rai','moe','kayo'],'rai',0,7,['rampage','collection','buzz']);screen='match';state.players[0].memory.push(...state.players[0].deck.splice(0,2));modal={kind:'event',id:'rampage'};selection={memory:IDOL.autoPay(state.players[0],'rampage'),discard:[],targets:[],amount:1};renderModal();assert.equal(($('#modal').innerHTML.match(/data-action="rampage-amount"/g)||[]).length,5);assert.match($('#modal').innerHTML,/VOL＋100％/);assert.match($('#modal').innerHTML,/コストを支払って使用/);
-modal={kind:'common-catalog'};renderModal();assert.match($('#modal').innerHTML,/プライベートコレクション/);assert.match($('#modal').innerHTML,/唐突バズ/);
+modal={kind:'rules',section:'events'};renderModal();assert.match($('#modal').innerHTML,/プライベートコレクション/);assert.match($('#modal').innerHTML,/唐突バズ/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 for(const id of ['collection','rampage','scandal','buzz'])assert(existsSync(new URL('../assets/art/event-'+id+'.webp',import.meta.url)));
 console.log('Four Extra events: both engines and seats, exact payments, numeric atomicity, scoring/defeat, mandatory teddy replacement/actual returns, all spectator effects, locked/private exact swap, timeout, Extra/UI/art and mixed CPU simulations passed');

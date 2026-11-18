@@ -49,6 +49,6 @@ assert.equal(cardSeries('character','aya'),'extra');assert.equal(cardSeries('eve
 state=IDOL.create(['aya','hikari','hana'],'aya',['shio','rai','homura'],'shio',0,9);screen='match';modal=null;state.players[0].songsPlayed=3;assert.match(tableHUD(state.players[0],0),/終了時★2/);
 state.pending={kind:'ayaReady',p:0,options:['skip','1'],cost:20,all:false,text:'彩の追加効果'};renderModal();assert.match($('#modal').innerHTML,/今回は使わない/);assert.match($('#modal').innerHTML,/轍光を未行動に/);assert.match($('#modal').innerHTML,/補充後の観客ゾーン/);assert.match($('#modal').innerHTML,/現在の手札/);for(const f of state.row)assert($('#modal').innerHTML.includes(FAN[f.type].name));
 state.pending={kind:'ayaReady',p:0,options:['skip','all'],cost:30,all:true,text:'彩の追加効果'};renderModal();assert.match($('#modal').innerHTML,/仲間全員を未行動に/);
-modal={kind:'catalog',tab:'aya'};renderModal();assert.match($('#modal').innerHTML,/名もなき才に、喝采を。/);assert.match($('#modal').innerHTML,/私にできること、全部/);
+modal={kind:'rules',section:'characters',character:'aya'};renderModal();assert.match($('#modal').innerHTML,/名もなき才に、喝采を。/);assert.match($('#modal').innerHTML,/私にできること、全部/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Aya: post-use payment, optional partner/all refresh, turn-end scoring/wins/timeout/switch, fixed sequential event, fan effects/locks, Extra/search/UI and 300 CPU games passed');

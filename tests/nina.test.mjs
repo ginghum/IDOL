@@ -45,6 +45,6 @@ state=IDOL.create(['nina','hakka','emi'],'nina',['moe','rai','aya'],'moe',0,91);
 assert.match(matchHTML(),/item-teddy/);assert.match(matchHTML(),/くまのぬいぐるみ/);assert.match(matchHTML(),/item-meat/);
 modal={kind:'item',id:'bear-ui'};renderModal();assert.match($('#modal').innerHTML,/強制効果/);assert.match($('#modal').innerHTML,/メモリーの代用/);
 modal={kind:'event',id:'nina'};selection={memory:[],discard:[],targets:[]};renderModal();assert.match($('#modal').innerHTML,/現在のくまのぬいぐるみ：1個/);assert.doesNotMatch($('#modal').innerHTML,/data-id="bear-ui"/);assert.match($('#modal').innerHTML,/data-id="meat-ui"/);
-modal={kind:'catalog',tab:'nina'};renderModal();assert.match($('#modal').innerHTML,/世界は私のお気に入り/);assert.equal(artworkLabel('item-teddy'),'くまのぬいぐるみのイラスト');
+modal={kind:'rules',section:'characters',character:'nina'};renderModal();assert.match($('#modal').innerHTML,/世界は私のお気に入り/);assert.equal(artworkLabel('item-teddy'),'くまのぬいぐるみのイラスト');
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert);
 console.log('Nina: both engines, all song modes/VOL boundaries, light acquisition, compulsory return/exchange/theft prevention, exact memory/meat payments excluding bears, event/win/privacy/timeout, Extra/item UI and 160 seeded CPU games passed');
