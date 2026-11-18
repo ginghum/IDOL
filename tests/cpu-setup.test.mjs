@@ -5,7 +5,7 @@ const nodes=new Map(),listeners={};
 const document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(k,fn){listeners[k]=fn;}};
 new Function('document','localStorage','setTimeout','clearTimeout','assert','listeners',code+`
 const click=(action,id)=>listeners.click({target:{closest:()=>({dataset:{action,id},disabled:false})}});
-for(let n=0;n<300;n++){const c=randomCpuConfig();assert(cpuConfigOK(c));assert(c.events.every(id=>c.team.includes(id)||Object.hasOwn(COMMON,id)),'Random opponent never has another member’s event');}
+for(let n=0;n<300;n++){const c=randomCpuConfig();assert(cpuConfigOK(c));assert(c.events.every(id=>c.team.includes(id)||Object.hasOwn(COMMON,id)||DUETS[id]?.members.every(member=>c.team.includes(member))),'Random opponent never has another member’s event');}
 // No manual selection: generate each time and start directly, without an opponent editor.
 const makeRandom=randomCpuConfig;let generated=0;randomCpuConfig=()=>{generated++;return makeRandom();};
 openCpuSetup(false);click('close');assert.equal(cpuConfig,null,'Cancel does not select a CPU lineup');generated=0;
