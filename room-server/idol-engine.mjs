@@ -29,15 +29,15 @@ kana:{skillName:'透明なまま流されて',name:'佐護河奈',reading:'さ�
 tenko:{skillName:'頁をめくる仲間たち',name:'尊国天子',reading:'みくにてんこ',short:'天子',color:'#b78c5a',vol:30,hand:5,skill:'自分が2人用楽曲を使用するたび、声援チップを1枚得る。',songs:['天界追放','放課後経典探索','凸凹道中天を仰ぐ'],event:'天竺行脚録―友とめくる神話―',cost:[3,8],effect:'このターンの後、もう一度自分のターンを行う。'},
 mitsuha:{skillName:'この街を愛する理由',name:'法師三葉',reading:'ほうしみつは',short:'三葉',color:'#c8a441',vol:30,hand:5,skill:'自分のターン開始時、観客席の先頭と観客山札の一番上を入れ替えてもよい。相手の独占付き観客は入れ替えられない。',songs:['風吹く交差点','夕暮れオレンジ','試練の鐘が鳴る街'],event:'この街はやさしさでできている',cost:[3,5],effect:'相手の独占付き観客を除く観客席のカードを山札の下へ置き、移動した枚数分の地元ファンを観客席に配置する。その後、fan＋1をその場で発動する。'},
 mitama:{skillName:'迷いの影を振り払って',name:'十影美珠',reading:'とかげみたま',short:'美珠',color:'#9aa9c5',vol:20,hand:3,skill:'観客カードの追加効果を受けない。',songs:['積灰','袖を振る風になる','The Borrowed Light'],event:'捧ぐこの身に花束を',cost:[3,5],effect:'観客を2人獲得する。'},
-riri:{skillName:'負け分までいただきます',name:'来栖梨里',reading:'くるすりり',short:'梨里',color:'#45935a',vol:30,hand:5,skill:'ゲーム中1度、相手が観客を獲得した直後、相手の獲得済みの厄介なファンが3枚以上なら、声援チップを4枚得る。観客の追加効果より先に判定する。',songs:['JOKER','罪と切り札','POISON PARADE'],event:'最後に笑うのは',cost:[2,6],effect:'相手の獲得済み観客の枚数から3を引いた数だけ、このターンのポイントを得る（最低0）。ファンチップは数えない。'},
-chitose:{skillName:'勝ちどきは昼寝のあとで',name:'早乙女千登勢',reading:'さおとめちとせ',short:'千登勢',color:'#c8a646',vol:30,hand:5,skill:'自分のターン開始時、観客席の3番目に＋1チップを1枚置く。1枚につき1ポイント加算し、累積する。獲得後も残り、観客山札に戻ると取り除く。',songs:['The Gentle Fang','GOLDEN STRIDE','咆哮デッドヒート'],event:'SMILING LIONESS',cost:[3,9],effect:'相手のリーダーでないアイドル1人を選ぶ。そのアイドルは残りのゲーム中、ターン開始時に未行動に戻らない。カードや声援効果で未行動に戻すことはできる。'},
+riri:{skillName:'負け分までいただきます',name:'来栖梨里',reading:'くるすりり',short:'梨里',color:'#45935a',vol:30,hand:5,skill:'ゲーム中1度、相手が観客を獲得した直後、相手の獲得済みの厄介なファンが3枚以上なら、声援チップを4枚得る。観客の追加効果より先に判定する。',songs:['JOKER','罪と切り札','POISON PARADE'],event:'最後に笑うのは',cost:[2,8],effect:'相手の獲得済み観客の枚数から3を引いた数だけ、このターンのポイントを得る（最低0、最大6ポイント）。ファンチップは数えない。'},
+chitose:{skillName:'勝ちどきは昼寝のあとで',name:'早乙女千登勢',reading:'さおとめちとせ',short:'千登勢',color:'#c8a646',vol:30,hand:5,skill:'自分のターン開始時、観客席の3番目に＋1チップを1枚置く。1枚につき1ポイント加算し、累積する。獲得後も残り、観客山札に戻ると取り除く。',songs:['The Gentle Fang','GOLDEN STRIDE','咆哮デッドヒート'],event:'SMILING LIONESS',cost:[3,10],effect:'相手のリーダーでないアイドル1人を選ぶ。そのアイドルは残りのゲーム中、ターン開始時に未行動に戻らない。カードや声援効果で未行動に戻すことはできる。'},
 kokone:{skillName:'憧れは鳴りやまない',name:'皇狐々音',reading:'すめらぎここね',short:'狐々音',color:'#bb4689',vol:30,hand:4,skill:'自分のターン終了時、空のリハーサルに手札の2人用・3人用楽曲1枚を表向きで置いてもよい。',songs:['呼吸する都市','ネオンの脈拍','100万トンのスポットライト'],event:'レインボー・スパーク・シティ',cost:[3,9],effect:'リハーサルに楽曲があれば、そのFANをコストなしで2回発動する。なければ手札の楽曲1枚を置き、1回発動する。必要人数・指定メンバー・必要VOLを無視し、楽曲固有の追加効果は発動しない。使用後はメモリーに置く。'},
 };
 const COMMON = {
 request:{event:'リクエスト募集',short:'共通',color:'#5b9cb0',cost:[0,2],effect:'自分の山札の上から4枚を見る（4枚未満なら残り全部）。その中から1枚まで手札に加え、残りを戻して山札全体をシャッフルする。'},
 solo:{event:'ソロスポット',short:'共通',color:'#cd8b46',cost:[0,4],effect:'このターン、次に自分が手札から使用する3人用楽曲は、指定メンバー本人1人だけで使用する。必要VOLと追加の支払いは通常どおり。3人用楽曲として扱う。指定メンバーのない特殊楽曲は対象外。'},
 lastOrder:{event:'ラストオーダー',short:'共通',color:'#986da3',cost:[0,3],effect:'声援チップを3・6・9枚のいずれか支払う。3枚支払うごとにファンチップを1枚得る。声援効果ではない。'},
-finale:{event:'静かなフィナーレ',short:'共通',color:'#597c8b',cost:[0,4],effect:'自分の行動済みアイドル1人につき、ファンチップを1枚得る。勝敗を判定し、決着しなければ自分のターンを終了する。通常のターン終了時効果も処理する。'},
+finale:{event:'静かなフィナーレ',short:'共通',color:'#597c8b',cost:[0,5],effect:'自分の行動済みアイドル1人につき、ファンチップを1枚得る。勝敗を判定し、決着しなければ自分のターンを終了する。通常のターン終了時効果も処理する。'},
 duo:{event:'DUO',short:'共通',color:'#b76f88',cost:[0,4],effect:'リーダーではない自分のアイドル1人を選ぶ。残りのゲーム中、そのアイドルもリーダー扱いとなり、リーダースキルを使える。リーダーは最大2人。初期VOL・初期手札は再適用しない。同時に発動する能力は自分が順番を選ぶ。'},
 scene:{event:'場面転換',short:'共通',color:'#5878a1',cost:[0,6],effect:'相手の非リーダーからランダムに1人を選び、そのアイドルに相手のリーダーを変更する。相手のリーダーが2人以上なら失敗する。失敗してもメモリーを支払い、使用済みになる。'},
 
@@ -449,7 +449,7 @@ function dispatch(s,a){
  if(id==='tenko'){p.extraTurns=(p.extraTurns||0)+1;log(s,'天子：このターンの後に追加ターン');}
  if(id==='mitsuha'){const cards=unlocked(s,i);for(const f of cards){const at=s.row.indexOf(f);f.lock=null;s.audience.push(deckFan(f));s.row[at]=localFan(s);}log(s,'三葉：観客席の'+cards.length+'枚を地元ファンに交換');s.queue.push({kind:'normal',p:i,n:1+p.buff+(p.cardBuff||0)});p.buff=0;}
  if(id==='mitama'){s.queue.push({kind:'normal',p:i,n:2+p.buff+(p.cardBuff||0)});p.buff=0;}
- if(id==='riri'){const n=Math.max(0,s.players[1-i].fans.length-3);p.temp+=n;log(s,'梨里：このターン＋'+n+'ポイント');}
+ if(id==='riri'){const n=Math.min(6,Math.max(0,s.players[1-i].fans.length-3));p.temp+=n;log(s,'梨里：このターン＋'+n+'ポイント');}
  if(id==='chitose'){const q=s.players[1-i];q.startLocked=[...(q.startLocked||[]),a.target];log(s,'千登勢：'+CHAR[a.target].short+'は残りのゲーム中、ターン開始時に未行動に戻らない');}
  if(id==='kokone'){if(p.rehearsal)s.queue.push({kind:'kokoneEcho',p:i,times:2});else choice(s,'kokoneEventSet',i,p.hand.filter(c=>c.special!=='painted').map(c=>c.uid),'イベント：リハーサルに置いてFANを発動する楽曲を選択');}
  if(id==='kono')cash(s,p,6);
@@ -595,7 +595,7 @@ function ai(s){
  if(eventOK(s,i,'hibiki')&&(p.vol>=300?(score(p)+15>=20||!p.deck.length&&!p.hand.length):!p.deck.length))return ev('hibiki');
  if(cashCount(p)>=2)return {type:'buy',item:p.vol>=60?'drinkPurple':'support'};
  if(eventOK(s,i,'kana')&&p.memory.filter(c=>c.owner==='kana'&&!autoPay(p,'kana').includes(c.uid)).length+score(p)>=20)return ev('kana');
- if(eventOK(s,i,'riri')&&(score(p)+Math.max(0,s.players[1-i].fans.length-3)>=20||s.players[1-i].fans.length>=8))return ev('riri');
+ if(eventOK(s,i,'riri')&&(score(p)+Math.min(6,Math.max(0,s.players[1-i].fans.length-3))>=20||s.players[1-i].fans.length>=8))return ev('riri');
  if(eventOK(s,i,'chitose')){const q=s.players[1-i],targets=q.team.filter(id=>!hasLeader(q,id)&&!q.startLocked?.includes(id));return ev('chitose',{target:targets[0]});}
  if(eventOK(s,i,'kokone')&&(p.rehearsal||p.hand.some(c=>c.n===3&&c.special!=='painted')))return ev('kokone');
  if(eventOK(s,i,'mitama'))return ev('mitama');
