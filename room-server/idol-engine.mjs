@@ -53,7 +53,13 @@ overcome:{event:'乗り越える力',short:'共通',color:'#73878b',cost:[0,3],e
 viewing:{event:'ライブビューイング',short:'共通',color:'#73878b',cost:[0,5],effect:'残りのゲーム中、自分のファンサービスでは声援チップの代わりにファンチップ1つを得る。'},
 mc:{event:'MCタイム',short:'共通',color:'#73878b',cost:[0,1],effect:'次の自分のターン開始時まで、自分の獲得ファンエリアは相手のカードの影響を受けない。'}
 };
-const EVENTS={...CHAR,...COMMON};
+const DUETS={
+tempest:{event:'TEMPEST',short:'佳代＆麻智',color:'#8f7eb2',members:['kayo','machi'],cost:[0,6],costMembers:{kayo:2,machi:2},effect:'観客席から好きな観客を2人同時に獲得し、カードを3枚引く。相手の独占付き観客は選べない。獲得枚数の増加は適用しない。'},
+nightmare:{event:'からふる☆まじかる☆ないとめあ',short:'春＆仁奈',color:'#cf7bae',members:['haru','nina'],cost:[0,6],costMembers:{haru:2,nina:2},effect:'ファンチップを4枚、くまのぬいぐるみを3つ得る。'},
+detatoko:{event:'デタトコ勝負!!',short:'光＆あやめ',color:'#b89241',members:['hikari','ayame'],cost:[0,6],costMembers:{hikari:2,ayame:2},effect:'カードを3枚引き、くじ引き券を5枚得る。'},
+vengeance:{event:'Crystalline Vengeance',short:'恵美＆彩',color:'#9d4168',members:['emi','aya'],cost:[0,6],costMembers:{emi:2,aya:2},effect:'恵美と彩を未行動にし、ファンチップを4枚得る。'}
+};
+const EVENTS={...CHAR,...COMMON,...DUETS};
 const FAN = {
 local:{name:'地元ファン',points:1,count:0,text:'持ち主のターン開始時、メンバーに三葉がいれば声援チップを1枚与える。',icon:'⌂'},
 light:{name:'ライトファン',points:1,count:14,text:'効果なし',icon:'♡'},
@@ -125,7 +131,7 @@ function items(p){return p.items||[];}
 function supportSealed(s,i){return s.players[i].supportSealTurn===s.turn;}
 function destroyResource(s,i){const q=s.players[1-i],pool=items(q).length+(q.fanChips||0);if(!pool)return;const at=Math.floor(rng(s)*pool);let name='ファンチップ';if(at<items(q).length){const c=q.items.splice(at,1)[0];name=DRINKS[c.item]?.name||({meat:'肉',teddy:'くまのぬいぐるみ',ticket:'くじ引き券'})[c.item]||'アイテム';}else q.fanChips--;log(s,'フクロウ：相手の'+name+'1枚を破壊');}
 function paymentCards(p){return [...p.memory.filter(c=>!c.special),...items(p).filter(c=>c.item==='meat')];}
-function paymentOK(p,id,paid){const d=EVENTS[id],cards=paymentCards(p);if(!d||!Array.isArray(paid)||paid.length!==d.cost[1]||new Set(paid).size!==paid.length||!paid.every(x=>cards.some(c=>c.uid===x)))return false;const chosen=cards.filter(c=>paid.includes(c.uid));if(d.costEach){if(!p.team.includes(id))return false;const counts=p.team.map(owner=>chosen.filter(c=>c.owner===owner&&!c.item).length);return chosen.every(c=>c.item==='meat'||p.team.includes(c.owner))&&counts.every((n,j)=>n<=(p.team[j]===id?d.costSelf||d.costEach:d.costEach))&&counts.reduce((n,c,j)=>n+(p.team[j]===id?d.costSelf||d.costEach:d.costEach)-c,0)===chosen.filter(c=>c.item==='meat').length;}return chosen.filter(c=>c.owner===id||c.item==='meat').length>=d.cost[0];}
+function paymentOK(p,id,paid){const d=EVENTS[id],cards=paymentCards(p);if(!d||!Array.isArray(paid)||paid.length!==d.cost[1]||new Set(paid).size!==paid.length||!paid.every(x=>cards.some(c=>c.uid===x)))return false;const chosen=cards.filter(c=>paid.includes(c.uid));if(d.costMembers)return Object.entries(d.costMembers).reduce((n,[owner,min])=>n+Math.max(0,min-chosen.filter(c=>!c.item&&c.owner===owner).length),0)<=chosen.filter(c=>c.item==='meat').length;if(d.costEach){if(!p.team.includes(id))return false;const counts=p.team.map(owner=>chosen.filter(c=>c.owner===owner&&!c.item).length);return chosen.every(c=>c.item==='meat'||p.team.includes(c.owner))&&counts.every((n,j)=>n<=(p.team[j]===id?d.costSelf||d.costEach:d.costEach))&&counts.reduce((n,c,j)=>n+(p.team[j]===id?d.costSelf||d.costEach:d.costEach)-c,0)===chosen.filter(c=>c.item==='meat').length;}return chosen.filter(c=>c.owner===id||c.item==='meat').length>=d.cost[0];}
 function meat(s,p){(p.items??=[]).push({uid:uid(s),item:'meat'});log(s,'肉を1つ獲得（手札のアイテム）');}
 const LOTTERY={grand:{name:'大あたり',count:1,points:5},medium:{name:'中あたり',count:2,points:2},small:{name:'小あたり',count:3,points:1},miss:{name:'ハズレ',count:8,points:0},bomb:{name:'爆弾',count:1,points:0}};
 function ticketCount(p){return items(p).filter(c=>c.item==='ticket').length;}
@@ -149,7 +155,7 @@ function seatEffect(s,f){if(f.type!=='reporter'||f.muted)return;const added={uid
 function fill(s){while(s.row.length<3&&s.audience.length){const f=s.audience.shift();if(s.deckMuteTurn===s.turn)f.muted=true;s.row.push(f);seatEffect(s,f);}}
 
 function unlocked(s,i){return s.row.filter(f=>f.lock===null||f.lock===i);}
-function eventOK(s,i,id){const p=s.players[i],d=EVENTS[id];return !!d&&p.events.some(e=>e.id===id&&!e.used&&(!d.repeat||d.unlimited||e.lastTurn!==s.turn))&&paymentCards(p).length>=d.cost[1]&&paymentCards(p).filter(c=>c.owner===id||c.item==='meat').length>=d.cost[0]&&(id!=='moe'||paymentOK(p,id,autoPay(p,id)))&&(id!=='buzz'||(s.audienceHasInfluencer??s.audience.some(f=>f.type==='influencer'))&&s.row.length>0&&(s.row[0].lock===null||s.row[0].lock===i))&&(id!=='lastOrder'||p.chips>=3)&&(id!=='duo'||leaders(p).length<2)&&(id!=='overcome'||p.vol>=100)&&(id!=='wit'||p.hand.some(memoryable))&&(id!=='kayo'||p.hand.some(discardable))&&(id!=='hana'||p.ready.some(x=>!x))&&(id!=='emi'||!fansProtected(s,1-i,i)&&s.players[1-i].fans.some(f=>fanPoints(s.players[1-i],f)===1))&&(id!=='kokone'||!!p.rehearsal||p.hand.some(c=>c.special!=='painted'))&&(id!=='chitose'||s.players[1-i].team.some(id=>!hasLeader(s.players[1-i],id)&&!s.players[1-i].startLocked?.includes(id)))&&(id!=='rai'||(s.audienceCoreCount??s.audience.filter(f=>f.type==='core').length)>0&&unlocked(s,i).length>0);}
+function eventOK(s,i,id){const p=s.players[i],d=EVENTS[id];return !!d&&p.events.some(e=>e.id===id&&!e.used&&(!d.repeat||d.unlimited||e.lastTurn!==s.turn))&&paymentCards(p).length>=d.cost[1]&&paymentCards(p).filter(c=>c.owner===id||c.item==='meat').length>=d.cost[0]&&(!d.costMembers&&id!=='moe'||paymentOK(p,id,autoPay(p,id)))&&(id!=='buzz'||(s.audienceHasInfluencer??s.audience.some(f=>f.type==='influencer'))&&s.row.length>0&&(s.row[0].lock===null||s.row[0].lock===i))&&(id!=='lastOrder'||p.chips>=3)&&(id!=='duo'||leaders(p).length<2)&&(id!=='overcome'||p.vol>=100)&&(id!=='wit'||p.hand.some(memoryable))&&(id!=='kayo'||p.hand.some(discardable))&&(id!=='hana'||p.ready.some(x=>!x))&&(id!=='emi'||!fansProtected(s,1-i,i)&&s.players[1-i].fans.some(f=>fanPoints(s.players[1-i],f)===1))&&(id!=='kokone'||!!p.rehearsal||p.hand.some(c=>c.special!=='painted'))&&(id!=='chitose'||s.players[1-i].team.some(id=>!hasLeader(s.players[1-i],id)&&!s.players[1-i].startLocked?.includes(id)))&&(id!=='rai'||(s.audienceCoreCount??s.audience.filter(f=>f.type==='core').length)>0&&unlocked(s,i).length>0);}
 
 function finish(s){
  cleanSpecial(s);
@@ -247,7 +253,7 @@ function process(s){
  if(e.kind==='raiPick'){
  const opts=unlocked(s,e.p).map(f=>f.uid);
  if(e.peek)opts.push(...s.audience.slice(0,2).map(f=>f.uid));
- if(opts.length){const count=Math.min(acquisitionCount(p,e.count||1),opts.length);if(count>0)choice(s,'raiPick',e.p,opts,'雷：獲得する観客を'+count+'枚選択',{count,selected:[]});}
+ if(opts.length){const count=Math.min(e.exact?e.count:acquisitionCount(p,e.count||1),opts.length);if(count>0)choice(s,'raiPick',e.p,opts,(e.title||'雷')+'：獲得する観客を'+count+'枚選択',{count,selected:[],...(e.exact?{rowOnly:true,title:e.title}: {})});}
  }
  }
  finish(s);
@@ -343,7 +349,7 @@ function dispatch(s,a){
  if(z.kind==='mutePick'&&a.value!=='skip'){const f=s.row.find(f=>f.uid===a.value);if(f){f.muted=true;log(s,FAN[f.type].name+'の効果をターン終了まで無効');s.queue.unshift({kind:'mutePick',p:z.p,left:z.left-1,selected:[...z.selected,a.value]});}}
  if(z.kind==='shio'){if(a.value==='chip')s.players[z.p].chips++;else voltage(s.players[z.p],10);}
  if(z.kind==='trouble'||z.kind==='machiRemove')removeFan(s,z.p,a.value,z.kind==='machiRemove'?1-z.p:z.p);
- if(z.kind==='raiPick'){const selected=[...(z.selected||[]),a.value],count=z.count||1;if(selected.length<count){choice(s,'raiPick',z.p,z.options.filter(id=>id!==a.value),'雷：獲得する観客をあと'+(count-selected.length)+'枚選択',{count,selected});}else{const fs=[...s.row,...s.audience.slice(0,2)].filter(f=>selected.includes(f.uid));gain(s,z.p,fs,true,true);}}
+ if(z.kind==='raiPick'){const selected=[...(z.selected||[]),a.value],count=z.count||1;if(selected.length<count){choice(s,'raiPick',z.p,z.options.filter(id=>id!==a.value),(z.title||'雷')+'：獲得する観客をあと'+(count-selected.length)+'枚選択',{count,selected,...(z.rowOnly?{rowOnly:true,title:z.title}:{})});}else{const fs=(z.rowOnly?s.row:[...s.row,...s.audience.slice(0,2)]).filter(f=>selected.includes(f.uid));gain(s,z.p,fs,true,true);}}
  process(s);return s;
  }
  if(s.pending)throw Error('先に効果を選択してください');
@@ -415,6 +421,10 @@ function dispatch(s,a){
  if(id==='mimizuku')s.queue.push({kind:'mimizukuReveal',p:i});
  if(id==='fukurou'){const q=s.players[1-i],n=Math.min(6,q.chips);q.chips-=n;awardChips(s,i,n);log(s,'摘出カーテンコール：声援チップ'+n+'枚を奪った');}
  if(id==='ayame')ticket(s,p,5);
+ if(id==='tempest')s.queue.push({kind:'raiPick',p:i,count:2,exact:true,title:'TEMPEST'},...Array.from({length:3},()=>({kind:'draw',p:i})));
+ if(id==='nightmare'){p.fanChips+=4;for(let j=0;j<3;j++)teddy(s,p);log(s,'からふる☆まじかる☆ないとめあ：ファンチップ＋4、くまのぬいぐるみ＋3');}
+ if(id==='detatoko'){draw(s,i,3);ticket(s,p,5);}
+ if(id==='vengeance'){p.team.forEach((id,j)=>{if(id==='emi'||id==='aya')p.ready[j]=true;});p.fanChips+=4;log(s,'Crystalline Vengeance：恵美と彩を未行動に、ファンチップ＋4');}
  if(id==='collection'){teddy(s,p);teddy(s,p);}
  if(id==='request'){const cards=p.deck.slice(0,4);choice(s,'request',i,['skip',...cards.map(c=>c.uid)],'リクエスト募集：手札に加える楽曲を1枚まで選択',{cards:JSON.parse(JSON.stringify(cards))});}
  if(id==='solo'){p.soloSpot=true;log(s,'ソロスポット：次の手札の3人用楽曲を本人1人で使用');}
@@ -539,7 +549,7 @@ function estimate(s,i,n){
  for(const f of list.filter(f=>f.type==='trouble'&&!f.muted&&!hasLeader(s.players[i],'mitama'))){const other=list.filter(x=>x!==f&&!x.removed);if(other.length){other.sort((a,b)=>fanPoints(s.players[i],b)-fanPoints(s.players[i],a));if(bears>0){bears--;val-=.15;}else{other[0].removed=true;val-=fanPoints(s.players[i],other[0]);}}}
  val+=Math.max(0,n-list.length)*.95;return Math.max(0,val);
 }
-function autoPay(p,id){const d=EVENTS[id],cards=paymentCards(p);if(d.costEach){const picked=p.team.flatMap(owner=>cards.filter(c=>c.owner===owner&&!c.item).slice(0,owner===id?d.costSelf||d.costEach:d.costEach));return [...picked,...cards.filter(c=>c.item==='meat').slice(0,d.cost[1]-picked.length)].map(c=>c.uid);}const req=cards.filter(c=>c.owner===id).slice(0,d.cost[0]);for(const c of cards.filter(c=>c.item==='meat'))if(req.length<d.cost[0])req.push(c);return [...req,...cards.filter(c=>!req.includes(c)).slice(0,d.cost[1]-req.length)].map(c=>c.uid);}
+function autoPay(p,id){const d=EVENTS[id],cards=paymentCards(p);if(d.costMembers){const picked=Object.entries(d.costMembers).flatMap(([owner,n])=>cards.filter(c=>!c.item&&c.owner===owner).slice(0,n)),deficit=Object.values(d.costMembers).reduce((a,b)=>a+b,0)-picked.length;const meat=cards.filter(c=>c.item==='meat').slice(0,deficit);if(meat.length<deficit)return [];picked.push(...meat);return [...picked,...cards.filter(c=>!picked.includes(c)).slice(0,d.cost[1]-picked.length)].map(c=>c.uid);}if(d.costEach){const picked=p.team.flatMap(owner=>cards.filter(c=>c.owner===owner&&!c.item).slice(0,owner===id?d.costSelf||d.costEach:d.costEach));return [...picked,...cards.filter(c=>c.item==='meat').slice(0,d.cost[1]-picked.length)].map(c=>c.uid);}const req=cards.filter(c=>c.owner===id).slice(0,d.cost[0]);for(const c of cards.filter(c=>c.item==='meat'))if(req.length<d.cost[0])req.push(c);return [...req,...cards.filter(c=>!req.includes(c)).slice(0,d.cost[1]-req.length)].map(c=>c.uid);}
 function fanCount(p,c,raw=false,noExtra=false){if(c.special==='painted')return 0;const n=song(c).fan+p.buff+p.eventBuff+(p.cardBuff||0)+(hasLeader(p,'natsume')&&c.n===3?1:0)+(!noExtra&&!p.songSeal&&c.owner==='haru'&&c.n===3&&p.fans.filter(f=>f.type==='dream').length>=2?1:0);return raw?n:acquisitionCount(p,n);}
 
 function ai(s){
@@ -606,6 +616,10 @@ function ai(s){
  if(eventOK(s,i,'misa')){const own=score(p),drinks=drinkItems(p).reduce((n,c)=>n+DRINKS[c.item].fan,0);if(own+drinks+2>=20||ready===0)return ev('misa');}
  if(eventOK(s,i,'mimizuku'))return ev('mimizuku');
  if(eventOK(s,i,'fukurou')&&(s.players[1-i].chips>=3||!p.deck.length&&!p.hand.length))return ev('fukurou');
+ if(eventOK(s,i,'tempest'))return ev('tempest');
+ if(eventOK(s,i,'nightmare'))return ev('nightmare');
+ if(eventOK(s,i,'detatoko'))return ev('detatoko');
+ if(eventOK(s,i,'vengeance')&&(score(p)+4>=20||p.team.some((id,j)=>(id==='emi'||id==='aya')&&!p.ready[j])))return ev('vengeance');
  if(eventOK(s,i,'ayame'))return ev('ayame');
  if(eventOK(s,i,'duo'))return ev('duo',{target:p.team.filter(id=>!hasLeader(p,id)).sort((a,b)=>({natsume:5,hana:4,nina:4,kayo:4,hibiki:4,mitama:4}[b]||2)-({natsume:5,hana:4,nina:4,kayo:4,hibiki:4,mitama:4}[a]||2))[0]});
  if(eventOK(s,i,'request')&&p.hand.length<6)return ev('request');
@@ -706,7 +720,7 @@ function publicView(s,i){const v=JSON.parse(JSON.stringify(s)),remap=x=>x===null
  v.players=[i,1-i].map((who,j)=>{const p=JSON.parse(JSON.stringify(s.players[who]));p.deck=p.deck.map((c,k)=>j===0&&s.pending?.p===i&&s.pending.kind==='akinaDraw'&&k<3?{...c}:{uid:'hidden-d-'+j+'-'+k});if(j){p.hand=p.hand.map((_,k)=>({uid:'hidden-h-'+k}));p.events=p.events.map(e=>e.used?e:{id:null,used:false,lastTurn:null});}for(const f of p.fans)f.lock=remap(f.lock);return p;});
  v.row.forEach(f=>f.lock=remap(f.lock));v.active=remap(s.active);v.first=remap(s.first);v.winner=remap(s.winner);if(v.pending){v.pending.p=remap(s.pending.p);if(s.pending.p!==i){v.pending.options=[];if(v.pending.selected)v.pending.selected=[];if(v.pending.cards)delete v.pending.cards;v.pending.text='相手が効果を選択しています';}}
  v.log=v.log.map(t=>t.replace(/あなた|CPU/g,x=>(x==='あなた'?0:1)===i?'あなた':'相手'));return v;}
-return {leaders,hasLeader,songPeople,driftExtraCost,driftSources,canMitsuhaSwap,CHAR,COMMON,EVENTS,FAN,LOTTERY,DRINKS,SHOP,cashCount,canMiyabiDebuff,requiredVoltage,drinkItems,maxVoltage,acquisitionCount,discardable,memoryable,songArt,ticketCount,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,teddyCount,fansProtected,ayaEventCount,moeTargets,supportFree,supportSealed,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
+return {leaders,hasLeader,songPeople,driftExtraCost,driftSources,canMitsuhaSwap,CHAR,COMMON,DUETS,EVENTS,FAN,LOTTERY,DRINKS,SHOP,cashCount,canMiyabiDebuff,requiredVoltage,drinkItems,maxVoltage,acquisitionCount,discardable,memoryable,songArt,ticketCount,song,detail,create,dispatch,playOK,score,fanPoints,fanCount,items,teddyCount,fansProtected,ayaEventCount,moeTargets,supportFree,supportSealed,paymentCards,paymentOK,eventOK,actors,autoPay,ai,estimate,timeout,validateAction,peerAction,publicView};
 })();
 
 export {IDOL};
