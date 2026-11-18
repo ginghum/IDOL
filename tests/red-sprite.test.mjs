@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {IDOL as server} from '../room-server/idol-engine.mjs';
+const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const browser=new Function(html.slice(html.indexOf('const IDOL = (() => {'),html.indexOf('const $=s=>'))+';return IDOL;')();
+assert.equal(JSON.stringify(browser.CHAR),JSON.stringify(server.CHAR));
+for(const G of [browser,server])for(const seat of [0,1]){
+ const make=(leader='riri',team=['riri','chitose','kokone'])=>{const s=G.create(team,leader,['kayo','hana','machi'],'kayo',seat,8391,team,['kayo','hana','machi']);if(seat){[s.players[0],s.players[1]]=[s.players[1],s.players[0]];}s.active=seat;s.pending=null;s.queue=[];return s;};
+ const pof=s=>s.players[seat],qof=s=>s.players[1-seat];
+ function give(s,owner,n,zone='hand'){const p=pof(s);for(const z of ['hand','deck','memory','discard']){const at=p[z].findIndex(c=>c.owner===owner&&c.n===n);if(at>=0){const c=p[z].splice(at,1)[0];p[zone].push(c);return c;}}throw Error('missing fixture card');}
+ function fan(s,type,zone='fans',who=1-seat){const at=s.audience.findIndex(f=>f.type===type);assert(at>=0);const f=s.audience.splice(at,1)[0];if(zone==='row')s.row.push(f);else s.players[who][zone].push(f);return f;}
+ function row(s,types){s.audience.push(...s.row);s.row=[];for(const t of types)fan(s,t,'row');}
+ function settle(s){for(let j=0;s.pending&&j<30;j++)G.dispatch(s,G.ai(s));assert.equal(s.pending,null);}
+ function play(s,c,mode='fan'){const p=pof(s);p.ready=[true,true,true];G.dispatch(s,{type:'play',card:c.uid,mode,actors:G.actors(p,c)});}
+ function pay(s,id){const p=pof(s),d=G.EVENTS[id];while(p.memory.filter(c=>c.owner===id).length<d.cost[0]){const c=[...p.deck,...p.hand].find(c=>c.owner===id);give(s,id,c.n,'memory');}while(p.memory.length<d.cost[1]){const c=p.deck[0]||p.hand[0];give(s,c.owner,c.n,'memory');}return G.autoPay(p,id);}
+ function bad(s,a,who=seat){const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,a,who));assert.equal(JSON.stringify(s),before);}
+ for(const [id,h] of [['riri',5],['chitose',4],['kokone',4]]){const s=make(id),p=pof(s);assert.equal(p.vol,30);assert.equal(p.hand.length,h);assert.equal(p.deck.length+h,27);}
+ // All nine songs: base modes and exact VOL thresholds.
+ for(const id of ['riri','chitose','kokone'])for(const n of [1,2,3])for(const mode of ['vol','fan']){
+  const s=make(),p=pof(s),c=give(s,id,n);row(s,['light','light','light']);p.vol=mode==='vol'?0:G.song(c).need;
+  if(mode==='fan'){p.vol--;bad(s,{type:'play',card:c.uid,mode,actors:G.actors(p,c)});p.vol++;}
+  const h=p.hand.length;play(s,c,mode);settle(s);assert(p.memory.some(x=>x.uid===c.uid));
+  assert.equal(p.vol,mode==='vol'?n*10:G.song(c).need);assert.equal(p.hand.length,h-1+(id==='kokone'&&mode==='fan'?1:0));
+  assert.equal(p.fans.length,mode==='fan'?n:0);
+ }
+ // Riri triggers at exactly 2 -> 3, once, before trouble effects; any later acquisition can meet >=3.
+ {const s=make(),p=pof(s),q=qof(s);fan(s,'trouble');fan(s,'trouble');row(s,['trouble','light','light']);s.active=1-seat;q.vol=60;const c=q.hand.find(c=>c.n===1)||q.deck.find(c=>c.n===1);q.deck=q.deck.filter(x=>x.uid!==c.uid);if(!q.hand.includes(c))q.hand.push(c);G.dispatch(s,{type:'play',card:c.uid,mode:'fan',actors:G.actors(q,c)});assert.equal(p.chips,4);assert(p.ririUsed);q.ready=[true,true,true];const c2=q.hand.find(c=>c.n===1)||q.deck.find(c=>c.n===1);q.deck=q.deck.filter(x=>x.uid!==c2.uid);if(!q.hand.includes(c2))q.hand.push(c2);G.dispatch(s,{type:'play',card:c2.uid,mode:'fan',actors:G.actors(q,c2)});assert.equal(p.chips,4);}
+ for(const pass of ['skip','pass']){const s=make(),p=pof(s);p.vol=100;row(s,['trouble','core','light']);const c=give(s,'riri',3);play(s,c);assert.equal(s.pending.kind,'ririPass');bad(s,{type:'choose',value:pass},1-seat);G.dispatch(s,{type:'choose',value:pass});settle(s);assert.equal(p.fanChips,pass==='pass'?1:0);assert.equal(qof(s).fans.length,pass==='pass'?1:0);assert.equal(p.fans.length,2);assert.equal(G.score(p),pass==='pass'?5:2);}
+ {const s=make(),p=pof(s);for(let k=0;k<7;k++)fan(s,'light');const memory=pay(s,'riri');G.dispatch(s,{type:'event',id:'riri',memory});assert.equal(p.temp,4);assert.equal(p.fanChips,0);bad(s,{type:'event',id:'riri',memory});G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(p.temp,0);}
+ // Added points count for ownership/scoring and 1-point removal; all deck returns strip them.
+ {const s=make('chitose'),p=pof(s);s.row[0].plusOne=2;const id=s.row[0].uid;p.vol=60;play(s,give(s,'chitose',1));assert.equal(p.fans[0].uid,id);assert.equal(p.fans[0].plusOne,2);assert.equal(G.fanPoints(p,p.fans[0]),G.FAN[p.fans[0].type].points+2);}
+ {const s=make(),q=qof(s),p=pof(s),protectedFan=fan(s,'light'),plain=fan(s,'light');protectedFan.plusOne=1;p.vol=60;play(s,give(s,'chitose',1));assert(q.fans.includes(protectedFan));assert(!q.fans.includes(plain));}
+ for(const id of ['redo','machi','buzz','mitsuha','rai']){const team=id==='mitsuha'?['mitsuha','chitose','kokone']:id==='rai'?['rai','chitose','kokone']:['machi','chitose','kokone'],s=make('chitose',team),p=pof(s);p.events=[{id,used:false}];const old=s.row[0];old.plusOne=3;if(id==='buzz'&&!s.audience.some(f=>f.type==='influencer'))s.audience.push({uid:'extra-influencer',type:'influencer',lock:null});const memory=pay(s,id);G.dispatch(s,{type:'event',id,memory,...(id==='machi'?{targets:[old.uid]}:{}),...(id==='rai'?{target:old.uid}:{})});settle(s);const f=[...s.row,...s.audience,...p.fans].find(f=>f.uid===old.uid);assert(f);assert.equal(f.plusOne,undefined,id);}
+ {const s=make('chitose'),p=pof(s),q=qof(s),memory=pay(s,'chitose'),target=q.team[1];bad(s,{type:'event',id:'chitose',memory,target:q.leader});G.dispatch(s,{type:'event',id:'chitose',memory,target});q.ready[1]=false;G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(q.ready[1],false);assert(q.startLocked.includes(target));q.chips=6;G.dispatch(s,{type:'support',effect:'refresh'});assert(q.ready[1]);}
+ // Rehearsal remains public, consumes one fewer actor, retains VOL and resolves normal extra effects.
+ for(const n of [2,3]){const s=make('kokone'),p=pof(s);p.vol=G.song({owner:'kokone',n}).need;const c=give(s,'kokone',n);G.dispatch(s,{type:'end'});assert.equal(s.pending.kind,'kokoneSet');G.dispatch(s,{type:'choose',value:c.uid});assert.equal(p.rehearsal.uid,c.uid);assert.equal(G.publicView(s,1-seat).players[1].rehearsal.uid,c.uid);G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(s.pending.kind,'kokoneUse');const h=p.hand.length;bad(s,{type:'choose',value:'2,2'});G.dispatch(s,{type:'choose',value:s.pending.options[0]});settle(s);assert.equal(p.rehearsal,null);assert.equal(p.ready.filter(x=>!x).length,n-1);assert.equal(p.hand.length,h+1);assert.equal(p.songsPlayed,0);assert(p.memory.some(x=>x.uid===c.uid));}
+ {const s=make('kokone'),p=pof(s),c=give(s,'kokone',3);p.hand=p.hand.filter(x=>x.uid!==c.uid);p.rehearsal=c;p.vol=99;G.dispatch(s,{type:'end',skipEndSkill:true});G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(s.pending,null);assert.equal(p.rehearsal.uid,c.uid);}
+ for(const existing of [false,true]){const s=make('kokone'),p=pof(s);row(s,['light','light','light']);s.audience.sort((a,b)=>(b.type==='light')-(a.type==='light'));let memory=pay(s,'kokone');const c=give(s,'kokone',3);memory=pay(s,'kokone');if(existing){p.hand=p.hand.filter(x=>x.uid!==c.uid);p.rehearsal=c;}p.vol=0;p.ready=[false,false,false];const h=p.hand.length;G.dispatch(s,{type:'event',id:'kokone',memory});if(!existing){assert.equal(s.pending.kind,'kokoneEventSet');G.dispatch(s,{type:'choose',value:c.uid});}settle(s);assert.equal(p.rehearsal,null);assert.equal(p.hand.length,h-(existing?0:1));assert.equal(p.fans.length,existing?6:3);assert.equal(p.vol,0);assert.deepEqual(p.ready,[false,false,false]);assert.equal(p.songsPlayed,0);}
+ {const s=make('kokone'),p=pof(s),c=give(s,'kokone',2);G.dispatch(s,{type:'end'});const secret=G.publicView(s,1-seat);assert.deepEqual(secret.pending.options,[]);assert(!secret.pending.cards);G.timeout(s);assert.equal(s.active,1-seat);assert.equal(p.rehearsal,undefined);assert(p.hand.some(x=>x.uid===c.uid));}
+}
+console.log('RedSprite: both engines/seats, all songs/thresholds, Riri pass/trigger, Chitose points/returns/lock, Kokone rehearsal/event/privacy/timeout passed');

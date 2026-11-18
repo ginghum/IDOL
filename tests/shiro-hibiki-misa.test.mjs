@@ -86,7 +86,7 @@ for(const G of [browser,server]){
  // Seeded games, all three leaders plus old synergies; unique UIDs and original-card conservation.
  for(let seed=1;seed<=120;seed++){
   const ids=Object.keys(G.CHAR),a=['shiro','hibiki','misa'],b=[ids[seed%18],ids[(seed+5)%18],ids[(seed+11)%18]],s=G.create(a,a[seed%3],b,b[(seed+1)%3],seed%2,seed);let n=0;
-  while(s.winner===null&&n++<3500){const action=G.ai(s);s.players.forEach(p=>{assert(p.vol>=0&&p.vol<=G.maxVoltage(p));});G.dispatch(s,action);for(const p of s.players){const original=[...p.deck,...p.hand,...p.memory,...p.discard].filter(c=>!c.special);assert.equal(original.length,27);assert(!p.memory.some(c=>c.special));assert(!p.discard.some(c=>c.special));}const all=s.players.flatMap(p=>[...p.deck,...p.hand,...p.memory,...p.discard,...p.items]);assert.equal(all.length,new Set(all.map(c=>c.uid)).size);}
+  while(s.winner===null&&n++<3500){const action=G.ai(s);s.players.forEach(p=>{assert(p.vol>=0&&p.vol<=G.maxVoltage(p));});G.dispatch(s,action);for(const p of s.players){const original=[...p.deck,...p.hand,...p.memory,...p.discard,...(p.rehearsal?[p.rehearsal]:[])].filter(c=>!c.special);assert.equal(original.length,27);assert(!p.memory.some(c=>c.special));assert(!p.discard.some(c=>c.special));}const all=s.players.flatMap(p=>[...p.deck,...p.hand,...p.memory,...p.discard,...(p.rehearsal?[p.rehearsal]:[]),...p.items]);assert.equal(all.length,new Set(all.map(c=>c.uid)).size);}
   assert.notEqual(s.winner,null,'new CPU match terminates');matches++;
  }
 }
