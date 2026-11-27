@@ -36,7 +36,7 @@ for(const G of [server,browser])for(const seat of [0,1]){
  {const s=make(),p=s.players[seat],b=source(s,'natsume');p.vol=60;play(s,give(s),'fan');choose(s,b.uid);choose(s,'use');assert.equal(p.vol,50);assert.equal(p.fans.length,2);}
  {const s=make(),p=s.players[seat],b=source(s,'rai');p.chips=1;s.row[1].type='core';play(s,give(s),'fan');choose(s,b.uid);choose(s,'use');assert.equal(p.chips,0);assert.equal(s.pending.kind,'raiPick');const target=s.row[1].uid;choose(s,target);assert(p.fans.some(f=>f.uid===target));}
  // 'This song' refers to the real Kana card; source ownership is never substituted in memory or hand.
- {const s=make(),p=s.players[seat],b=source(s,'akina'),c=give(s);play(s,c);choose(s,b.uid);assert.equal(s.pending.kind,'akinaReturn');choose(s,'return');assert(p.hand.some(x=>x.uid===c.uid&&x.owner==='kana'));assert(!p.memory.some(x=>x.uid===c.uid));assert(s.players[1-seat].memory.includes(b));}
+ {const s=make(),p=s.players[seat],b=source(s,'akina'),c=give(s);play(s,c,'fan');choose(s,b.uid);assert.equal(s.pending.kind,'akinaReturn');choose(s,'return');assert(p.hand.some(x=>x.uid===c.uid&&x.owner==='kana'));assert(!p.memory.some(x=>x.uid===c.uid));assert(s.players[1-seat].memory.includes(b));}
  // Named conditions remain literal: making a local fan without Mitsuha grants no recurring income.
  {const s=make(),p=s.players[seat],b=source(s,'mitsuha');play(s,give(s));choose(s,b.uid);const f=s.audience.shift();assert.equal(f.type,'local');p.fans.push(f);const chips=p.chips;G.dispatch(s,{type:'end'});G.dispatch(s,{type:'end',skipEndSkill:true});assert.equal(p.chips,chips);}
  // A timeout skips unpaid Drift, still resolves the played card, and ends one turn.
