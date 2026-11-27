@@ -1,0 +1,67 @@
+{
+  "seed": "0x112728",
+  "games": 6400,
+  "conditions": "400 seeded random partner/opponent lineups per character/role, both seats, fixed request/lastOrder + own event, paired random-character replacement control, current heuristic CPU",
+  "summaries": [
+    {
+      "id": "kagami",
+      "role": "leader",
+      "n": 800,
+      "wins": 306,
+      "controlWins": 423,
+      "unfinished": 0,
+      "mods": 0,
+      "events": 669,
+      "win": 38.25,
+      "controlWin": 52.88,
+      "difference": -14.63,
+      "eventRate": 83.63,
+      "modsPerGame": 0
+    },
+    {
+      "id": "kagami",
+      "role": "member",
+      "n": 800,
+      "wins": 314,
+      "controlWins": 385,
+      "unfinished": 0,
+      "mods": 0,
+      "events": 649,
+      "win": 39.25,
+      "controlWin": 48.13,
+      "difference": -8.88,
+      "eventRate": 81.13,
+      "modsPerGame": 0
+    },
+    {
+      "id": "nitro",
+      "role": "leader",
+      "n": 800,
+      "wins": 300,
+      "controlWins": 394,
+      "unfinished": 0,
+      "mods": 1455,
+      "events": 667,
+      "win": 37.5,
+      "controlWin": 49.25,
+      "difference": -11.75,
+      "eventRate": 83.38,
+      "modsPerGame": 1.82
+    },
+    {
+      "id": "nitro",
+      "role": "member",
+      "n": 800,
+      "wins": 347,
+      "controlWins": 380,
+      "unfinished": 0,
+      "mods": 1558,
+      "events": 689,
+      "win": 43.38,
+      "controlWin": 47.5,
+      "difference": -4.12,
+      "eventRate": 86.13,
+      "modsPerGame": 1.95
+    }
+  ]
+}
