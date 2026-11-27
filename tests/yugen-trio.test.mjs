@@ -10,7 +10,7 @@ for(const G of [server,browser]){
  const cost=(s,i,id)=>{const p=s.players[i];for(let n=0;n<G.EVENTS[id].cost[1];n++)p.items.push({uid:'pay'+s.serial++,item:'meat'});return G.autoPay(p,id);};
  const bad=(s,a,i=s.pending?.p??s.active)=>{const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,a,i));assert.equal(JSON.stringify(s),before);};
  for(const i of [0,1])for(const id of ['miyabi','kono','chie']){
-  const s=make(id,i),p=s.players[i];assert.equal(p.vol,G.CHAR[id].vol);assert.equal(p.hand.length,G.CHAR[id].hand);assert.equal(p.hand.length+p.deck.length,27);assert.equal(new Set(p.hand.concat(p.deck).map(c=>c.uid)).size,27);assert.equal(G.cashCount(p),id==='kono'?2:0);
+  const s=make(id,i),p=s.players[i];assert.equal(p.vol,G.CHAR[id].vol);assert.equal(p.hand.length,G.CHAR[id].hand);assert.equal(p.hand.length+p.deck.length,27);assert.equal(new Set(p.hand.concat(p.deck).map(c=>c.uid)).size,27);assert.equal(G.cashCount(p),id==='kono'?3:0);
  }
  for(const i of [0,1])for(const owner of ['miyabi','kono','chie'])for(const n of [1,2,3])for(const mode of ['vol','fan']){
   const s=make('miyabi',i),p=s.players[i],q=s.players[1-i];const c=give(s,i,owner,n);p.vol=G.requiredVoltage(p,c);p.chips=2;s.row.forEach(f=>f.type='light');s.audience.forEach(f=>f.type='light');const mem=p.memory.length,deck=p.deck.length,v=p.vol;
@@ -23,11 +23,11 @@ for(const G of [server,browser]){
  // Guard applies to audience and opponent, not voluntary VOL costs or cap changes.
  {const s=make(),p=s.players[0];G.dispatch(s,{type:'event',id:'miyabi',memory:cost(s,0,'miyabi')});assert(p.volGuard);const c=give(s,0,'kono',1);p.vol=60;s.row[0].type='heavy';G.dispatch(s,{type:'play',card:c.uid,actors:[1],mode:'fan'});settle(s);assert.equal(p.vol,60);p.leader='aya';p.vol=80;p.ready=[false,false,false];s.pending={kind:'ayaReady',p:0,options:['skip','0'],cost:30,all:false};G.dispatch(s,{type:'choose',value:'0'});assert.equal(p.vol,50);}
  for(const item of Object.keys(G.SHOP)){
-  const s=make('kono'),p=s.players[0];bad(s,{type:'buy',item:'unknown'});G.dispatch(s,{type:'buy',item});settle(s);assert.equal(G.cashCount(p),0);bad(s,{type:'buy',item});if(item==='support')assert.equal(p.chips,2);else if(item==='fanChip')assert.equal(p.fanChips,1);else assert.equal(p.items.filter(c=>c.item===item).length,1);
+  const s=make('kono'),p=s.players[0];bad(s,{type:'buy',item:'unknown'});G.dispatch(s,{type:'buy',item});settle(s);assert.equal(G.cashCount(p),1);bad(s,{type:'buy',item});if(item==='support')assert.equal(p.chips,2);else if(item==='fanChip')assert.equal(p.fanChips,1);else assert.equal(p.items.filter(c=>c.item===item).length,1);
  }
- {const s=make('kono'),p=s.players[0];G.dispatch(s,{type:'event',id:'kono',memory:cost(s,0,'kono')});assert.equal(G.cashCount(p),8);assert.equal(p.events.find(e=>e.id==='kono').used,true);}
+ {const s=make('kono'),p=s.players[0];G.dispatch(s,{type:'event',id:'kono',memory:cost(s,0,'kono')});assert.equal(G.cashCount(p),9);assert.equal(p.events.find(e=>e.id==='kono').used,true);}
  // Optional one-time rearm; both invocations must pay independently.
- {const s=make('chie'),p=s.players[0];G.dispatch(s,{type:'event',id:'miyabi',memory:cost(s,0,'miyabi')});assert.equal(s.pending.kind,'chieReset');G.dispatch(s,{type:'choose',value:'use'});assert(p.chieResetUsed);assert(!p.events.find(e=>e.id==='miyabi').used);bad(s,{type:'event',id:'miyabi',memory:[]});G.dispatch(s,{type:'event',id:'miyabi',memory:cost(s,0,'miyabi')});assert(!s.pending);assert(p.events.find(e=>e.id==='miyabi').used);}
+ {const s=make('chie'),p=s.players[0];p.chips=2;G.dispatch(s,{type:'event',id:'miyabi',memory:cost(s,0,'miyabi')});assert.equal(s.pending.kind,'chieReset');G.dispatch(s,{type:'choose',value:'use'});assert(p.chieResetUsed);assert(!p.events.find(e=>e.id==='miyabi').used);bad(s,{type:'event',id:'miyabi',memory:[]});G.dispatch(s,{type:'event',id:'miyabi',memory:cost(s,0,'miyabi')});assert(!s.pending);assert(p.events.find(e=>e.id==='miyabi').used);}
  // Rescue uses the losing player's seat, mandatory 3-card payment before defeat, preserves privacy.
  for(const i of [0,1])for(const protect of ['none','teddy','mc']){
   const s=make('miyabi',i),p=s.players[i],q=s.players[1-i];q.fans.push({uid:'saved',type:'light',lock:null});q.fanChips=18;if(protect==='teddy')q.items.push({uid:'bear',item:'teddy'});if(protect==='mc')q.fanShield=true;

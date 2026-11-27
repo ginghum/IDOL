@@ -13,7 +13,7 @@ for(const experience of [0,3,4,7,8])for(const wealth of [0,1,3,11]){
  if(experience)assert(view.includes('現在FAN＋'+Math.floor(experience/4)));assert.equal(JSON.stringify(state),before);
 }
 const h=p.hand.length,m=p.memory.length,points=IDOL.score(p);p.wealth=200;p.experience=8;const snapshot=JSON.stringify(state);render();assert.equal(p.hand.length,h);assert.equal(p.memory.length,m);assert.equal(IDOL.score(p),points);assert.equal(JSON.stringify(state),snapshot);
-for(const id of ['love-cards','experience-cards']){listeners.click({target:{closest:()=>({dataset:{action:'resource-info',id,p:'0'},disabled:false})}});assert.equal(modal.kind,'resource');assert($('#modal').innerHTML.includes(id==='love-cards'?'愛カード':'経験カード'));assert.match($('#modal').innerHTML,/楽曲の手札枚数・メモリー・得点には数えず/);assert.equal(JSON.stringify(state),snapshot);}
+for(const id of ['love-cards','experience-cards']){listeners.click({target:{closest:()=>({dataset:{action:'resource-info',id,p:'0'},disabled:false})}});assert.equal(modal.kind,'resource');assert($('#modal').innerHTML.includes(id==='love-cards'?'愛情チップ':'経験カード'));assert.match($('#modal').innerHTML,/楽曲の手札枚数・メモリー・得点には数えず/);assert.equal(JSON.stringify(state),snapshot);}
 assert.match(tableEvents(p,0),/>Event<\/button>/);assert.match(tableEvents(q,1),/>Event<\/button>/);assert(!tableEvents(q,1).includes('伏せ札 3'));
 assert(!CHAR.chris.skill.includes('財産'));assert.match(CHAR.chris.skill,/愛/);assert.match(CHAR.chris.effect,/愛/);
 p.hand=[];p.items=[];p.chips=0;p.fanChips=0;const onlyResources=matchHTML();assert(onlyResources.includes('love-cards'));assert(onlyResources.includes('experience-cards'));assert(!onlyResources.includes('empty-hand'));

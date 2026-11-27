@@ -10,7 +10,7 @@ for(const G of [server,browser]){
  for(const seat of[0,1]){
  let s=make(seat),p=s.players[seat],c=give(s,seat,3);p.vol=0;p.chips=1;s.players[1-seat].vol=10;s=G.peerAction(s,{type:'play',card:c.uid,actors:[0,1,2],mode:'vol',debuff:true},seat);assert.equal(s.players[seat].vol,30);assert.equal(s.players[1-seat].vol,0);assert.equal(s.players[seat].chips,0);assert.equal(s.pending,null);
  s=make(seat);p=s.players[seat];c=give(s,seat,3);p.chips=1;const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,{type:'play',card:c.uid,actors:[0,1,2],mode:'vol',debuff:'yes'},seat));assert.equal(JSON.stringify(s),before);
- const team=['chie','misa','fukurou'];for(const lead of team){const t=G.create(team,lead,['kono','miyabi','kayo'],'kono',0,34);assert.equal(t.players[0].hand.length,lead==='chie'?6:lead==='fukurou'?5:4);assert.equal(t.players[0].deck.length,lead==='chie'?21:lead==='fukurou'?22:23);assert.equal(t.players[1].vol,30);assert.equal(G.cashCount(t.players[1]),2);}
+ const team=['chie','misa','fukurou'];for(const lead of team){const t=G.create(team,lead,['kono','miyabi','kayo'],'kono',0,34);assert.equal(t.players[0].hand.length,lead==='chie'?6:lead==='fukurou'?5:4);assert.equal(t.players[0].deck.length,lead==='chie'?21:lead==='fukurou'?22:23);assert.equal(t.players[1].vol,30);assert.equal(G.cashCount(t.players[1]),3);}
  }
  // Old in-flight optional confirmations can still finish after the server update.
  {const s=make(),p=s.players[0];p.chips=1;s.pending={kind:'miyabiDebuff',p:0,options:['skip','use']};const v=s.players[1].vol;G.dispatch(s,{type:'choose',value:'use'});assert.equal(p.chips,0);assert.equal(s.players[1].vol,Math.max(0,v-20));}

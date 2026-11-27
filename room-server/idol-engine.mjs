@@ -24,8 +24,8 @@ shiro:{skillName:'色が音になる時',name:'五百瀬しろ',reading:'いも�
 hibiki:{skillName:'鼓膜を揺らせ、夜を燃やせ',name:'足立響',reading:'あだちひびき',short:'響',color:'#d84c58',vol:30,hand:3,skill:'自分のターン開始時、VOL＋10％。響がリーダーの間、自分のVOL上限は400％になる。',songs:['爆響アンセム','フロアごと跳べ！','限界突破の大合唱'],event:'MAXIMUM!!!',cost:[4,6],effect:'自分のVOLが300％以上ならこのターン15ポイントを得る。そうでなければ声援チップ10枚を得る。VOLは消費しない。'},
 misa:{skillName:'貴方に相応しい一杯',name:'大谷美沙',reading:'おおやみさ',short:'美沙',color:'#9c6bbe',vol:10,hand:4,skill:'自分のターン開始時、声援チップ1枚を支払ってもよい。そうしたら「青のドリンク」「赤のドリンク」から1つ選び、得る。',songs:['お好みは、甘め？','Twilight Blend','―完璧なる夜の過ごし方―'],event:'ヴェルベット＆ヴァイオレット',cost:[2,7],effect:'「紫のドリンク」を2本得る。ドリンクは自分のターン終了時に使用できる。'},
 miyabi:{skillName:'無双の風となる',name:'不破雅',reading:'ふわみやび',short:'雅',color:'#526ba1',vol:30,hand:4,skill:'自分が楽曲をFANモードで使う際、必要VOLが20％下がる（最低0％）。',songs:['一閃','蒼龍の薙','花嵐、刃は舞う'],event:'春雷の誓い',cost:[1,3],effect:'残りのゲーム中、相手や観客の効果で自分のVOLは下がらない。自分の支払いとVOL上限の変更には適用しない。'},
-kono:{skillName:'ほれ、これが商いの黄金律よ',name:'橘湖乃',reading:'たちばなこの',short:'湖乃',color:'#58a4aa',vol:30,hand:5,skill:'アイテム「現金」を2個持って始める。',songs:['千両箱','銭と縁','千客万来、夢舞台'],event:'踊子えるどらど',cost:[3,8],effect:'アイテム「現金」を6個得る。'},
-chie:{skillName:'こんな私でも、変えられるなら',name:'弥生千詠',reading:'やよいちえ',short:'千詠',color:'#85828b',vol:30,hand:6,skill:'自分がイベントを使ったとき、ゲーム中に1度だけ、そのイベントを再使用可能に戻してもよい。再使用には再び支払いが必要。',songs:['ひとすじの勇気','名もなき織姫','呪いの経糸、祈りの緯糸'],event:'終わりをほどく',cost:[3,3],effect:'相手の獲得済み観客とファンチップを全てゲーム外へ置き、相手にファンチップ19枚を与え、現在のターンを終了する。相手が20点以上になったとき、敗北確定前に自動発動。自動でも支払いが必要。MCタイム・くまのぬいぐるみは有効。'},
+kono:{skillName:'ほれ、これが商いの黄金律よ',name:'橘湖乃',reading:'たちばなこの',short:'湖乃',color:'#58a4aa',vol:30,hand:5,skill:'アイテム「現金」を3個持って始める。',songs:['千両箱','銭と縁','千客万来、夢舞台'],event:'踊子えるどらど',cost:[3,8],effect:'アイテム「現金」を6個得る。'},
+chie:{skillName:'こんな私でも、変えられるなら',name:'弥生千詠',reading:'やよいちえ',short:'千詠',color:'#85828b',vol:30,hand:6,skill:'自分がイベントを使ったとき、ゲーム中に1度だけ、声援チップ2枚を支払って、そのイベントを再使用可能に戻してもよい。再使用には再びメモリーの支払いが必要。',songs:['ひとすじの勇気','名もなき織姫','呪いの経糸、祈りの緯糸'],event:'終わりをほどく',cost:[3,3],effect:'相手の獲得済み観客とファンチップを全てゲーム外へ置き、相手にファンチップ19枚を与え、現在のターンを終了する。相手が20点以上になったとき、敗北確定前に自動発動。自動でも支払いが必要。MCタイム・くまのぬいぐるみは有効。'},
 kana:{skillName:'透明なまま流されて',name:'佐護河奈',reading:'さごかな',short:'河奈',color:'#c64d4d',vol:30,hand:6,skill:'自分の各ターン、最初に使用する河奈の楽曲は、声援チップを支払わずに漂流を使える。',songs:['ゼロ','無色透明','漂流FESTA'],event:'水にまかせてまた明日',cost:[1,3],effect:'支払い後に残った自分のメモリーの河奈の楽曲を好きな枚数捨てる。このターン、捨てた枚数分のポイントを得る。'},
 tenko:{skillName:'頁をめくる仲間たち',name:'尊国天子',reading:'みくにてんこ',short:'天子',color:'#b78c5a',vol:30,hand:5,skill:'自分が2人用楽曲を使用するたび、声援チップを1枚得る。',songs:['天界追放','放課後経典探索','凸凹道中天を仰ぐ'],event:'天竺行脚録―友とめくる神話―',cost:[3,8],effect:'このターンの後、もう一度自分のターンを行う。'},
 mitsuha:{skillName:'この街を愛する理由',name:'法師三葉',reading:'ほうしみつは',short:'三葉',color:'#c8a441',vol:30,hand:5,skill:'自分のターン開始時、観客席の先頭と観客山札の一番上を入れ替えてもよい。相手の独占付き観客は入れ替えられない。',songs:['風吹く交差点','夕暮れオレンジ','試練の鐘が鳴る街'],event:'この街はやさしさでできている',cost:[3,5],effect:'相手の独占付き観客を除く観客席のカードを山札の下へ置き、移動した枚数分の地元ファンを観客席に配置する。その後、fan＋1をその場で発動する。'},
@@ -36,9 +36,9 @@ kokone:{skillName:'憧れは鳴りやまない',name:'皇狐々音',reading:'す
 kazuna:{"name": "大地一凪", "reading": "だいちかずな", "short": "一凪", "color": "#9981dc", "vol": 30, "hand": 5, "skillName": "世界の片隅で、もう1度", "skill": "自分が目標を達成したとき、声援チップを追加で1枚得る。目標は一凪の使用した楽曲を置く場所。次の自分のターン以降、同じ人数用の楽曲を使うと達成し、目標を手札に戻して声援1枚を得る。", "songs": ["水底のハミング", "群青の余白", "それでも、Blue Melody"], "event": "雨上がり、街はコードを奏でる", "cost": [0, 7], "effect": "次に自分が目標を達成したとき、ファンチップを追加で3枚得る。"},
 mio:{"name": "青瀧澪", "reading": "あおたきみお", "short": "澪", "color": "#3987ae", "vol": 20, "hand": 5, "skillName": "舞台の光をじっと見つめて", "skill": "自分のターン終了時、経験チップを1枚得る（最大8枚）。", "songs": ["うすめた絵の具で、わたしを描く", "飛べない白鳥のワルツ", "澪 -MIO-"], "event": "ゼンマイ仕掛けのプリマドンナ", "cost": [2, 6], "effect": "経験チップを3枚得る（最大8枚）。"},
 yuu:{"name": "宝槻釉", "reading": "ほうつきゆう", "short": "釉", "color": "#d74e56", "vol": 20, "hand": 6, "skillName": "計画なんていらない", "skill": "自分のターン開始時、前借りによってVOLが下がったら、カードを1枚引き、声援チップを2枚得る。", "songs": ["センス・オブ・なんとかなる", "丸投げスウィング", "おもしろ貯金、ただいま赤字"], "event": "フライング・ハッピー！", "cost": [2, 4], "effect": "次の自分のターン開始時、VOL＋30％、カードを2枚引く。前借りとリーダースキルの後に処理する。"},
-chris:{"name": "クリスティアーナ・ジョンソン", "reading": "くりすてぃあーなじょんそん くりす", "short": "クリス", "color": "#bbc4db", "vol": 30, "hand": 5, "skillName": "積もる雪、白い夜", "skill": "自分のターン終了時、声援チップを2枚支払ってもよい。支払ったら愛を1枚得て、カードを1枚引く。", "songs": ["てのひらの灯", "足跡のぶんだけ、ぬくもりを", "エン・ティスト・ヴァルメ"], "event": "Hiljainen turva", "cost": [2, 6], "effect": "愛をすべて声援チップに戻す。戻した枚数2枚につき、ファンチップを1枚得る（端数切り捨て）。"},
+chris:{"name": "クリスティアーナ・ジョンソン", "reading": "くりすてぃあーなじょんそん くりす", "short": "クリス", "color": "#bbc4db", "vol": 30, "hand": 5, "skillName": "積もる雪、白い夜", "skill": "自分のターン終了時、声援チップを2枚支払ってもよい。支払ったら愛情チップを1枚得て、カードを1枚引く。", "songs": ["てのひらの灯", "足跡のぶんだけ、ぬくもりを", "エン・ティスト・ヴァルメ"], "event": "Hiljainen turva", "cost": [2, 6], "effect": "愛情チップをすべて声援チップに戻す。戻した枚数2枚につき、ファンチップを1枚得る（端数切り捨て）。"},
 kagami:{"name": "蒼社鑑", "reading": "あおやしかがみ", "short": "鑑", "color": "#3874bb", "vol": 30, "hand": 5, "skillName": "裁くヤツと裁かれるヤツ", "skill": "自分のターン終了時、自分の声援チップが相手以下なら、声援チップを2枚得る。", "songs": ["掟", "凍る鉄柵", "牢獄サンクチュアリ"], "event": "第二独房", "cost": [2, 5], "effect": "次の相手ターン終了時まで、相手は自身の効果でファンチップとイベントによる一時ポイントを得られない。"},
-nitro:{"name": "橙木にとろ", "reading": "とうのきにとろ", "short": "にとろ", "color": "#e5b63e", "vol": 40, "hand": 5, "skillName": "過去を償い、現在を進める", "skill": "自分のターン中、自分の効果や支払いで自分のVOLが下がったとき、ターンに1回、カードを1枚引く。", "songs": ["逆説機関", "魔改造タイム", "絶望希望プロトコル"], "event": "廃墟ニ灯ル人造ノ太陽", "cost": [2, 5], "effect": "カードを2枚引く。その後、手札の楽曲を2枚まで、VOLを支払わずに改造する。"}
+nitro:{"name": "橙木にとろ", "reading": "とうのきにとろ", "short": "にとろ", "color": "#e5b63e", "vol": 40, "hand": 5, "skillName": "過去を償い、現在を進める", "skill": "改造した楽曲を使用するたび、カードを1枚引く。", "songs": ["逆説機関", "魔改造タイム", "絶望希望プロトコル"], "event": "廃墟ニ灯ル人造ノ太陽", "cost": [2, 5], "effect": "カードを2枚引く。その後、2回まで、手札の未改造楽曲1枚をランダムに改造してもよい。"}
 };
 const COMMON = {
 request:{event:'リクエスト募集',short:'共通',color:'#5b9cb0',cost:[0,2],effect:'自分の山札の上から4枚を見る（4枚未満なら残り全部）。その中から1枚まで手札に加え、残りを戻して山札全体をシャッフルする。'},
@@ -68,7 +68,7 @@ vengeance:{event:'Crystalline Vengeance',short:'恵美＆彩',color:'#9d4168',me
 };
 const EVENTS={...CHAR,...COMMON,...DUETS};
 const FAN = {
-local:{name:'地元ファン',points:1,count:0,text:'持ち主のターン開始時、メンバーに三葉がいれば声援チップを1枚与える。',icon:'⌂'},
+local:{name:'地元ファン',points:1,count:0,text:'持ち主のターン開始時、メンバーに三葉がいれば声援チップを1枚与える。地元ファン全体で各ターン最大3枚。',icon:'⌂'},
 light:{name:'ライトファン',points:1,count:14,text:'効果なし',icon:'♡'},
 cheer:{name:'応援するファン',points:1,count:14,text:'声援チップ＋1',icon:'✦'},
 trouble:{name:'厄介なファン',points:1,count:12,text:'自身以外の同時獲得観客から最高得点の1枚を観客デッキの下へ戻す。',icon:'！'},
@@ -85,8 +85,8 @@ const MODS={power:{name:'過剰出力',text:'VOL＋20％',color:'#ff7638'},cheer
 function canModify(c,mode){return c.owner==='nitro'&&!c.special&&(mode==='fan'||c.n===3);}
 function modTargets(p){return p.hand.filter(c=>!c.mod&&!c.special);}
 function cleanMods(s){for(const p of s.players)for(const c of [...p.memory,...p.discard,...(p.goal?[p.goal]:[]),...(p.rehearsal?[p.rehearsal]:[])])if(c.mod){(p.modDiscard??=[]).push(c.mod);delete c.mod;}}
-function nitroDraw(s,i){const p=s.players[i];if(s.active===i&&hasLeader(p,'nitro')&&p.nitroDrawTurn!==s.turn){p.nitroDrawTurn=s.turn;draw(s,i);log(s,'にとろ：自分のVOL低下で1枚ドロー');}}
-function selfLower(s,i,n){const p=s.players[i],old=p.vol;voltage(p,-n);if(p.vol<old)nitroDraw(s,i);}
+function nitroDraw(s,i){if(hasLeader(s.players[i],'nitro')){draw(s,i);log(s,'にとろ：改造した楽曲の使用で1枚ドロー');}}
+function selfLower(s,i,n){voltage(s.players[i],-n);}
 function cardReady(s,i,js){const p=s.players[i],changed=js.some(j=>!p.ready[j]);js.forEach(j=>p.ready[j]=true);if(changed&&p.kagamiReadyUntil&&s.active===i){lowerVoltage(s,i,10);log(s,'凍る鉄柵：再行動後VOL－10％');}}
 function fanChips(s,i,n){const p=s.players[i];if(p.kagamiScoreUntil){log(s,'第二独房：ファンチップ獲得を封じた');return;}p.fanChips=(p.fanChips||0)+n;}
 function eventPoints(s,i,n){if(s.players[i].kagamiScoreUntil){log(s,'第二独房：イベントの一時ポイントを封じた');return;}s.players[i].temp+=n;}
@@ -116,7 +116,7 @@ if(c.owner==='akina')d.fanText='使用後、この楽曲をメモリーから手
 if(c.owner==='emi'){d.volText='観客席のカード1枚を選び、観客山札の下に戻してもよい。戻した後、補充する。';d.fanText='ファン獲得前に、観客席のカード1枚を選び、観客山札の下に戻してもよい。戻した後、補充する。';}
 if(c.owner==='aya'&&c.n>1)d.fanText='使用後、VOLを'+(c.n===2?30:40)+'％下げてもよい。そうした場合、彩以外の行動済みメンバー'+(c.n===2?'1人':'全員')+'を未行動にする。';
 if(c.owner==='hikari'){const text='手札を'+(c.n===3?2:1)+'枚選んで捨ててもよい。そうした場合、'+(c.n===3?2:1)+'枚引く。';d.fanText=text;if(c.n===3)d.volText=text;}
-if(c.owner==='homura')d.fanText='観客席のカードを'+(c.n===3?2:1)+'枚まで選び、ターン終了時まで効果を無効にする。';if(c.owner==='kazuna')d.volText=d.fanText='このカードで目標を達成したら声援1枚。その後、このカードを目標に置く。';if(c.owner==='mio')d.volText=d.fanText='経験チップを2枚得る（4枚ごとに本人のFAN＋1、最大＋2。今回の使用には適用しない）。';if(c.owner==='chris')d.volText=d.fanText='愛を1枚得る。';if(c.owner==='yuu')d.fanText='必要VOLに20％まで足りなくても使用可。前借りした次の自分のターン開始時VOL－10％（同ターンの前借りは合計－10％）。';if(p&&c.owner==='mio')d.fan+=Math.floor((p.experience||0)/4);if(c.owner==='kagami'){d.volText=['カードを1枚引く。','声援チップを1枚得る。','相手のVOL－20％。'][c.n-1];d.fanText=['相手の楽曲手札が4枚以上なら、相手は楽曲1枚を選んで捨てる。','次の相手ターン中、カード効果で再行動するたび処理後VOL－10％（重複しない）。','次の相手ターン中、記載の必要VOL未満でFAN使用するたび処理後VOL－10％（重複しない）。'][c.n-1];}if(c.owner==='nitro'){d.volText=c.n===3?'使用後、VOL10％で手札の未改造楽曲1枚を改造してもよい。':'';d.fanText='使用後、VOL10％で手札の未改造楽曲1枚を改造してもよい。';}if(p?.songSeal){d.volText=d.fanText='追加効果は無効です。';}return d;}
+if(c.owner==='homura')d.fanText='観客席のカードを'+(c.n===3?2:1)+'枚まで選び、ターン終了時まで効果を無効にする。';if(c.owner==='kazuna')d.volText=d.fanText='このカードで目標を達成したら声援1枚。その後、このカードを目標に置く。';if(c.owner==='mio')d.volText=d.fanText='経験チップを2枚得る（4枚ごとに本人のFAN＋1、最大＋2。今回の使用には適用しない）。';if(c.owner==='chris')d.volText=d.fanText='愛情チップを1枚得る。';if(c.owner==='yuu')d.fanText='必要VOLに20％まで足りなくても使用可。前借りした次の自分のターン開始時VOL－10％（同ターンの前借りは合計－10％）。';if(p&&c.owner==='mio')d.fan+=Math.floor((p.experience||0)/4);if(c.owner==='kagami'){d.volText=['カードを1枚引く。','声援チップを1枚得る。','相手のVOL－20％。'][c.n-1];d.fanText=['相手の楽曲手札が4枚以上なら、相手は楽曲1枚を選んで捨てる。','次の相手ターン中、カード効果で再行動するたび処理後VOL－10％（重複しない）。','次の相手ターン中、記載の必要VOL未満でFAN使用するたび処理後VOL－10％（重複しない）。'][c.n-1];}if(c.owner==='nitro'){d.volText=c.n===3?'使用後、手札の未改造楽曲1枚をランダムに改造してもよい（VOL消費なし）。':'';d.fanText='使用後、手札の未改造楽曲1枚をランダムに改造してもよい（VOL消費なし）。';}if(p?.songSeal){d.volText=d.fanText='追加効果は無効です。';}return d;}
 function rng(s){s.seed=(Math.imul(s.seed,1664525)+1013904223)>>>0;return s.seed/4294967296;}
 function shuffle(s,a){for(let i=a.length-1;i>0;i--){let j=Math.floor(rng(s)*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function uid(s){return 'c'+s.serial++;}
@@ -136,7 +136,7 @@ function memoryable(c){return c.special!=='painted';}
 function songArt(c){return c.special==='painted'?'special-painted':c.special==='world'?'special-world':'song-'+c.owner+'-'+c.n;}
 function cleanSpecial(s){cleanMods(s);for(const p of s.players)for(const z of ['memory','discard']){const removed=p[z].filter(c=>c.special);if(removed.length){(s.exiledCards??=[]).push(...removed);p[z]=p[z].filter(c=>!c.special);}}}
 const DRINKS={drinkBlue:{name:'青のドリンク',art:'item-drink-blue',vol:10,fan:0,color:'#428cdf'},drinkRed:{name:'赤のドリンク',art:'item-drink-red',vol:0,fan:1,color:'#dd5270'},drinkPurple:{name:'紫のドリンク',art:'item-drink-purple',vol:10,fan:1,color:'#a46dd6'}};
-const SHOP={support:{name:'声援チップ2枚'},fanChip:{name:'ファンチップ1枚'},meat:{name:'肉'},teddy:{name:'くまのぬいぐるみ'},drinkPurple:{name:'紫のドリンク'}};
+const SHOP={support:{name:'声援チップ2枚'},fanChip:{name:'ファンチップ1枚'},meat:{name:'肉'},teddy:{name:'くまのぬいぐるみ'},drinkRed:{name:'赤のドリンク'}};
 function cash(s,p,n=1){for(let j=0;j<n;j++)items(p).push({uid:uid(s),item:'cash'});log(s,'現金を'+n+'個獲得');}
 function cashCount(p){return items(p).filter(c=>c.item==='cash').length;}
 function drinkItems(p){return items(p).filter(c=>DRINKS[c.item]);}
@@ -218,11 +218,11 @@ function process(s){
  while(s.queue.length&&!s.pending&&s.winner===null){
  const e=s.queue.shift(),p=s.players[e.p];
  if(e.kind==='startOrder'||e.kind==='endOrder'){const effects=e.effects||[];if(effects.length>1)choice(s,e.kind,e.p,effects,'同時に発動する効果：次に処理するものを選択',{effects});else if(effects.length)s.queue.unshift({kind:e.kind==='startOrder'?'startEffect':'endEffect',p:e.p,id:effects[0]},...(e.kind==='endOrder'?[{kind:'endOrder',p:e.p,effects:[]}]:[]));else if(e.kind==='endOrder'){finish(s);if(s.pending)s.queue.push(e);else if(s.winner===null)endDrinks(s);}continue;}
- if(e.kind==='nitroMod'){if((e.free||p.vol>=10)&&p.modDeck?.length&&modTargets(p).length)choice(s,'nitroMod',e.p,['skip',...modTargets(p).map(c=>c.uid)],e.free?'人造ノ太陽：改造する楽曲を選択（無料）':'VOL10％で改造する楽曲を選択',{free:!!e.free,left:e.left||1});continue;}
+ if(e.kind==='nitroMod'){if(p.modDeck?.length&&modTargets(p).length)choice(s,'nitroMod',e.p,['skip','use'],'手札の未改造楽曲1枚をランダムに改造しますか？（VOL消費なし）',{free:!!e.free,left:e.left||1});continue;}
  if(e.kind==='modEncore'){const js=e.actors.filter(j=>!p.ready[j]);if(js.length)choice(s,'modEncore',e.p,js.map(String),'終われない舞台：参加した1人を未行動に戻す');continue;}
  if(e.kind==='kagamiSong'){if(e.mode==='vol'){if(e.n===1)draw(s,e.p);if(e.n===2)awardChips(s,e.p,1);if(e.n===3)lowerVoltage(s,1-e.p,20);}else{const q=s.players[1-e.p];if(e.n===1&&q.hand.length>=4){const opts=q.hand.filter(discardable).map(c=>c.uid);if(opts.length)choice(s,'kagamiDiscard',1-e.p,opts,'掟：自分の楽曲手札を1枚選んで捨てる');}if(e.n===2)q.kagamiReadyUntil=true;if(e.n===3)q.kagamiLowUntil=true;}continue;}
  if(e.kind==='kagamiLow'){lowerVoltage(s,e.p,10);log(s,'牢獄サンクチュアリ：必要VOL未満の使用後VOL－10％');continue;}
- if(e.kind==='funkSong'){const achieved=funkGoal(s,e.p,e.card);if(!p.songSeal&&e.owner==='mio'){p.experience=Math.min(8,(p.experience||0)+2);log(s,'澪：経験＋2（'+p.experience+'/8）');}if(!p.songSeal&&e.owner==='chris'){p.wealth=(p.wealth||0)+1;log(s,'愛＋1（'+p.wealth+'枚）');}if(!p.songSeal&&e.owner==='kazuna'){if(achieved)awardChips(s,e.p,1);if(p.goal)p.hand.push(p.goal);p.memory=p.memory.filter(c=>c.uid!==e.card.uid);p.goal=e.card;p.goalTurn=s.turn;log(s,'目標：'+song(e.card).name);}continue;}
+ if(e.kind==='funkSong'){const achieved=funkGoal(s,e.p,e.card);if(!p.songSeal&&e.owner==='mio'){p.experience=Math.min(8,(p.experience||0)+2);log(s,'澪：経験＋2（'+p.experience+'/8）');}if(!p.songSeal&&e.owner==='chris'){p.wealth=(p.wealth||0)+1;log(s,'愛情チップ＋1（'+p.wealth+'枚）');}if(!p.songSeal&&e.owner==='kazuna'){if(achieved)awardChips(s,e.p,1);if(p.goal)p.hand.push(p.goal);p.memory=p.memory.filter(c=>c.uid!==e.card.uid);p.goal=e.card;p.goalTurn=s.turn;log(s,'目標：'+song(e.card).name);}continue;}
  if(e.kind==='startEffect'){startEffect(s,e.p,e.id);continue;}
  if(e.kind==='endEffect'){endEffect(s,e.p,e.id);continue;}
  if(e.kind==='finaleEnd'){finish(s);if(s.pending)s.queue.push(e);else if(s.winner===null){if(leaders(p).length>1)beginMultiEnd(s,e.p);else dispatch(s,{type:'end'});}continue;}
@@ -231,7 +231,7 @@ function process(s){
  if(e.kind==='emiBottom'){const opts=unlocked(s,e.p).map(f=>f.uid);if(opts.length)choice(s,'emiBottom',e.p,['skip',...opts],'恵美：観客山札の下に戻す観客を1枚選択（任意）');}
  if(e.kind==='miyabiLower'){lowerVoltage(s,1-e.p,20);log(s,'雅：声援1枚で相手のVOL－20％');continue;}
  if(e.kind==='miyabiDebuff'&&p.chips>=1)choice(s,'miyabiDebuff',e.p,['skip','use'],'雅：声援1枚で相手のVOLを20％下げますか？');
- if(e.kind==='chieReset'&&hasLeader(p,'chie')&&!p.chieResetUsed)choice(s,'chieReset',e.p,['skip','use'],'こんな私でも、変えられるなら：'+EVENTS[e.id].event+'を再使用可能にしますか？',{eventId:e.id});
+ if(e.kind==='chieReset'&&hasLeader(p,'chie')&&!p.chieResetUsed&&p.chips>=2)choice(s,'chieReset',e.p,['skip','use'],'こんな私でも、変えられるなら：'+EVENTS[e.id].event+'を声援2枚で再使用可能にしますか？',{eventId:e.id});
  if(e.kind==='chieEnd'){s.queue=[];next(s);continue;}
  if(e.kind==='kanaMemory'){const options=p.memory.filter(c=>c.owner==='kana'&&!c.special).map(c=>c.uid);if(options.length)choice(s,'kanaMemory',e.p,['done',...options],'河奈：得点に変えるメモリーを選択（0枚から）');}
  if(e.kind==='mitamaChip'){const n=Math.min(1,p.chips);p.chips-=n;log(s,'美珠：声援チップを'+n+'枚捨てた');}
@@ -288,7 +288,7 @@ function create(team,leader,cpuTeam,cpuLeader,first=0,seed=Date.now(),playerEven
  if(eventIds.length!==3||new Set(eventIds).size!==3||eventIds.some(id=>typeof id!=='string'||!Object.hasOwn(EVENTS,id)))throw Error('イベントを異なる3枚選んでください');
  if(t.length!==3||new Set(t).size!==3||!t.includes(l)||t.some(x=>typeof x!=='string'||!Object.hasOwn(CHAR,x)))throw Error('編成を確認してください');
  const p={team:t,leader:l,vol:CHAR[l].vol,hand:[],deck:[],memory:[],discard:[],fans:[],events:eventIds.map(id=>({id,used:false,lastTurn:null})),experience:0,wealth:0,goal:null,goalTurn:0,borrowDue:false,goalEvent:false,tomorrowEvent:false,ready:[true,true,true],chips:0,buff:0,eventBuff:0,cardBuff:0,temp:0,service:0,items:[],fanChips:0,liveViewing:false,fanShield:false,songsPlayed:0};
- if(l==='kono')cash(s,p,2);
+ if(l==='kono')cash(s,p,3);
  t.forEach(owner=>{for(let n=1;n<=3;n++)for(let k=0;k<3;k++)p.deck.push({uid:uid(s),owner,n});});shuffle(s,p.deck);p.modDeck=t.includes('nitro')?shuffle(s,Object.keys(MODS).flatMap(id=>Array(3).fill(id))):[];p.modDiscard=[];s.players.push(p);
  }
  for(const type in FAN)for(let n=0;n<FAN[type].count;n++)s.audience.push({uid:uid(s),type,lock:null});
@@ -300,19 +300,19 @@ function startTasks(s,i){const p=s.players[i],tasks=[];if(hasLeader(p,'chitose')
 function startEffect(s,i,id){const p=s.players[i];if(id==='draw'){const n=hasLeader(p,'kayo')&&p.hand.length<=4?2:1;if(hasLeader(p,'akina'))s.queue.unshift(...Array.from({length:n},()=>({kind:'akinaDraw',p:i})));else draw(s,i,n);}
  if(id==='chitose'&&s.row[2]){s.row[2].plusOne=(s.row[2].plusOne||0)+1;log(s,'千登勢：観客席の3番目に＋1チップを置いた');}
  const kinds={rehearsal:'rehearsalStart',mitsuha:'mitsuhaStart',shiro:'shiroPeek',misa:'misaStart',emi:'emiConvert',homura:'chip',haru:'recover'};if(kinds[id])s.queue.unshift({kind:kinds[id],p:i});
- if(id==='local')s.queue.unshift(...p.fans.filter(f=>f.type==='local'&&!f.muted).map(()=>({kind:'chip',p:i})));
+ if(id==='local')s.queue.unshift(...p.fans.filter(f=>f.type==='local'&&!f.muted).slice(0,3).map(()=>({kind:'chip',p:i})));
  if(id==='hibiki'){voltage(p,10);log(s,'響：自分のターン開始時VOL＋10％');}
  if(id==='machi'&&s.players.reduce((n,x)=>n+x.memory.length,0)>=10){const opts=unlocked(s,i).map(x=>x.uid);if(opts.length)choice(s,'raiPick',i,opts,'麻智のリーダースキル：観客を1枚選んで獲得');}}
-function funkStart(s,i){const p=s.players[i];if(p.borrowDue){p.borrowDue=false;const old=p.vol;lowerVoltage(s,i,10);log(s,'前借り：VOL－10％');if(p.vol<old)nitroDraw(s,i);if(p.vol<old&&hasLeader(p,'yuu')){draw(s,i);awardChips(s,i,2);log(s,'計画なんていらない：1枚ドロー、声援＋2');}}if(p.tomorrowEvent){p.tomorrowEvent=false;voltage(p,30);draw(s,i,2);log(s,'フライング・ハッピー！：VOL＋30％、2枚ドロー');}if((p.wealth||0)>=3){awardChips(s,i,1);log(s,'愛：定期収入 声援＋1');}}
+function funkStart(s,i){const p=s.players[i];if(p.borrowDue){p.borrowDue=false;const old=p.vol;lowerVoltage(s,i,10);log(s,'前借り：VOL－10％');if(p.vol<old&&hasLeader(p,'yuu')){draw(s,i);awardChips(s,i,2);log(s,'計画なんていらない：1枚ドロー、声援＋2');}}if(p.tomorrowEvent){p.tomorrowEvent=false;voltage(p,30);draw(s,i,2);log(s,'フライング・ハッピー！：VOL＋30％、2枚ドロー');}if((p.wealth||0)>=3){awardChips(s,i,1);log(s,'愛情チップ：定期収入 声援＋1');}}
 function funkGoal(s,i,c){const p=s.players[i];let achieved=false;if(p.goal&&s.turn>p.goalTurn&&p.goal.n===c.n){p.hand.push(p.goal);p.goal=null;awardChips(s,i,1+(hasLeader(p,'kazuna')?1:0));achieved=true;log(s,'目標達成：楽曲を手札へ、声援＋'+(hasLeader(p,'kazuna')?2:1));if(p.goalEvent){p.goalEvent=false;fanChips(s,i,3);log(s,'一凪イベント：ファンチップ＋3');}}return achieved;}
 function startSkill(s,withDraw=false){const i=s.active,p=s.players[i];funkStart(s,i);p.kanaSongsPlayed=0;s.players[1-i].songSeal=false;const tasks=startTasks(s,i);if(leaders(p).length>1){s.queue.push({kind:'startOrder',p:i,effects:[...(withDraw?['draw']:[]),...tasks]});return;}
  // Legacy order: draw first, then the existing start effects.
  if(withDraw){if(hasLeader(p,'akina'))s.queue.push({kind:'akinaDraw',p:i});else draw(s,i,hasLeader(p,'kayo')&&p.hand.length<=4?2:1);}
  if(hasLeader(p,'chitose')&&s.row[2]){s.row[2].plusOne=(s.row[2].plusOne||0)+1;log(s,'千登勢：観客席の3番目に＋1チップを置いた');}
- if(p.rehearsal)s.queue.push({kind:'rehearsalStart',p:i});if(p.team.includes('mitsuha')&&!hasLeader(p,'mitama'))for(const f of p.fans.filter(f=>f.type==='local'&&!f.muted))s.queue.push({kind:'chip',p:i});
+ if(p.rehearsal)s.queue.push({kind:'rehearsalStart',p:i});if(p.team.includes('mitsuha')&&!hasLeader(p,'mitama'))for(const f of p.fans.filter(f=>f.type==='local'&&!f.muted).slice(0,3))s.queue.push({kind:'chip',p:i});
  for(const id of ['mitsuha','shiro','misa','emi','homura','haru'])if(hasLeader(p,id))s.queue.push({kind:({mitsuha:'mitsuhaStart',shiro:'shiroPeek',misa:'misaStart',emi:'emiConvert',homura:'chip',haru:'recover'})[id],p:i});if(hasLeader(p,'hibiki')){voltage(p,10);log(s,'響：自分のターン開始時VOL＋10％');}if(hasLeader(p,'machi'))startEffect(s,i,'machi');}
 function beginMultiEnd(s,i,skip=false){if(skip){endDrinks(s,true);return;}const p=s.players[i];s.ending=true;const effects=skip?[]:['aya','ayame','kokone','mimizuku','chris'].filter(id=>hasLeader(p,id));s.queue.push({kind:'endOrder',p:i,effects});process(s);}
-function endEffect(s,i,id){const p=s.players[i];if(id==='chris'&&p.chips>=2)choice(s,'chrisSave',i,['skip','use'],'声援2枚を支払い、愛1枚と1枚ドローを得ますか？',{continueEnd:true});if(id==='aya'){p.ayaEndDone=s.turn;if((p.songsPlayed||0)>=3){fanChips(s,i,2);log(s,'彩：ファンチップ＋2');}}
+function endEffect(s,i,id){const p=s.players[i];if(id==='chris'&&p.chips>=2)choice(s,'chrisSave',i,['skip','use'],'声援2枚を支払い、愛情チップ1枚と1枚ドローを得ますか？',{continueEnd:true});if(id==='aya'){p.ayaEndDone=s.turn;if((p.songsPlayed||0)>=3){fanChips(s,i,2);log(s,'彩：ファンチップ＋2');}}
  if(id==='ayame'&&p.chips>=2)choice(s,'ayameEnd',i,['skip','use'],'あやめ：声援2枚でくじ引き券を得ますか？');
  if(id==='kokone'&&!p.rehearsal){const options=p.hand.filter(c=>c.n>=2&&!c.special).map(c=>c.uid);if(options.length)choice(s,'kokoneSet',i,['skip',...options],'リハーサルに置く楽曲を選択（任意）',{continueEnd:true});}
  if(id==='mimizuku'&&p.chips>=1&&s.players[1-i].hand.some(discardable))choice(s,'mimizukuEnd',i,['skip','use'],'任務を遂行します！：声援1枚で相手の手札を捨てさせますか？',{continueEnd:true});}
@@ -331,10 +331,10 @@ function dispatch(s,a){
  if(s.winner!==null)throw Error('ライブは終了しています');
  if(a.type==='choose'){
  const z=s.pending;if(!z||!z.options.includes(a.value))throw Error('選択対象がありません');
- if(z.kind==='nitroMod'){const p=s.players[z.p];if(a.value!=='skip'){const c=modTargets(p).find(c=>c.uid===a.value);if(!c||!p.modDeck?.length||!z.free&&p.vol<10)throw Error('改造できません');s.pending=null;if(!z.free)selfLower(s,z.p,10);c.mod=p.modDeck.shift();log(s,'改造カードを公開：'+MODS[c.mod].name);if(z.free&&z.left>1)s.queue.unshift({kind:'nitroMod',p:z.p,free:true,left:z.left-1});}else s.pending=null;process(s);return s;}
+ if(z.kind==='nitroMod'){const p=s.players[z.p];if(a.value!=='skip'){const targets=modTargets(p);if(a.value!=='use'||!targets.length||!p.modDeck?.length)throw Error('改造できません');s.pending=null;const c=targets[Math.floor(rng(s)*targets.length)];c.mod=p.modDeck.shift();log(s,'改造カードを公開：'+MODS[c.mod].name+'（対象はランダム）');if(z.free&&z.left>1)s.queue.unshift({kind:'nitroMod',p:z.p,free:true,left:z.left-1});}else s.pending=null;process(s);return s;}
  if(z.kind==='modEncore'){s.pending=null;cardReady(s,z.p,[Number(a.value)]);process(s);return s;}
  if(z.kind==='kagamiDiscard'){const p=s.players[z.p],at=p.hand.findIndex(c=>c.uid===a.value&&discardable(c));if(at<0)throw Error('楽曲を選んでください');s.pending=null;p.discard.push(p.hand.splice(at,1)[0]);process(s);return s;}
- if(z.kind==='chrisSave'){s.pending=null;delete s.ending;if(a.value==='use'){const p=s.players[z.p];if(p.chips<2)throw Error('声援が足りません');p.chips-=2;p.wealth=(p.wealth||0)+1;draw(s,z.p);log(s,'クリス：声援2枚を支払い、愛＋1、1枚ドロー');}if(z.continueEnd){s.ending=true;process(s);return s;}return dispatch(s,{type:'end',ticket:z.ticket,skipEndSkill:z.skipEndSkill,chrisDone:true});}
+ if(z.kind==='chrisSave'){s.pending=null;delete s.ending;if(a.value==='use'){const p=s.players[z.p];if(p.chips<2)throw Error('声援が足りません');p.chips-=2;p.wealth=(p.wealth||0)+1;draw(s,z.p);log(s,'クリス：声援2枚を支払い、愛情チップ＋1、1枚ドロー');}if(z.continueEnd){s.ending=true;process(s);return s;}return dispatch(s,{type:'end',ticket:z.ticket,skipEndSkill:z.skipEndSkill,chrisDone:true});}
  if(z.kind==='kanaDrift'||z.kind==='kanaDriftOption')return chooseDrift(s,z,a.value);
  if(z.kind==='mitsuhaStart'&&a.value==='swap'&&!canMitsuhaSwap(s,z.p))throw Error('先頭と山札を交換できません');
  if(z.kind==='kanaMemory'&&a.value!=='done'&&!s.players[z.p].memory.some(c=>c.uid===a.value&&c.owner==='kana'&&!c.special))throw Error('河奈のメモリーを選んでください');
@@ -344,7 +344,7 @@ function dispatch(s,a){
  if((z.kind==='misaStart'||z.kind==='misaPurple')&&a.value!=='skip'&&s.players[z.p].chips<(z.kind==='misaStart'?1:(z.cost??2)))throw Error('声援チップが足りません');
  if(z.kind==='endDrinks'&&a.value!=='skip'&&!drinkItems(s.players[z.p]).some(c=>c.uid===a.value))throw Error('ドリンクがありません');
  if(z.kind==='miyabiDebuff'&&a.value==='use'&&s.players[z.p].chips<1)throw Error('声援チップが足りません');
- if(z.kind==='chieReset'&&a.value==='use'&&(!hasLeader(s.players[z.p],'chie')||s.players[z.p].chieResetUsed))throw Error('再使用権は使用済みです');
+ if(z.kind==='chieReset'&&a.value==='use'&&(!hasLeader(s.players[z.p],'chie')||s.players[z.p].chieResetUsed||s.players[z.p].chips<2))throw Error('未使用の再使用権と声援2枚が必要です');
  s.pending=null;
  if(z.kind==='startOrder'||z.kind==='endOrder'){s.queue.unshift({kind:z.kind==='startOrder'?'startEffect':'endEffect',p:z.p,id:a.value},{kind:z.kind,p:z.p,effects:z.effects.filter(id=>id!==a.value)});process(s);return s;}
  if(z.kind==='ayameEnd'&&a.value==='use'){const p=s.players[z.p];if(p.chips<2)throw Error('声援チップが足りません');p.chips-=2;ticket(s,p);}
@@ -357,7 +357,7 @@ function dispatch(s,a){
  if(z.kind==='kokoneExtra'){const p=s.players[z.p],c=p.rehearsal,opt=c&&!p.songSeal&&driftOption(s,z.p,c,'fan');if(a.value==='use'&&(!opt||opt.flag!==z.flag))throw Error('追加効果を使用できません');const flags={};if(a.value==='use'){flags[z.flag]=true;if(z.flag==='debuff')p.chips--;}return useRehearsal(s,z.p,z.actors,flags);}
  if(z.kind==='kokoneEventSet'){const p=s.players[z.p],at=p.hand.findIndex(c=>c.uid===a.value&&c.special!=='painted');if(at<0||p.rehearsal)throw Error('リハーサルに置く楽曲を選んでください');p.rehearsal=p.hand.splice(at,1)[0];s.queue.unshift({kind:'kokoneEcho',p:z.p,times:1});}
  if(z.kind==='miyabiDebuff'&&a.value==='use'){s.players[z.p].chips-=1;lowerVoltage(s,1-z.p,20);}
- if(z.kind==='chieReset'&&a.value==='use'){const p=s.players[z.p],e=p.events.find(e=>e.id===z.eventId);p.chieResetUsed=true;e.used=false;e.lastTurn=null;log(s,'千詠：'+EVENTS[e.id].event+'を再使用可能にした（支払いは必要）');}
+ if(z.kind==='chieReset'&&a.value==='use'){const p=s.players[z.p],e=p.events.find(e=>e.id===z.eventId);p.chips-=2;p.chieResetUsed=true;e.used=false;e.lastTurn=null;log(s,'千詠：'+EVENTS[e.id].event+'を声援2枚で再使用可能にした（メモリーの支払いは別途必要）');}
  if(z.kind==='chiePayment'){const paid=[...(z.selected||[]),a.value],p=s.players[z.p];if(paid.length<EVENTS.chie.cost[1]){choice(s,'chiePayment',z.p,z.options.filter(x=>x!==a.value),'終わりをほどく：本人3枚分を支払う（残り'+(EVENTS.chie.cost[1]-paid.length)+'枚）',{selected:paid,count:EVENTS.chie.cost[1]});return s;}spendEvent(s,z.p,'chie',paid);resetEvent(s,z.p,'chie');adversity(s,z.p);process(s);return s;}
  if(z.kind==='misaStart'&&a.value!=='skip'){s.players[z.p].chips--;addDrink(s,s.players[z.p],a.value);}
  if(z.kind==='misaPurple'&&a.value==='use'){s.players[z.p].chips-=z.cost??2;addDrink(s,s.players[z.p],'drinkPurple');}
@@ -386,8 +386,8 @@ function dispatch(s,a){
  if(s.pending)throw Error('先に効果を選択してください');
  const i=s.active,p=s.players[i];
  if(s.ending)throw Error('ターン終了処理中です');
- if(a.type==='end'){if(!a.skipEndSkill&&leaders(p).length===1&&hasLeader(p,'chris')&&p.chips>=2&&!a.chrisDone){s.ending=true;choice(s,'chrisSave',i,['skip','use'],'積もる雪、白い夜：声援2枚を支払い、愛1枚と1枚ドローを得ますか？',{ticket:a.ticket,skipEndSkill:a.skipEndSkill});return s;}if(leaders(p).length>1){beginMultiEnd(s,i,!!a.skipEndSkill);return s;}if(!a.skipEndSkill&&hasLeader(p,'kokone')&&!p.rehearsal&&p.hand.some(c=>c.n>=2&&!c.special)){s.ending=true;choice(s,'kokoneSet',i,['skip',...p.hand.filter(c=>c.n>=2&&!c.special).map(c=>c.uid)],'リハーサルに置く楽曲を選択（任意）',{skipEndSkill:!!a.skipEndSkill});return s;}if(!a.skipEndSkill&&hasLeader(p,'mimizuku')&&p.chips>=1&&s.players[1-i].hand.some(discardable)){choice(s,'mimizukuEnd',i,['skip','use'],'任務を遂行します！：ターン終了時に声援1枚で手札を捨てさせますか？');return s;}if(a.ticket){if(!hasLeader(p,'ayame')||p.chips<2)throw Error('あやめの終了時能力を使用できません');p.chips-=2;ticket(s,p);}endDrinks(s,!!a.skipEndSkill);return s;}
- if(a.type==='buy'){if(!Object.hasOwn(SHOP,a.item)||cashCount(p)<2)throw Error('現金2個と交換先が必要です');let left=2;p.items=items(p).filter(c=>c.item==='cash'&&left>0?(left--,false):true);log(s,'買い物：現金2個で'+SHOP[a.item].name);if(a.item==='support'){s.queue.push({kind:'chip',p:i},{kind:'chip',p:i});}else if(a.item==='fanChip')fanChips(s,i,1);else if(a.item==='meat')meat(s,p);else if(a.item==='teddy')teddy(s,p);else addDrink(s,p,'drinkPurple');process(s);return s;}
+ if(a.type==='end'){if(!a.skipEndSkill&&leaders(p).length===1&&hasLeader(p,'chris')&&p.chips>=2&&!a.chrisDone){s.ending=true;choice(s,'chrisSave',i,['skip','use'],'積もる雪、白い夜：声援2枚を支払い、愛情チップ1枚と1枚ドローを得ますか？',{ticket:a.ticket,skipEndSkill:a.skipEndSkill});return s;}if(leaders(p).length>1){beginMultiEnd(s,i,!!a.skipEndSkill);return s;}if(!a.skipEndSkill&&hasLeader(p,'kokone')&&!p.rehearsal&&p.hand.some(c=>c.n>=2&&!c.special)){s.ending=true;choice(s,'kokoneSet',i,['skip',...p.hand.filter(c=>c.n>=2&&!c.special).map(c=>c.uid)],'リハーサルに置く楽曲を選択（任意）',{skipEndSkill:!!a.skipEndSkill});return s;}if(!a.skipEndSkill&&hasLeader(p,'mimizuku')&&p.chips>=1&&s.players[1-i].hand.some(discardable)){choice(s,'mimizukuEnd',i,['skip','use'],'任務を遂行します！：ターン終了時に声援1枚で手札を捨てさせますか？');return s;}if(a.ticket){if(!hasLeader(p,'ayame')||p.chips<2)throw Error('あやめの終了時能力を使用できません');p.chips-=2;ticket(s,p);}endDrinks(s,!!a.skipEndSkill);return s;}
+ if(a.type==='buy'){if(!Object.hasOwn(SHOP,a.item)||cashCount(p)<2)throw Error('現金2個と交換先が必要です');let left=2;p.items=items(p).filter(c=>c.item==='cash'&&left>0?(left--,false):true);log(s,'買い物：現金2個で'+SHOP[a.item].name);if(a.item==='support'){s.queue.push({kind:'chip',p:i},{kind:'chip',p:i});}else if(a.item==='fanChip')fanChips(s,i,1);else if(a.item==='meat')meat(s,p);else if(a.item==='teddy')teddy(s,p);else addDrink(s,p,'drinkRed');process(s);return s;}
  if(a.type==='ticket'){useTicket(s,i,a.id);return s;}
  if(a.type==='leaderSkill'){
  if(!hasLeader(p,'hikari')||p.hikariSkillUsed)throw Error('光のリーダースキルはゲーム中1度だけです');
@@ -397,7 +397,7 @@ function dispatch(s,a){
  }
  if(a.type==='service'){service(s,i,a.actor);process(s);return s;
  }
- if(a.type==='wealth')throw Error('愛を取り崩せるのは専用イベントのみです');
+ if(a.type==='wealth')throw Error('愛情チップを取り崩せるのは専用イベントのみです');
  if(a.type==='support'){
  if(supportSealed(s,i))throw Error('このターン、声援効果は封印されています');
  const cost={draw:2,refresh:6,lock:2,hold:3}[a.effect],free=a.free===true;
@@ -446,7 +446,7 @@ function dispatch(s,a){
  if(id==='duo'&&(leaders(p).length>=2||!p.team.includes(a.target)||hasLeader(p,a.target)))throw Error('追加する非リーダーを選んでください');
  if(id==='lastOrder'&&(![3,6,9].includes(a.amount)||p.chips<a.amount))throw Error('声援チップを3・6・9枚から選んでください');
  const ayaCount=ayaEventCount(p),discardBefore=p.discard.length,whiteTrigger=hasLeader(p,'hakka');const spending=p.memory.filter(c=>paid.includes(c.uid));p.items=items(p).filter(c=>!paid.includes(c.uid));p.memory=p.memory.filter(c=>!paid.includes(c.uid));if(id!=='hikari')p.discard.push(...spending);p.events.find(e=>e.id===id).used=!d.repeat;p.events.find(e=>e.id===id).lastTurn=s.turn;log(s,(i?'CPU':'あなた')+' EVENT「'+d.event+'」');
- if(id==='kagami'){s.players[1-i].kagamiScoreUntil=true;log(s,'第二独房：次の相手ターン終了まで追加得点を封印');}if(id==='nitro'){draw(s,i,2);s.queue.push({kind:'nitroMod',p:i,free:true,left:2});}if(id==='kazuna')p.goalEvent=true;if(id==='mio'){p.experience=Math.min(8,(p.experience||0)+3);log(s,'澪イベント：経験＋3');}if(id==='yuu')p.tomorrowEvent=true;if(id==='chris'){const n=p.wealth||0;p.wealth=0;awardChips(s,i,n);fanChips(s,i,Math.floor(n/2));log(s,'クリスイベント：愛'+n+'枚を声援へ、ファンチップ＋'+Math.floor(n/2));}
+ if(id==='kagami'){s.players[1-i].kagamiScoreUntil=true;log(s,'第二独房：次の相手ターン終了まで追加得点を封印');}if(id==='nitro'){draw(s,i,2);s.queue.push({kind:'nitroMod',p:i,free:true,left:2});}if(id==='kazuna')p.goalEvent=true;if(id==='mio'){p.experience=Math.min(8,(p.experience||0)+3);log(s,'澪イベント：経験＋3');}if(id==='yuu')p.tomorrowEvent=true;if(id==='chris'){const n=p.wealth||0;p.wealth=0;awardChips(s,i,n);fanChips(s,i,Math.floor(n/2));log(s,'クリスイベント：愛情チップ'+n+'枚を声援へ、ファンチップ＋'+Math.floor(n/2));}
  if(id==='kayo'){const cards=p.hand.filter(c=>(a.discard||[]).includes(c.uid));p.hand=p.hand.filter(c=>!(a.discard||[]).includes(c.uid));p.discard.push(...cards);s.queue.push({kind:'normal',p:i,n:Math.min(3,cards.length+p.buff+(p.cardBuff||0))});p.buff=0;}
  if(id==='machi'){const targets=s.row.filter(f=>(a.targets||[]).includes(f.uid));for(const f of targets)moveOut(s,f);s.audience.push(...shuffle(s,targets.map(deckFan)));fill(s);}
  if(id==='redo'){const cards=unlocked(s,i);for(const f of cards)moveOut(s,f);s.audience.push(...cards.map(deckFan));shuffle(s,s.audience);fill(s);}
@@ -509,7 +509,7 @@ function dispatch(s,a){
 // Drift reads both players' public memory and discard piles and borrows only printed additional effects, never base values or card ownership.
 function driftSources(s,i,n,mode){return [s.players[i],s.players[1-i]].flatMap(p=>[...p.memory,...p.discard]).filter(c=>!c.special&&c.owner!=='kana'&&c.n===n&&detail(c)[mode+'Text']);}
 function driftExtraCost(c,mode){if(canMiyabiDebuff(c,mode))return 1;if(c.owner==='misa'&&mode==='vol')return c.n===3?1:2;if(c.owner==='rai'&&c.n===1&&mode==='fan')return 1;return 0;}
-function driftOption(s,i,source,mode){const p=s.players[i];if(mode==='fan'&&source.owner==='natsume'&&source.n<3)return {flag:'boost',text:p.vol>=130?'VOLを下げずに獲得＋1':'VOLを10％下げて獲得＋1'};if(mode==='fan'&&source.owner==='rai'&&(source.n!==1||p.chips>=1))return {flag:'pick',text:'通常獲得を'+(source.n===3?'上2枚と観客席から2枚':'観客席の1枚を選ぶ獲得')+'に変更'+(source.n===1?'（追加で声援1枚）':'')};if(canMiyabiDebuff(source,mode)&&p.chips>=1)return {flag:'debuff',text:'追加で声援1枚を支払い、相手のVOL－20％'};if(canModify(source,mode))return {flag:'modify',text:'使用後VOL10％で手札の楽曲を改造する'};return null;}
+function driftOption(s,i,source,mode){const p=s.players[i];if(mode==='fan'&&source.owner==='natsume'&&source.n<3)return {flag:'boost',text:p.vol>=130?'VOLを下げずに獲得＋1':'VOLを10％下げて獲得＋1'};if(mode==='fan'&&source.owner==='rai'&&(source.n!==1||p.chips>=1))return {flag:'pick',text:'通常獲得を'+(source.n===3?'上2枚と観客席から2枚':'観客席の1枚を選ぶ獲得')+'に変更'+(source.n===1?'（追加で声援1枚）':'')};if(canMiyabiDebuff(source,mode)&&p.chips>=1)return {flag:'debuff',text:'追加で声援1枚を支払い、相手のVOL－20％'};if(canModify(source,mode))return {flag:'modify',text:'使用後、手札の未改造楽曲1枚をランダムに改造する（VOL消費なし）'};return null;}
 function chooseDrift(s,z,value){
  const p=s.players[z.p],c=p.memory.find(c=>c.uid===z.card&&c.owner==='kana');if(!c)throw Error('使用中の河奈の楽曲がありません');
  const a={type:'play',card:c.uid,mode:z.mode};
@@ -528,7 +528,7 @@ function chooseDrift(s,z,value){
 }
 function driftValue(s,i,c,mode,cost=0){const p={...s.players[i],chips:s.players[i].chips-cost},q=s.players[1-i];if(driftExtraCost(c,mode)>p.chips)return 0;if(c.owner==='chitose')return c.n>1&&!fansProtected(s,1-i,i)&&q.fans.some(f=>fanPoints(q,f)===1)?1:0;if(c.owner==='mitama')return -1;if(c.owner==='kayo')return mode==='vol'&&p.deck.length?1:0;if(c.owner==='tenko'||c.owner==='hana')return .7;if(c.owner==='fukurou')return items(q).length+(q.fanChips||0)>0?1:mode==='vol'?.7:0;if(c.owner==='ayame')return .9;if(c.owner==='shiro')return 1;if(c.owner==='chie')return p.deck.length?.8:0;if(c.owner==='akina')return mode==='fan'?.7:0;if(c.owner==='machi')return q.fans.length?1:0;if(c.owner==='hikari')return p.hand.length>0?.6:0;if(c.owner==='miyabi')return p.chips>=1&&q.vol>=40?.8:0;if(c.owner==='natsume')return mode==='fan'?.8:0;if(c.owner==='rai')return .7;if(c.owner==='aya')return p.vol>=100?1:0;if(c.owner==='moe')return 1;if(c.owner==='misa')return p.chips>=(c.n===3?1:2)?.8:0;if(c.owner==='kono'||c.owner==='hakka'||c.owner==='nina')return .8;if(c.owner==='haru')return .4;if(c.owner==='mitsuha')return p.team.includes('mitsuha')?.6:.1;return .3;}
 function resolveSong(s,i,c,a,ec=c){
- const p=s.players[i],d=song(c),effects=!p.songSeal;const low=a.mode==='fan'&&p.vol<(d.printedNeed??d.need)&&p.kagamiLowUntil;const mod=c.mod;if(mod){p.modDiscard.push(mod);delete c.mod;}const actorsUsed=a.actors||c.usedActors||[];if(mod==='power')d.vol=song({...c,mod}).vol;
+ const p=s.players[i],d=song(c),effects=!p.songSeal;const low=a.mode==='fan'&&p.vol<(d.printedNeed??d.need)&&p.kagamiLowUntil;const mod=c.mod;if(mod){p.modDiscard.push(mod);delete c.mod;nitroDraw(s,i);}const actorsUsed=a.actors||c.usedActors||[];if(mod==='power')d.vol=song({...c,mod}).vol;
  if(effects&&c.owner==='yuu'&&a.mode==='fan'&&p.vol<normalVoltage(p,c))p.borrowDue=true;
  if(effects&&ec.owner==='mimizuku'&&a.mode==='fan'&&s.row[0]&&fanPoints(p,s.row[0])===1){const n=ec.n===3?2:1;log(s,'ミミズク：使用時の先頭が1ポイント、声援チップ＋'+n);for(let j=0;j<n;j++)s.queue.push({kind:'chip',p:i});}
  if(effects&&ec.owner==='kono'&&a.mode==='vol')cash(s,p);
@@ -589,7 +589,7 @@ function autoPay(p,id){const d=EVENTS[id],cards=paymentCards(p);if(d.costMembers
 function fanCount(p,c,raw=false,noExtra=false){if(c.special==='painted')return 0;const n=song(c).fan+(c.owner==='mio'?Math.floor((p.experience||0)/4):0)+p.buff+p.eventBuff+(p.cardBuff||0)+(hasLeader(p,'natsume')&&c.n===3?1:0)+(!noExtra&&!p.songSeal&&c.owner==='haru'&&c.n===3&&p.fans.filter(f=>f.type==='dream').length>=2?1:0);return raw?n:acquisitionCount(p,n);}
 
 function ai(s){
- if(s.pending?.kind==='nitroMod'){const z=s.pending,p=s.players[z.p],cs=modTargets(p).filter(c=>z.options.includes(c.uid));cs.sort((a,b)=>(actors(p,b)?2:0)+1/b.n-((actors(p,a)?2:0)+1/a.n));return {type:'choose',value:cs[0]?.uid||'skip'};}if(s.pending?.kind==='modEncore'){const z=s.pending,p=s.players[z.p],opts=[...z.options].sort((a,b)=>{const val=j=>p.hand.reduce((v,c)=>v+(c.owner===p.team[Number(j)]&&c.n===1?(p.vol>=requiredVoltage(p,c)?3:1):0),0);return val(b)-val(a);});return {type:'choose',value:opts[0]};};if(s.pending?.kind==='kagamiDiscard'){const z=s.pending,p=s.players[z.p],cs=p.hand.filter(c=>z.options.includes(c.uid));cs.sort((a,b)=>b.n-a.n);return {type:'choose',value:cs[0].uid};}if(s.pending?.kind==='startOrder'||s.pending?.kind==='endOrder')return {type:'choose',value:s.pending.options[0]};
+ if(s.pending?.kind==='nitroMod')return {type:'choose',value:'use'};if(s.pending?.kind==='modEncore'){const z=s.pending,p=s.players[z.p],opts=[...z.options].sort((a,b)=>{const val=j=>p.hand.reduce((v,c)=>v+(c.owner===p.team[Number(j)]&&c.n===1?(p.vol>=requiredVoltage(p,c)?3:1):0),0);return val(b)-val(a);});return {type:'choose',value:opts[0]};};if(s.pending?.kind==='kagamiDiscard'){const z=s.pending,p=s.players[z.p],cs=p.hand.filter(c=>z.options.includes(c.uid));cs.sort((a,b)=>b.n-a.n);return {type:'choose',value:cs[0].uid};}if(s.pending?.kind==='startOrder'||s.pending?.kind==='endOrder')return {type:'choose',value:s.pending.options[0]};
  if(s.pending?.kind==='ayameEnd')return {type:'choose',value:s.players[s.pending.p].chips>=2?'use':'skip'};
  if(s.pending?.kind==='request'){const p=s.players[s.pending.p],cards=[...(s.pending.cards||[])];cards.sort((a,b)=>(actors(p,b)?3:0)+song(b).fan/b.n-((actors(p,a)?3:0)+song(a).fan/a.n));return {type:'choose',value:cards[0]?.uid||'skip'};}
 
@@ -606,7 +606,7 @@ function ai(s){
  if(z.kind==='miyabiDebuff')return {type:'choose',value:p.chips>=1&&!s.players[1-z.p].volGuard&&s.players[1-z.p].vol>=40?'use':'skip'};
  if(z.kind==='kanaMemory')return {type:'choose',value:score(p)>=20?'done':z.options.find(x=>x!=='done')||'done'};
  if(z.kind==='mitsuhaStart')return {type:'choose',value:s.row[0]&&['heavy','trouble'].includes(s.row[0].type)?'swap':'skip'};
- if(z.kind==='chieReset')return {type:'choose',value:'use'};
+ if(z.kind==='chieReset')return {type:'choose',value:p.chips>=2?'use':'skip'};
  if(z.kind==='chiePayment')return {type:'choose',value:z.options[0]};
  if(z.kind==='shiroPeek')return {type:'choose',value:'confirm'};
  if(z.kind==='misaStart')return {type:'choose',value:p.chips>=1?'drinkRed':'skip'};
@@ -642,7 +642,7 @@ function ai(s){
  for(const id of ['kazuna','mio','yuu','chris'])if(eventOK(s,i,id)&&(id==='kazuna'?!!p.goal:id==='mio'?(p.experience||0)<8:id==='yuu'?true:(p.wealth||0)>=4))return ev(id);
  if(eventOK(s,i,'shiro')&&s.players[1-i].hand.some(c=>c.special==='painted'))return ev('shiro');
  if(eventOK(s,i,'hibiki')&&(p.vol>=300?(score(p)+15>=20||!p.deck.length&&!p.hand.length):!p.deck.length))return ev('hibiki');
- if(cashCount(p)>=2)return {type:'buy',item:p.vol>=60?'drinkPurple':'support'};
+ if(cashCount(p)>=2)return {type:'buy',item:p.vol>=60?'drinkRed':'support'};
  if(eventOK(s,i,'kana')&&p.memory.filter(c=>c.owner==='kana'&&!autoPay(p,'kana').includes(c.uid)).length+score(p)>=20)return ev('kana');
  if(eventOK(s,i,'riri')&&(score(p)+Math.min(6,Math.max(0,s.players[1-i].fans.length-3))>=20||s.players[1-i].fans.length>=8))return ev('riri');
  if(eventOK(s,i,'chitose')){const q=s.players[1-i],targets=q.team.filter(id=>!hasLeader(q,id)&&!q.startLocked?.includes(id));return ev('chitose',{target:targets[0]});}
@@ -728,7 +728,7 @@ function ai(s){
  choices.sort((a,b)=>estimate(s,i,fanCount(p,b.c))/b.c.n-estimate(s,i,fanCount(p,a.c))/a.c.n);
  if(choices.length){const x=choices[0];return {type:'play',card:x.c.uid,actors:x.actors,mode:'fan'};}
  }
- if(best&&bestValue>.05){const c=p.hand.find(c=>c.uid===best.card);if(c&&canModify(c,best.mode)&&!p.songSeal&&p.modDeck?.length&&modTargets(p).some(x=>x.uid!==c.uid)&&p.vol>=100)best.modify=true;return best;}
+ if(best&&bestValue>.05){const c=p.hand.find(c=>c.uid===best.card);if(c&&canModify(c,best.mode)&&!p.songSeal&&p.modDeck?.length&&modTargets(p).some(x=>x.uid!==c.uid))best.modify=true;return best;}
  const painted=p.hand.find(c=>c.special==='painted'&&actors(p,c));if(painted)return {type:'play',card:painted.uid,actors:[0,1,2],mode:'vol'};
  if(free('draw')&&p.deck.length)return {type:'support',effect:'draw',free:true};
  if(canSupport&&hasLeader(p,'moe')&&p.chips>=3&&ready===0&&moeTargets(s,i).length)return {type:'support',effect:'hold',target:moeTargets(s,i)[0]};

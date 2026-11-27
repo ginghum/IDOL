@@ -5,7 +5,7 @@ new Function('document','localStorage','setTimeout','clearTimeout','assert','lis
 const click=(action,id,extra={})=>listeners.click({target:{closest:()=>({dataset:{action,id,...extra}})}});
 assert.deepEqual(IDOL_GROUPS.find(x=>x.id==='justi-3z').members,['homura','kagami','nitro']);
 state=IDOL.create(['nitro','kagami','homura'],'nitro',['hana','aya','miyabi'],'hana',0,127);state.pending=null;state.queue=[];screen='match';
-const p=state.players[0];let c=p.hand.find(c=>c.owner==='nitro');if(!c){c=p.deck.splice(p.deck.findIndex(c=>c.owner==='nitro'),1)[0];p.hand.push(c);}click('song',c.uid);assert.equal(selection.modify,false);assert.match(songDock(),/data-field="modify"/);assert.match(songDock(),/VOL10％/);
+const p=state.players[0];let c=p.hand.find(c=>c.owner==='nitro');if(!c){c=p.deck.splice(p.deck.findIndex(c=>c.owner==='nitro'),1)[0];p.hand.push(c);}click('song',c.uid);assert.equal(selection.modify,false);assert.match(songDock(),/data-field="modify"/);assert.match(songDock(),/VOL消費なし/);
 listeners.change({target:{dataset:{field:'modify'},checked:true}});assert.equal(selection.modify,true);
 c.mod='power';assert.match(tableSong(c),/改造済/);assert.match(songDock(),/元の値/);assert.match(tableSong(c),/mod-power/);
 modal=null;click('mod-info',null,{p:'0'});assert.equal(modal.kind,'mod-info');assert.match($('#modal').innerHTML,/全12枚/);for(const id in IDOL.MODS)assert($('#modal').innerHTML.includes('assets/art/mod-'+id));

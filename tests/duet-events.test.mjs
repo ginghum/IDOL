@@ -35,7 +35,7 @@ for(const G of [browser,server]){
  // Six memories with both personal requirements met are insufficient after Vengeance tuning.
  {const s=make('vengeance'),p=s.players[0];pay(s,'vengeance');p.memory=p.memory.filter(c=>!c.uid.startsWith('extra-memory'));assert(!G.eventOK(s,0,'vengeance'));assert(!G.paymentOK(p,'vengeance',p.memory.map(c=>c.uid)));const before=JSON.stringify(s);assert.throws(()=>G.peerAction(s,{type:'event',id:'vengeance',memory:p.memory.map(c=>c.uid)},0));assert.equal(JSON.stringify(s),before);}
  // Chie can reset any duet through the existing skill; no implicit unlimited reuse.
- const s=make('nightmare',0,'chie'),p=s.players[0];p.leader='chie';use(s,'nightmare');assert.equal(s.pending.kind,'chieReset');G.dispatch(s,{type:'choose',value:'use'});assert.equal(p.chieResetUsed,true);assert.equal(p.events[0].used,false);
+ const s=make('nightmare',0,'chie'),p=s.players[0];p.leader='chie';p.chips=2;use(s,'nightmare');assert.equal(s.pending.kind,'chieReset');G.dispatch(s,{type:'choose',value:'use'});assert.equal(p.chieResetUsed,true);assert.equal(p.events[0].used,false);
  // Reversed team order readies by member identity, with Hakka follow-up still queued normally.
  const x=make('vengeance'),q=x.players[0];q.team=['hakka','aya','emi'];q.leader='hakka';q.ready=[false,false,false];use(x,'vengeance');assert.deepEqual(q.ready,[false,true,true]);assert.equal(x.pending.kind,'hakkaReady');
 }
