@@ -21,7 +21,7 @@ for(const G of [browser,server]){
  assert(counts.chip>270&&counts.chip<330);assert(counts.teddy>80&&counts.teddy<120);assert(counts.ticket>80&&counts.ticket<120);
  for(const who of [0,1]){
   const s=make(who),p=s.players[who],c=give(s,who,1);p.vol=60;p.chips=10;p.moeFreeSupport=3;p.moeDouble=true;s.row[0].type='cheer';
-  G.dispatch(s,{type:'play',card:c.uid,actors:[0],mode:'fan'});assert(G.supportSealed(s,who));assert.equal(p.chips,11,'chip gain stays legal');
+  G.dispatch(s,{type:'play',card:c.uid,actors:[0],mode:'fan'});assert(G.supportSealed(s,who));assert.equal(p.chips,12,'fallback and audience chip gains stay legal');
   for(const a of ['draw','refresh','lock','hold'].flatMap(effect=>[false,true].map(free=>({type:'support',effect,free,target:'x'}))))bad(s,a);
   assert.equal(p.moeFreeSupport,3);assert(p.moeDouble);
   for(const seat of [0,1]){const v=G.publicView(s,seat);assert.equal(G.supportSealed(v,who===seat?0:1),true);assert(!('seed'in v));assert(v.players[1].hand.every(c=>!c.owner));}
@@ -36,7 +36,7 @@ for(const G of [browser,server]){
  // Moe 3 gains chips under a support seal and does not refresh any actor.
  {const s=make(),p=s.players[0],c=give(s,0,3,'moe');p.vol=100;s.row.forEach(f=>f.type='light');G.dispatch(s,{type:'play',card:c.uid,actors:[0,1,2],mode:'fan'});assert.equal(s.pending,null);assert.deepEqual(p.ready,[false,false,false]);assert.equal(p.service,0);assert.equal(p.chips,2);assert(G.supportSealed(s,0));}
  // Services remain legal after FAN, including tripling, while all support actions remain sealed.
- for(const who of [0,1]){const s=make(who),p=s.players[who],c=give(s,who,1);p.vol=60;p.chips=10;s.row.forEach(f=>f.type='light');G.dispatch(s,{type:'play',card:c.uid,actors:[0],mode:'fan'});p.moeDouble=true;G.dispatch(s,{type:'service',actor:1});assert.equal(p.chips,13);assert.equal(p.service,1);assert.equal(p.moeDouble,false);bad(s,{type:'support',effect:'draw'});}
+ for(const who of [0,1]){const s=make(who),p=s.players[who],c=give(s,who,1);p.vol=60;p.chips=10;s.row.forEach(f=>f.type='light');G.dispatch(s,{type:'play',card:c.uid,actors:[0],mode:'fan'});p.moeDouble=true;G.dispatch(s,{type:'service',actor:1});assert.equal(p.chips,14);assert.equal(p.service,1);assert.equal(p.moeDouble,false);bad(s,{type:'support',effect:'draw'});}
  // A single fan chip does not seal; first gain can happen during the leader's own turn and expires at its end.
  {const s=make();const p=s.players[0];p.items.push({uid:'ticket',item:'ticket'});s.lottery=['small',...Object.entries(G.LOTTERY).flatMap(([id,d])=>Array(d.count-(id==='small'?1:0)).fill(id))];G.dispatch(s,{type:'ticket',id:'ticket'});assert(!G.supportSealed(s,0));G.dispatch(s,{type:'service',actor:0});settle(s);}
  {const s=make();s.players[0].supportSealTurn=s.turn;G.timeout(s);assert.equal(s.active,1);assert(!G.supportSealed(s,0));}
