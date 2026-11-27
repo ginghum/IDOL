@@ -41,7 +41,7 @@ function play(s,i,owner,n,mode='fan'){const p=s.players[i],card=move(p,owner,n);
 }
 for(let seed=1;seed<=60;seed++){
  const s=make(seed%2?['overcome','viewing','mc']:['wit','viewing','overcome'],seed);s.players[1].events=['viewing','mc','overcome'].map(id=>({id,used:false,lastTurn:null}));let steps=0;
- while(s.winner===null&&steps++<1800){G.dispatch(s,G.ai(s));for(const p of s.players){assert.equal([...p.hand,...p.deck,...p.memory,...p.discard,...(p.rehearsal?[p.rehearsal]:[])].filter(c=>!c.special).length,27);assert(p.vol>=0&&p.vol<=(p.leader==='hibiki'?400:200)&&p.chips>=0&&p.fanChips>=0);}}
+ while(s.winner===null&&steps++<1800){G.dispatch(s,G.ai(s));for(const p of s.players){assert.equal([...p.hand,...p.deck,...p.memory,...p.discard,...(p.rehearsal?[p.rehearsal]:[]),...(p.goal?[p.goal]:[])].filter(c=>!c.special).length,27);assert(p.vol>=0&&p.vol<=(p.leader==='hibiki'?400:200)&&p.chips>=0&&p.fanChips>=0);}}
  assert.notEqual(s.winner,null,'New event CPU match terminates');
 }
 console.log('Extra events: VOL threshold, exact payments, persistent service conversion, 20-point win, protection boundaries, hostile removals/theft, own penalties, Wit four-memory cost and 60 CPU matches passed');

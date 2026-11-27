@@ -35,7 +35,7 @@ for(const G of [browser,server]){
  const ids=Object.keys(G.CHAR).filter(x=>x!=='hikari');
  for(let seed=1;seed<=100;seed++){
  const a=['hikari',ids[seed%9],ids[(seed+3)%9]],b=['hikari',ids[(seed+2)%9],ids[(seed+5)%9]],s=G.create(a,a[seed%3],b,b[(seed+1)%3],seed%2,seed);let moves=0;
- while(s.winner===null&&moves++<2000){G.dispatch(s,G.ai(s));for(const p of s.players){assert.equal([...p.hand,...p.deck,...p.memory,...p.discard,...(p.rehearsal?[p.rehearsal]:[])].filter(c=>!c.special).length,27);assert(p.chips>=0);}}
+ while(s.winner===null&&moves++<2000){G.dispatch(s,G.ai(s));for(const p of s.players){assert.equal([...p.hand,...p.deck,...p.memory,...p.discard,...(p.rehearsal?[p.rehearsal]:[]),...(p.goal?[p.goal]:[])].filter(c=>!c.special).length,27);assert(p.chips>=0);}}
  assert.notEqual(s.winner,null,'Hikari CPU match terminates');
  }
 }

@@ -18,7 +18,7 @@ for(const G of [server,browser])for(const seat of [0,1]){
   q.fanChips=2;q.items.push({uid:'enemy-resource',item:'meat'});q.fans.push({uid:'enemy-fan',type:'light',lock:null});
   const before=JSON.stringify(q.memory),hasEffect=!!G.detail(b)[mode+'Text'];play(s,c,mode);
   if(hasEffect){assert.equal(s.pending.kind,'kanaDrift',id+' '+n+' '+mode);assert(s.pending.free);assert(s.pending.options.includes(b.uid));choose(s,b.uid);settle(s);}else assert.equal(s.pending,null);
-  assert.equal(JSON.stringify(q.memory),before,id);assert.equal(p.kanaSongsPlayed,1);assert(p.chips>=0);assert(!p.memory.some(x=>x.owner===id));assert(p.memory.some(x=>x.uid===c.uid)||p.hand.some(x=>x.uid===c.uid));assert.equal(s.pending,null);cases++;
+  assert.equal(JSON.stringify(q.memory),before,id);assert.equal(p.kanaSongsPlayed,1);assert(p.chips>=0);assert(!p.memory.some(x=>x.owner===id));assert(p.memory.some(x=>x.uid===c.uid)||p.hand.some(x=>x.uid===c.uid)||p.goal?.uid===c.uid);assert.equal(s.pending,null);cases++;
  }
  // No hidden cards, different sizes, special cards or recursive Drift sources are candidates.
  {const s=make(),c=give(s),q=s.players[1-seat];source(s,'tenko',2);source(s,'kana');q.memory.push({uid:'special',owner:'shiro',n:1,special:'world'});q.hand.push({uid:'hidden',owner:'kayo',n:1});play(s,c);assert.equal(s.pending,null);assert.equal(s.players[seat].vol,110);}
