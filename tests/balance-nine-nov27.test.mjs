@@ -14,7 +14,7 @@ for(const G of [server,browser])for(const seat of [0,1]){
  for(const n of [1,2,3])for(const mode of ['vol','fan'])for(const victim of ['none','item','fanChip','sealed']){
   const s=make('fukurou','kayo'),p=s.players[seat],q=s.players[1-seat],c=give(s,'fukurou',n);p.vol=100;p.chips=0;q.chips=5;
   if(victim==='item')q.items.push({uid:'victim',item:'teddy'});if(victim==='fanChip')q.fanChips=1;if(victim==='sealed')p.songSeal=true;
-  play(s,c,mode);settle(s);assert.equal(p.chips,victim==='none'?1:0);assert.equal(q.items.length,0);assert.equal(q.fanChips,0);assert.equal(q.chips,5);
+  play(s,c,mode);settle(s);assert.equal(p.chips,victim==='none'&&mode==='vol'?1:0);assert.equal(q.items.length,0);assert.equal(q.fanChips,0);assert.equal(q.chips,5);
  }
  // A 3-person Drift is free for a non-leader, but source payments remain mandatory.
  for(const mode of ['vol','fan']){
