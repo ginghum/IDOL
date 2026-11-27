@@ -7,7 +7,7 @@ const p=state.players[0],q=state.players[1],c=p.deck.find(c=>c.owner==='kazuna')
 const click=(action,seat)=>listeners.click({target:{closest:()=>({dataset:{action,p:String(seat)},disabled:false})}}),content=()=>$('#modal').innerHTML,before=JSON.stringify(state);
 assert.match(CHAR.kazuna.skill,/目標.*次の自分のターン以降.*同じ人数用/);
 assert.match(tableStacks(p,0),/data-action="goal-info" data-p="0" data-zone="goal"/);
-assert.match(tableHUD(p,0),/経験 8\/8 · 澪FAN＋2/);
+assert(!tableHUD(p,0).includes('経験'));assert(!tableHUD(p,0).includes('愛'));assert.match(matchHTML(),/experience-cards/);assert.match(matchHTML(),/love-cards/);
 assert(!matchHTML().includes('wealth-one'));assert(!matchHTML().includes('wealth-all'));
 for(const seat of [0,1]){
  click('zones',seat);assert.equal(modal.kind,'zones');assert.match(content(),/data-action="goal-info"/);assert.match(content(),new RegExp('目標 '+(seat?0:1)+'枚'));assert(!content().includes('data-art="song-kazuna-'));
@@ -19,4 +19,4 @@ assert.equal(JSON.stringify(state),before);
 modal={kind:'rules',section:'characters',character:'mio'};renderModal();assert.match(content(),/最大8枚/);assert(!content().includes('最大12枚'));
 modal={kind:'rules',section:'characters',character:'chris'};renderModal();assert.match(content(),/声援に戻せるのは専用イベントのみ/);
 `)(document,{getItem:()=>null,setItem(){}},()=>0,()=>{},assert,listeners);
-console.log('FunkFanfare UI: goal pile buttons for both seats, separate goal details/empty state, concise rules, eight-experience HUD and no ordinary wealth withdrawal passed');
+console.log('FunkFanfare UI: goal pile buttons for both seats, separate goal details/empty state, concise rules, stacked experience/love cards and no ordinary wealth withdrawal passed');
