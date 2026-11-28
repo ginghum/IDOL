@@ -1,0 +1,65 @@
+/* Mobile editor trial. Only this mode locks the viewport; legacy and matches are unchanged. */
+.mobile-layout-toggle{display:none}
+@media(max-width:720px),(max-height:540px) and (max-width:1024px){.mobile-layout-toggle{display:inline-block}}
+html.fixed-setup{height:100%;overflow:hidden;overscroll-behavior:none}
+body.compact-setup{height:100dvh;overflow:hidden;--cs-gap:7px;--cs-header:48px}
+.compact-setup .app-header{height:var(--cs-header);min-height:0;padding:4px 10px;gap:8px}
+.compact-setup .brand{gap:7px}.compact-setup .brand-icon{width:29px;height:29px;line-height:29px;font-size:18px;border-radius:7px}
+.compact-setup .brand strong{font-size:14px}.compact-setup .brand small{font-size:8px}
+.compact-setup .nav{gap:4px}.compact-setup .nav button{font-size:11px;padding:5px 7px;min-height:32px}
+.compact-setup .shell{height:calc(100dvh - var(--cs-header));max-width:900px;padding:7px 8px max(7px,env(safe-area-inset-bottom));overflow:hidden}
+.compact-editor{height:100%;display:grid;grid-template-rows:34px 54px 38px minmax(0,1fr) 44px;gap:var(--cs-gap);min-height:0}
+.compact-editor button,.cs-dialog button{min-height:32px;font-size:12px;line-height:1.3;padding:6px 8px;transform:none!important}
+.cs-toolbar{display:flex;align-items:center;gap:5px;min-width:0}.cs-toolbar h1{font-size:15px;flex:1;white-space:nowrap;letter-spacing:0}.cs-toolbar button{font-size:11px;padding:5px 7px}
+.cs-selected{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.cs-selected>button{padding:0;display:flex;align-items:center;gap:5px;overflow:hidden;text-align:left;border-color:#d1c8d5;background:linear-gradient(120deg,#fffefa,#eee9f2)}
+.cs-selected .art{height:100%;width:39px;min-height:0;flex:none;border:0;border-radius:5px}
+.cs-selected .art img{height:100%;width:100%;object-fit:cover;object-position:top}
+.cs-selected span{min-width:0;font-size:13px;font-weight:700}.cs-selected small{display:block;font-size:10px;font-weight:400}
+.cs-unfilled{display:grid;place-items:center;border:1px dashed #cfc6d2;border-radius:8px;font-size:12px;color:var(--muted)}
+.cs-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.cs-tabs button{font-size:11px;padding:4px 0;border-radius:7px}
+.compact-editor .on,.cs-dialog .on{background:#f6e0ea;border-color:#bc5275;box-shadow:inset 0 0 0 1px #bc5275;color:#7d2948}
+.cs-workspace{display:flex;flex-direction:column;gap:7px;min-height:0;padding:9px;border:1px solid #ddd7e1;border-radius:12px;background:#fffefa;overflow:hidden}
+.cs-workspace input,.cs-workspace select,.cs-dialog select,.cs-dialog input{width:100%;min-width:0;font:inherit;font-size:12px;border:1px solid #d9d3de;border-radius:7px;background:#fff;padding:6px 7px;height:34px;color:var(--ink)}
+.cs-search{display:grid;grid-template-columns:1fr 1fr;gap:5px;flex:none}.cs-search input{grid-column:1/-1;font-size:16px}
+#roster-results:has(.cs-grid){display:grid;grid-template-rows:18px minmax(0,1fr) 36px;gap:5px;flex:1;min-height:0}
+.cs-count{font-size:10px;color:var(--muted);line-height:18px}.cs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:7px;min-height:0;flex:1}
+.cs-grid.one-row{grid-template-rows:minmax(0,1fr)}
+.cs-tile{display:grid;grid-template-rows:minmax(0,1fr) 32px;gap:3px;min-height:0;min-width:0}
+.cs-portrait{display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:0!important;padding:0!important;overflow:hidden;border-radius:8px;background:#eeebf3}
+.cs-portrait .art{flex:1;width:100%;height:0;min-height:0;border:0;background:#282033}
+.cs-portrait .art img{width:100%;height:100%;object-fit:contain;object-position:top}
+.cs-portrait>span{flex:none;padding:4px 1px;font-size:13px;white-space:nowrap;font-weight:700;background:#fffaf6}
+.cs-portrait>small{font-size:10px;padding:0 0 4px;background:#fffaf6;flex:none}
+.cs-more{font-size:10px!important;background:#f1eef5!important;border-color:#e1dbe8!important;padding:4px!important;color:#555263}
+.cs-pager{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;align-items:center;flex:none;height:36px}
+.cs-pager span{text-align:center;font-size:12px;font-variant-numeric:tabular-nums}.cs-pager button{height:34px}
+.cs-empty{grid-column:1/-1;align-self:center;text-align:center;font-size:12px}
+.cs-footer{display:grid;grid-template-columns:1fr 2fr;gap:8px}.cs-footer button{font-size:14px;border-radius:10px}
+.cs-hint{font-size:11px;line-height:1.5;color:var(--muted);margin:0;white-space:normal}
+.cs-leader-skill{font-size:12px;line-height:1.55;flex:none}.cs-leader-skill b{font-size:12px}.cs-stage-leader>.cs-grid{min-height:60px}
+.cs-event-selection{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;flex:none}
+.cs-event-selection button,.cs-event-selection>span{font-size:10px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;min-width:0;padding:5px 4px;line-height:22px}.cs-event-selection>span{color:var(--muted);border:1px dashed #ddd;border-radius:6px}
+.cs-event-list{display:grid;grid-auto-rows:minmax(0,1fr);gap:7px;flex:1;min-height:0}
+.cs-event{display:grid;grid-template-rows:minmax(0,1fr) 32px;gap:3px;min-height:0}
+.cs-event-pick{display:flex;align-items:center;text-align:left;gap:8px;padding:5px!important;min-height:0!important;overflow:hidden}
+.cs-event-pick .art{height:100%;width:28%;min-height:0;flex:none;aspect-ratio:1;border:0;background:#eee}
+.cs-event-pick .art img{object-fit:contain;width:100%;height:100%}
+.cs-event-pick>span{min-width:0;flex:1}.cs-event-pick b{display:block;font-size:13px;line-height:1.5;overflow-wrap:anywhere}.cs-event-pick small{display:block;font-size:10px;margin-top:3px}
+.cs-mode{display:flex;gap:6px;flex:none}.cs-mode>button{flex:1}.cs-stage-match{gap:10px;justify-content:center}.cs-stage-match label{font-size:12px}.cs-stage-match h2{font-size:18px}
+.cs-opponent{border:1px solid #e2dce5;border-radius:8px;padding:9px;font-size:12px}.cs-opponent button{margin-top:6px}.cs-stage-match .time-limit-setting{margin:0;padding:0}.cs-stage-match .time-limit-setting p{font-size:10px;margin-top:3px}
+.compact-setup .overlay{padding:10px;align-items:center;overscroll-behavior:contain}
+.compact-setup .cs-dialog{display:flex;flex-direction:column;gap:9px;width:100%;max-width:520px;max-height:calc(100dvh - 20px);padding:14px;overflow:hidden;font-size:13px;min-height:0}
+.cs-dialog .dialog-head{margin:0;gap:6px;align-items:center;flex:none}.cs-dialog .dialog-head h2{font-size:16px;line-height:1.35;overflow-wrap:anywhere}.cs-dialog .dialog-head button{flex:none}
+.cs-dialog .cs-menu-list{display:grid;gap:7px}.cs-detail{display:grid;grid-template-columns:30% minmax(0,1fr);align-items:start;gap:10px;min-height:0}.cs-detail>.art{height:140px;min-height:0}.cs-detail>.art img{width:100%;height:100%;object-fit:contain}.cs-detail>p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}
+.cs-library{display:flex;flex-direction:column;gap:7px}.cs-library-portraits{display:flex;height:100px;gap:7px;min-height:0}.cs-library-portraits>.art{flex:1;min-width:0;min-height:0;height:100%}.cs-library-portraits img{width:100%;height:100%;object-fit:contain}
+.cs-dialog-cpu-setup{height:calc(100dvh - 20px)}.cs-dialog-cpu-setup>.cs-grid{flex:1;min-height:0}.cs-dialog-cpu-setup .cs-event-list{min-height:60px}
+@media(max-height:650px){.compact-setup{--cs-gap:5px;--cs-header:42px}.compact-editor{grid-template-rows:32px 44px 34px minmax(0,1fr) 40px}.cs-workspace{padding:7px;gap:5px}.cs-search{gap:4px}.cs-search input,.cs-search select{height:31px;padding:4px 6px}.cs-leader-skill{font-size:11px;line-height:1.45}.cs-leader-skill b{font-size:11px}.cs-stage-match{gap:6px}.cs-stage-match .cs-opponent{padding:6px}.cs-dialog .cs-library-portraits{height:70px}.compact-setup .cs-dialog{gap:6px;padding:10px}.cs-detail>.art{height:100px}}
+@media(max-height:450px) and (max-width:1024px){.compact-setup{--cs-header:0px;--cs-gap:4px}.compact-setup .app-header{display:none}.compact-editor{grid-template-rows:30px 36px 32px minmax(0,1fr) 36px}.compact-setup .shell{padding:4px 7px}.cs-search{grid-template-columns:2fr 1fr 1fr}.cs-search input{grid-column:auto}.cs-stage-leader{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:20px minmax(0,1fr)}.cs-stage-leader>.cs-hint{grid-column:1/-1}.cs-stage-leader>.cs-grid{grid-column:1}.cs-leader-skill{grid-column:2;align-self:center}.cs-stage-events{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:32px minmax(0,1fr) 34px}.cs-stage-events>.cs-event-list{grid-column:1/-1}.cs-stage-events>.cs-pager{grid-column:1/-1}.cs-stage-match{display:grid;grid-template-columns:1fr 1fr;align-content:center;align-items:center}.cs-stage-match .cs-opponent{grid-column:2;grid-row:1/4}.cs-stage-match>.cs-hint{display:none}.cs-dialog .cs-library-portraits{height:45px}.cs-dialog .cs-menu-list{grid-template-columns:1fr 1fr}.cs-dialog .cs-hint{font-size:10px}.cs-detail>p{font-size:12px}.cs-dialog-cpu-setup>.cs-hint{display:none}.cs-dialog-cpu-setup .cs-event-list{grid-template-columns:1fr 1fr}.cs-dialog .cs-grid{grid-template-rows:minmax(0,1fr)}.cs-dialog .cs-pager{height:32px}}
+body.in-setup.compact-setup .shell{max-width:900px;padding:7px 8px max(7px,env(safe-area-inset-bottom))}
+.compact-editor .cs-footer{padding:0;letter-spacing:0;text-align:left;color:var(--ink)}
+.cs-workspace,.compact-setup .cs-dialog{color:#202735}
+.cs-workspace .cs-pager>span,.cs-dialog .cs-pager>span{color:#555263}
+@media(max-height:650px){body.compact-setup{--cs-gap:5px;--cs-header:42px}}
+@media(max-height:450px) and (max-width:1024px){body.compact-setup{--cs-header:0px;--cs-gap:4px}body.in-setup.compact-setup .shell{padding:4px 7px}}
+.cs-cpu-selected{display:flex;gap:4px;min-width:0;flex:none}.cs-cpu-selected button{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;padding:4px}
