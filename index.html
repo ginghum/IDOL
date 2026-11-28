@@ -1884,4 +1884,4 @@ function updateCompactViewport(){const key=compactSetupEnabled()+':'+compactPage
 document.defaultView?.addEventListener('resize',updateCompactViewport);
 document.addEventListener('keydown',e=>{if(modal?.kind==='gallery'&&modal.art){if(e.key==='Escape'){galleryBack();return;}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault?.();galleryStep(e.key==='ArrowLeft'?-1:1);return;}}if(e.key==='Escape'&&modal){if(modal.returnToCompact){modal=modal.returnToCompact;renderModal();return;}if(modal.kind==='table-log'&&modal.returnToResult){modal={kind:'result'};renderModal();return;}if(['online','opening','online-ready','online-disconnect','lineup-wait'].includes(modal.kind)||modal.kind==='result'&&net?.mode==='room')return;if(modal.kind==='lottery-result'){closeLotteryResult();return;}const song=modal.kind==='song';modal=null;if(song)render();else renderModal();schedule();}});
 render();
-</script><script src="rooms.js?v=20261128-sequential"></script></body></html>
+</script><script src="rooms.js?v=20261128-default-zero"></script></body></html>
