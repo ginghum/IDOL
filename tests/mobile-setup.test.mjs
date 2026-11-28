@@ -4,6 +4,8 @@ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=ht
 const nodes=new Map(),listeners={},store=new Map();let mobile=true;
 const document={querySelectorAll:()=>[],querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',textContent:'',querySelector:()=>null,remove(){},focus(){}});return nodes.get(k);},createElement:()=>({setAttribute(){},remove(){}}),body:{append(){},classList:{toggle(){}}},documentElement:{scrollTop:0,classList:{toggle(){}}},addEventListener(k,fn){listeners[k]=fn;}};
 new Function('document','localStorage','setTimeout','clearTimeout','assert','listeners','matchMedia','innerHeight',code+`
+assert.equal(team.length,0);assert.equal(leader,null);assert.equal(chosenEvents.length,0);assert(!unitOK(unitConfig()));
+team=['kayo','machi','natsume'];leader='kayo';chosenEvents=['kayo','machi','natsume'];
 const click=(action,id)=>listeners.click({target:{closest:()=>({dataset:{action,id:String(id??'')},disabled:false})}});
 assert(compactSetupEnabled());assert.match(setupHTML(),/compact-editor/);
 const original=JSON.stringify(unitConfig());

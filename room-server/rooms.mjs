@@ -5,7 +5,6 @@ const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:
 class Problem extends Error{constructor(message,status=400){super(message);this.status=status;}}
 const ticket=x=>typeof x==='string'&&/^[a-zA-Z0-9_-]{24,80}$/.test(x);
 function config(c){if(c?.timeLimit!==undefined&&typeof c.timeLimit!=='boolean')throw new Problem('時間制限はONかOFFで指定してください');if(!c||!Array.isArray(c.team)||c.team.length!==3||new Set(c.team).size!==3||c.team.some(x=>!Object.hasOwn(IDOL.CHAR,x))||!c.team.includes(c.leader)||!Array.isArray(c.events)||c.events.length!==3||new Set(c.events).size!==3||c.events.some(x=>!Object.hasOwn(IDOL.EVENTS,x)))throw new Problem('編成を確認してください');return {team:[...c.team],leader:c.leader,events:[...c.events],timeLimit:c.timeLimit!==false,first:['0','1'].includes(String(c.first))?Number(c.first):null};}
-function code(){return String(crypto.getRandomValues(new Uint32Array(1))[0]%10000).padStart(4,'0');}
 function bump(r,now){r.rev++;r.updated=now;r.expires=now+(r.phase==='waiting'?LOBBY:TTL);}
 function syncClock(r,now,previousTurn){
  if(r.state.winner!==null){r.phase='ended';r.deadline=0;r.clockMode='ended';return;}
@@ -40,8 +39,8 @@ export async function handle(request,env){
  if(request.method==='GET'&&parts[0]==='health')return json({ok:true,protocol:PROTOCOL,storage:!!env.BUCKET});
  if(!env.BUCKET)throw new Problem('対戦サーバーの準備中です',503);
  if(request.method==='POST'&&!parts.length){const b=await body(request);if(b.protocol!==PROTOCOL)throw new Problem('ゲームを再読み込みしてください',426);if(!ticket(b.ticket))throw new Problem('参加情報がありません');const c=config(b.config);
- for(let n=0;n<30;n++){const num=code(),key='rooms/'+num+'.json',old=await env.BUCKET.get(key);if(old&&(await old.json()).expires>=now)continue;const r={code:num,protocol:PROTOCOL,rev:1,phase:'waiting',timeLimit:c.timeLimit,selectBeforeStart:b.flow==='selection',seats:[{token:b.ticket,config:c},null],ready:[false,false],rematchReady:[false,false],departed:[false,false],round:1,state:null,deadline:0,seen:[],created:now,updated:now,expires:now+LOBBY};const saved=await env.BUCKET.put(key,JSON.stringify(r),{onlyIf:old?{etagMatches:old.etag}:new Headers({'if-none-match':'*'}),httpMetadata:{contentType:'application/json'}});if(saved)return json(view(r,0,now));}throw new Problem('空き部屋を作れませんでした。少し待ってください',503);}
- const num=parts[0];if(!/^\d{4}$/.test(num||''))throw new Problem('部屋番号は4桁の数字で入力してください');
+ for(let n=0;n<10000;n++){const num=String(n),key='rooms/'+num+'.json',old=await env.BUCKET.get(key);if(old){const previous=await old.json();if(previous.expires>=now&&previous.phase!=='closed')continue;}const r={code:num,protocol:PROTOCOL,rev:1,phase:'waiting',timeLimit:c.timeLimit,selectBeforeStart:b.flow==='selection',seats:[{token:b.ticket,config:c},null],ready:[false,false],rematchReady:[false,false],departed:[false,false],round:1,state:null,deadline:0,seen:[],created:now,updated:now,expires:now+LOBBY};const saved=await env.BUCKET.put(key,JSON.stringify(r),{onlyIf:old?{etagMatches:old.etag}:new Headers({'if-none-match':'*'}),httpMetadata:{contentType:'application/json'}});if(saved)return json(view(r,0,now));}throw new Problem('空き部屋を作れませんでした。少し待ってください',503);}
+ const num=parts[0];if(!/^\d{1,4}$/.test(num||''))throw new Problem('部屋番号は0以上の数字で入力してください');
  const b=request.method==='POST'?await body(request):{},token=request.headers.get('authorization')?.replace(/^Bearer /,'')||'';
  if(request.method==='POST'&&parts[1]==='join'){
  if(b.protocol!==PROTOCOL)throw new Problem('ゲームを再読み込みしてください',426);if(!ticket(b.ticket))throw new Problem('参加情報がありません');const c=config(b.config);

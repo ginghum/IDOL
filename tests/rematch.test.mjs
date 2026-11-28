@@ -10,6 +10,7 @@ let response,offline=false;
 const c=vm.createContext({document,localStorage:storage,sessionStorage:storage,setTimeout:()=>0,clearTimeout(){},crypto:webcrypto,URLSearchParams,AbortController,Date,console,location:{search:'',pathname:'/IDOL/',hash:''},fetch:async(url,options)=>{requests.push({url,body:options.body&&JSON.parse(options.body)});if(offline)throw Error('offline');return {ok:true,json:async()=>response};}});
 vm.runInContext(code+'\n'+rooms,c);
 const run=s=>vm.runInContext(s,c),tick=()=>new Promise(r=>setImmediate(r));
+run("team=['kayo','machi','natsume'];leader='kayo';chosenEvents=['kayo','machi','natsume'];");
 run(`
 state=IDOL.create(team,leader,['rai','hana','shio'],'rai',0,123,chosenEvents,['rai','hana','shio']);state.winner=0;screen='match';
 net=roomNet();net.code='1234';net.phase='ended';net.connected=true;net.round=1;net.rev=9;

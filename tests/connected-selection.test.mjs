@@ -12,6 +12,7 @@ function client(store=new Map()){
  return {c,run:s=>vm.runInContext(s,c),nodes,store,listeners};
 }
 const a=client(),b=client(),tick=()=>new Promise(r=>setImmediate(r));
+for(const x of [a,b]){assert.equal(x.run('team.length'),0);assert.equal(x.run('chosenEvents.length'),0);x.run("team=['kayo','machi','natsume'];leader='kayo';chosenEvents=['kayo','machi','natsume'];");}
 a.run('firstMode="0";battleMode="online";onlineLobby()');await a.run("onlineAction('online-host')");
 const number=a.run('net.code'),token=a.run('net.token');assert.equal(a.run('screen'),'setup');assert.equal(a.run('net.phase'),'waiting');assert.equal(a.run('state'),null);assert.match(a.nodes.get('#app').innerHTML,/接続中キャラ選択/);
 b.run('battleMode="online";onlineLobby()');b.run('net.input='+JSON.stringify(number));await b.run("onlineAction('online-join')");await a.run('roomSync(net)');

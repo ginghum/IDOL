@@ -4,6 +4,8 @@ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8'),code=ht
 const nodes=new Map(),listeners={};
 const document={querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',querySelector:()=>null});return nodes.get(k);},addEventListener(k,fn){listeners[k]=fn;}};
 new Function('document','localStorage','setTimeout','clearTimeout','assert','listeners',code+`
+assert.equal(team.length,0);assert.equal(leader,null);assert.equal(chosenEvents.length,0);assert(!unitOK(unitConfig()));
+team=['kayo','machi','natsume'];leader='kayo';chosenEvents=['kayo','machi','natsume'];
 const click=(action,id)=>listeners.click({target:{closest:()=>({dataset:{action,id},disabled:false})}});
 for(let n=0;n<300;n++){const c=randomCpuConfig();assert(cpuConfigOK(c));assert(c.events.every(id=>c.team.includes(id)||Object.hasOwn(COMMON,id)||DUETS[id]?.members.every(member=>c.team.includes(member))),'Random opponent never has another member’s event');}
 // No manual selection: generate each time and start directly, without an opponent editor.

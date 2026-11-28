@@ -6,7 +6,9 @@ function run(check){
  const nodes=new Map(),listeners={};
  const document={querySelectorAll:()=>[],querySelector(k){if(!nodes.has(k))nodes.set(k,{innerHTML:'',textContent:'',querySelector:()=>null,remove(){},focus(){}});return nodes.get(k);},createElement:()=>({setAttribute(){},remove(){}}),body:{append(){},classList:{toggle(){}}},documentElement:{scrollTop:0},addEventListener(k,fn){listeners[k]=fn;}};
  new Function('document','localStorage','setTimeout','clearTimeout','assert','listeners',code+`
- const click=(action,id)=>listeners.click({target:{closest:()=>({dataset:{action,id:String(id??'')},disabled:false})}});
+ assert.equal(team.length,0);assert.equal(leader,null);assert.equal(chosenEvents.length,0);assert(!unitOK(unitConfig()));
+team=['kayo','machi','natsume'];leader='kayo';chosenEvents=['kayo','machi','natsume'];
+const click=(action,id)=>listeners.click({target:{closest:()=>({dataset:{action,id:String(id??'')},disabled:false})}});
  `+check)(document,{getItem:k=>store.get(k)||null,setItem(k,v){if(blockWrites)throw Error('quota');store.set(k,v);}},()=>0,()=>{},assert,listeners);
 }
 run(`

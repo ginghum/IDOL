@@ -8,7 +8,7 @@ class Bucket{
 const bucket=new Bucket(),env={BUCKET:bucket},host='h'.repeat(48),guest='g'.repeat(48),other='o'.repeat(48);
 const config={team:['kayo','haru','homura'],leader:'homura',events:['kayo','haru','homura'],first:'0'};
 async function req(path='',data,token=host){const response=await handle(new Request('https://test/api/rooms'+path,{method:data?'POST':'GET',headers:{'content-type':'application/json',authorization:'Bearer '+token},...(data?{body:JSON.stringify(data)}:{})}),env);return {status:response.status,data:await response.json(),headers:response.headers};}
-const a=await req('',{ticket:host,config,protocol:PROTOCOL});assert.equal(a.status,200);assert.match(a.data.code,/^\d{4}$/);assert.equal(a.data.phase,'waiting');assert(!JSON.stringify(a.data).includes(host));const code=a.data.code;
+const a=await req('',{ticket:host,config,protocol:PROTOCOL});assert.equal(a.status,200);assert.equal(a.data.code,'0');assert.equal(a.data.phase,'waiting');assert(!JSON.stringify(a.data).includes(host));const code=a.data.code;
 assert.equal((await req('/'+code,undefined,other)).status,403);assert.equal((await req('/'+(code==='0000'?'0001':'0000'),undefined,other)).status,404);
 const b=await req('/'+code+'/join',{ticket:guest,config,protocol:PROTOCOL},guest);assert.equal(b.status,200);assert.equal(b.data.phase,'opening');assert(b.data.state.players[1].hand.every(c=>!c.owner));assert(b.data.state.players.every(p=>p.deck.every(c=>!c.owner)));assert(!JSON.stringify(b.data).includes(host));
 assert.equal((await req('/'+code+'/join',{ticket:other,config,protocol:PROTOCOL},other)).status,409);
@@ -28,7 +28,7 @@ const resumed=await req('/'+code,undefined,guest);assert.equal(resumed.status,20
 const real=Date.now;try{Date.now=()=>deadline+1;const timed=await req('/'+code,undefined,guest);assert.equal(timed.data.state.active,0);assert.equal(timed.data.state.turn,2);assert(timed.data.deadline>deadline);const again=await req('/'+code,undefined,guest);assert.equal(again.data.rev,timed.data.rev,'Repeated resume does not double-timeout');}finally{Date.now=real;}
 const leave=await req('/'+code+'/leave',{},guest);assert.equal(leave.data.phase,'ended');assert.equal(leave.data.state.winner,1);assert.equal((await req('/'+code)).data.state.winner,0);
 assert.equal((await handle(new Request('https://test/api/rooms',{method:'OPTIONS'}),env)).headers.get('access-control-allow-origin'),'*');
-console.log('Room API: four digits, seat privacy, join race, readiness, turn authority, CAS, idempotence, stale requests, timeout and resume passed');
+console.log('Room API: sequential room numbers, seat privacy, join race, readiness, turn authority, CAS, idempotence, stale requests, timeout and resume passed');
 
 // Opponent decisions pause the active turn and have their own 30-second deadline.
 const cc={team:['machi','kayo','hana'],leader:'kayo',events:['machi','kayo','hana'],first:'0'};
